@@ -1,11 +1,11 @@
 # https://jitpack.io/docs/BUILDING/
 
 jdk:
-  - openjdk9
+  - openjdk21
 before_install:
 #  - ./custom_setup.sh
 install:
   - echo "Running gradlew"
-  - ./gradlew clean install -xtest
+  - ./gradlew clean build publishToMavenLocal -xtest
 env:
   key: "value"
