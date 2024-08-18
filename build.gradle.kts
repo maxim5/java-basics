@@ -1,7 +1,9 @@
 plugins {
-    id("idea")
-    id("java")
-    id("java-test-fixtures")
+    `idea`
+    `java`
+    `java-library`
+    `java-test-fixtures`
+    `maven-publish`
 }
 
 group = "io.spbx"
@@ -79,4 +81,43 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+// https://h4pehl.medium.com/publish-your-gradle-artifacts-to-maven-central-f74a0af085b1
+// https://medium.com/@nowshadapu/how-to-create-a-java-library-and-publish-it-to-maven-with-gradle-7-e952837a7fc9
+publishing {
+    publications {
+        create<MavenPublication>("myLibrary") {
+            groupId = project.group.toString()
+            artifactId = "basics"
+            version = project.version.toString()
+            from(components["java"])
+
+            pom {
+                name = "My Library"
+                description = "A concise description of my library"
+                url = "https://github.com/maxim5/java-basics"
+                properties = mapOf(
+                )
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "maximp"
+                        name = "Maxim Podkolzine"
+                        email = "maxim.podkolzine@gmail.com"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://example.com/my-library.git"
+                    developerConnection = "scm:git:ssh://example.com/my-library.git"
+                    url = "http://example.com/my-library/"
+                }
+            }
+        }
+    }
 }
