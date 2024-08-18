@@ -6,6 +6,6 @@ before_install:
 #  - ./custom_setup.sh
 install:
   - echo "Running gradlew"
-  - ./gradle/wrapper/gradlew clean install -xtest
+  - ./gradlew clean install -xtest
 env:
   key: "value"
