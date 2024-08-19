@@ -125,3 +125,5 @@ dependencies {
     classpath("com.github.maxim5:java-basics:0.1.1")
 }
 ```
+
+![example workflow](https://github.com/maximp/java-basics/actions/workflows/gradle.yml/badge.svg)
