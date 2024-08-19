@@ -5,7 +5,7 @@ jdk:
 before_install:
 #  - ./custom_setup.sh
 install:
-  - echo "Running gradlew"
+  - cp gradle/wrapper/gradlew* .
   - ./gradlew clean build publishToMavenLocal -xtest
 env:
   key: "value"
