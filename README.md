@@ -126,4 +126,4 @@ dependencies {
 }
 ```
 
-![example workflow](https://github.com/maximp/java-basics/actions/workflows/gradle.yml/badge.svg)
+![example workflow](https://github.com/maxim5/java-basics/actions/workflows/gradle.yml/badge.svg)
