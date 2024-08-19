@@ -5,11 +5,11 @@
 - Boilerplate-less streams
 
 ```java
-Streamer.of(1, 2, 3).toArrayList();                             // 1, 2, 3
-Streamer.of(1, 2, 3).join(" ");                                 // "1 2 3"
-Streamer.of(Map.of(1, 2)).mapKeys(String::valueOf).toMap();     // "1" -> 2
-Streamer.of(iterable).skipNulls().toNativeArray();              // array without nulls
-Streamer.of(list).toAtMostTwo();                                // returns 0, 1 or 2 elements or throws
+Streamer.of(1, 2, 3).toArrayList();                          // 1, 2, 3
+Streamer.of(1, 2, 3).join(" ");                              // "1 2 3"
+Streamer.of(Map.of(1, 2)).mapKeys(String::valueOf).toMap();  // "1" -> 2
+Streamer.of(iterable).skipNulls().toNativeArray();           // array without nulls
+Streamer.of(list).toAtMostTwo();                             // 0, 1 or 2 elements or throws
 ```
 
 - `DataSize` for size units (Kb, Mb, Gb, ...)
@@ -35,17 +35,17 @@ Int128.MIN_VALUE.toHexString();         // 80000000000000000000000000000000
 
 ```java
 IllegalArgumentExceptions.assure(value == null, "Key already present: %s", key);
-IllegalStateExceptions.failIf(value.isTerminal(), "%s: Expected non-terminal, but got %s", this, value);
-assert value >= 0 : newInternalError("`value=%s` is negative", value);
+IllegalStateExceptions.failIf(state.done(), "Invalid state `%s`: %s", this, state);
+assert arg > 0 : newInternalError("`arg=%s` must be positive", arg);
 
 public Shell getAdminShell() {
     throw notImplemented("getAdminShell() unsupported for engine: %s", table.engine());
 }
 ```
 
-## Setting up Gradle Dependency
+## Gradle Setup
 
-```
+```kotlin
 repositories {
     mavenCentral()
     ...
