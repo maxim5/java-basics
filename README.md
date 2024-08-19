@@ -1,19 +1,19 @@
-# Basics Java Utils
+# Basic Java Utils
 
 ## Features
 
-- Concise non-verbose streams
+- Concise streams
 
 ```java
-Streamer.of(1, 2, 3, null).toArrayList();                   // [1, 2, 3, null]
-Streamer.repeat("abc", 3).join(" ");                        // "abc abc abc"
-Streamer.of(iterable).skipNulls().toNativeArray();          // native array without nulls
+Streamer.of(1, 2, 3, null).toArrayList();                  // [1, 2, 3, null]
+Streamer.repeat("abc", 3).join(" ");                       // "abc abc abc"
+Streamer.of(iterable).skipNulls().toNativeArray();         // native array without nulls
 
-Streamer.of(mapOf(1, 2)).mapKeys(String::valueOf).toMap();  // {"1" -> 2}
-Streamer.zip(keys, values).toLinkedHashMap();               // LinkedHashMap of keys -> values
+Streamer.of(mapOf(1, 2)).mapKeys(String::valueOf).toMap(); // {"1" -> 2}
+Streamer.zip(keys, values).toLinkedHashMap();              // LinkedHashMap of keys -> values
 
-Streamer.of(list).toAtMostTwo();                            // get 0, 1 or 2 elements or throw
-Streamer.of(array).toExactlyTow();                          // get exactly 2 elements or throw
+Streamer.of(list).toAtMostTwo();                           // get 0, 1 or 2 elements or throw
+Streamer.of(array).toExactlyTow();                         // get exactly 2 elements or throw
 ```
 
 - Non-verbose exceptions
@@ -28,8 +28,10 @@ assert arg > 0 : newInternalError("`arg=%s` must be positive", arg);
 List<String> lines = runRethrow(() -> Files.readAllLines(path));
 new Thread(rethrow(() -> runServer(port)));
 
-// Unchecked throw of any throwables
-Unchecked.throwAny(new IOException("End of file"));
+// Unchecked throw of any throwable
+public void fail() {
+    Unchecked.throwAny(new IOException("End of file"));
+}
 
 // Concise NotImplemented
 public Shell getAdminShell() {
@@ -65,6 +67,15 @@ BigInteger big = value.toBigInteger();      // 961912237548512807639101778120317
 Int128.from(1L << 62).multiply(10);         // 46116860184273879040
 Int128.MAX_VALUE.toString();                // 170141183460469231731687303715884105727
 Int128.MIN_VALUE.toHexString();             // 80000000000000000000000000000000
+```
+
+- Simple text processing
+```java
+BasicJoin.of(1, 2, null).join(',');                 // "1,2,"
+BasicJoin.of(1, 2, "").onlyNonEmpty().join(',');    // "1,2"
+BasicSplit.of("foo.bar.").exactly(3).on('.');       // ["foo", "bar", ""]
+BasicSplit.of("foo.bar.").skipEmpty().on('.');      // ["foo", "bar"]
+BasicParsing.parseIntSafe(str, -1);                 // never throws, falls back to -1
 ```
 
 ## Gradle Setup
