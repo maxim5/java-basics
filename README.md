@@ -50,6 +50,13 @@ OneOf.ofFirst(1).hasSecond();                               // false
 Pair.of(1, null).toOneOf();                                 // (1, null)
 ```
 
+- Convenient builders
+
+```java
+ListBuilder.of(1, 2, 3).add(4).addAll(5, 6).toArrayList();      // [1, 2, 3, 4, 5, 6]
+MapBuilder.builder().put(1, 2).overwrite(1, 3).toTreeMap();     // {1: 3}
+```
+
 - `DataSize` for size units (Kb, Mb, Gb, ...)
 
 ```java
@@ -72,10 +79,26 @@ Int128.MIN_VALUE.toHexString();             // 80000000000000000000000000000000
 - Simple text processing
 ```java
 BasicJoin.of(1, 2, null).join(',');                 // "1,2,"
-BasicJoin.of(1, 2, "").onlyNonEmpty().join(',');    // "1,2"
+BasicJoin.of(1, 2, "").onlyNonEmpty().join(", ");   // "1, 2"
 BasicSplit.of("foo.bar.").exactly(3).on('.');       // ["foo", "bar", ""]
-BasicSplit.of("foo.bar.").skipEmpty().on('.');      // ["foo", "bar"]
+BasicSplit.of("foo.bar.").skipEmpty().on(".");      // ["foo", "bar"]
 BasicParsing.parseIntSafe(str, -1);                 // never throws, falls back to -1
+```
+
+- Tabular data
+```java
+Tabular<String> tab = ArrayTabular.of(
+    arrayOf("foo", "bar"),
+    arrayOf("1", "123456")
+);
+ASCII_FORMATTER.formatIntoTableString(tab);
+/*
+ ----------------
+ | foo | bar    |
+ ----------------
+ | 1   | 123456 |
+ ----------------   
+ */
 ```
 
 ## Gradle Setup
