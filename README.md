@@ -1,6 +1,8 @@
 # Basic Java Utils
 
-## Features
+Takes care of the boilerplate so that you don't have to.
+
+## API
 
 - Concise streams
 
@@ -105,6 +107,8 @@ ASCII_FORMATTER.formatIntoTableString(tab);
  ----------------   
  */
 ```
+
+- and many more...
 
 ## Gradle Setup
 
