@@ -39,7 +39,7 @@ public Shell getAdminShell() {
 }
 ```
 
-- `Pair`, `Triple` and other `Tuple`s
+- `Pair`, `Triple` and other convenient `Tuple`s
 
 ```java
 Pair.of(1, 2).mapFirst(i -> i * 3);                         // (3, 2)
@@ -54,7 +54,9 @@ Pair.of(1, null).toOneOf();                                 // (1, null)
 
 ```java
 ListBuilder.of(1, 2, 3).add(4).addAll(5, 6).toArrayList();      // [1, 2, 3, 4, 5, 6]
+ListBuilder.of().addAll(iterable).skipNulls().toBasicsTuple();  // Tuple without nulls
 MapBuilder.builder().put(1, 2).overwrite(1, 3).toTreeMap();     // {1: 3}
+MapBuilder.copyOf(map).overwrite(1, 2).bimaps().toGuavaBiMap(); // Guava BiMap
 ```
 
 - `DataSize` for size units (Kb, Mb, Gb, ...)
