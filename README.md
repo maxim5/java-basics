@@ -5,15 +5,15 @@
 - Concise streams
 
 ```java
-Streamer.of(1, 2, 3, null).toArrayList();                  // [1, 2, 3, null]
-Streamer.repeat("abc", 3).join(" ");                       // "abc abc abc"
-Streamer.of(iterable).skipNulls().toNativeArray();         // native array without nulls
+Streamer.of(1, 2, 3, null).toArrayList();                 // [1, 2, 3, null]
+Streamer.repeat("abc", 3).join(" ");                      // "abc abc abc"
+Streamer.of(iterable).skipNulls().toNativeArray();        // native array without nulls
 
-Streamer.of(mapOf(1, 2)).mapKeys(String::valueOf).toMap(); // {"1" -> 2}
-Streamer.zip(keys, values).toLinkedHashMap();              // LinkedHashMap of keys -> values
+Streamer.of(mapOf(1, 2)).mapKeys(String::valueOf).toMap() // {"1" -> 2}
+Streamer.zip(keys, values).toLinkedHashMap();             // LinkedHashMap of keys -> values
 
-Streamer.of(list).toAtMostTwo();                           // get 0, 1 or 2 elements or throw
-Streamer.of(array).toExactlyTow();                         // get exactly 2 elements or throw
+Streamer.of(list).toAtMostTwo();                          // get 0, 1 or 2 elements or throw
+Streamer.of(array).toExactlyTow();                        // get exactly 2 elements or throw
 ```
 
 - Non-verbose exceptions
@@ -85,16 +85,19 @@ BasicSplit.of("foo.bar.").skipEmpty().on(".");      // ["foo", "bar"]
 BasicParsing.parseIntSafe(str, -1);                 // never throws, falls back to -1
 ```
 
-- Tabular data
+- Tabular data formatting
 ```java
 Tabular<String> tab = ArrayTabular.of(
     arrayOf("foo", "bar"),
+    arrayOf("foo", ""),
     arrayOf("1", "123456")
 );
 ASCII_FORMATTER.formatIntoTableString(tab);
 /*
  ----------------
  | foo | bar    |
+ ----------------
+ | foo |        |
  ----------------
  | 1   | 123456 |
  ----------------   
