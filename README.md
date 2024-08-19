@@ -122,8 +122,9 @@ repositories {
 }
 
 dependencies {
-    classpath("com.github.maxim5:java-basics:0.1.1")
+    implementation("com.github.maxim5:java-basics:0.1.1")
 }
 ```
 
-![example workflow](https://github.com/maxim5/java-basics/actions/workflows/gradle.yml/badge.svg)
+[![JitPack workflow](https://jitpack.io/v/maxim5/java-basics.svg)](https://jitpack.io/#maxim5/java-basics)
+![Gradle workflow](https://github.com/maxim5/java-basics/actions/workflows/gradle.yml/badge.svg)
