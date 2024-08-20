@@ -19,7 +19,7 @@ Streamer.zip(keys, values).toLinkedHashMap();             // LinkedHashMap of ke
 
 ```java
 Streamer.of(list).toAtMostTwo();                          // get 0, 1 or 2 elements or throw
-Streamer.of(array).toExactlyTow();                        // get exactly 2 elements or throw
+Streamer.of(array).toExactlyTwo();                        // get exactly 2 elements or throw
 ```
 
 ### Non-verbose [exceptions](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/BasicExceptions.java)
@@ -62,11 +62,14 @@ OneOf.ofFirst(1).hasSecond();                               // false
 Pair.of(1, null).toOneOf();                                 // (1, null)
 ```
 
-### Convenient [builders](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/ListBuilder.java)
+### Convenient [builder](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/ListBuilder.java)s
 
 ```java
 ListBuilder.of(1, 2, 3).add(4).addAll(5, 6).toArrayList();      // [1, 2, 3, 4, 5, 6]
 ListBuilder.of().addAll(iterable).skipNulls().toBasicsTuple();  // Tuple without nulls
+```
+
+```java
 MapBuilder.builder().put(1, 2).overwrite(1, 3).toTreeMap();     // {1: 3}
 MapBuilder.copyOf(map).overwrite(1, 2).bimaps().toGuavaBiMap(); // Guava BiMap
 ```
@@ -127,14 +130,14 @@ ASCII_FORMATTER.formatIntoTableString(tab);
  */
 ```
 
-And many more...
+And more.
 
 ## Gradle Setup
 
 ```kotlin
 repositories {
     mavenCentral()
-    ...
+    // ...
     maven {
         url = uri("https://jitpack.io")
     }
