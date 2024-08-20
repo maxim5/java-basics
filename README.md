@@ -83,23 +83,32 @@ DataSize.ofGigabytes(1).toString(Unit.Byte);    // 1073741824b
 ### [`Int128`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/Int128.java) for near native efficient 128-bit arithmetic
 
 ```java
-Int128 value = Int128.from("9619122375485128076391017781203171");
-BigInteger big = value.toBigInteger();      // 9619122375485128076391017781203171
-Int128.from(1L << 62).multiply(10);         // 46116860184273879040
-Int128.MAX_VALUE.toString();                // 170141183460469231731687303715884105727
-Int128.MIN_VALUE.toHexString();             // 80000000000000000000000000000000
+Int128.from("9619122375485128076391017781203171")
+    .toBigInteger();                            // 9619122375485128076391017781203171
+Int128.from(1L << 62).multiply(10);             // 46116860184273879040
+Int128.MAX_VALUE.toString();                    // 170141183460469231731687303715884105727
+Int128.MIN_VALUE.toHexString();                 // 80000000000000000000000000000000
 ```
 
 ### Simple [text processing](https://github.com/maxim5/java-basics/tree/master/src/main/java/io/spbx/util/text)
+
 ```java
 BasicJoin.of(1, 2, null).join(',');                 // "1,2,"
 BasicJoin.of(1, 2, "").onlyNonEmpty().join(", ");   // "1, 2"
+```
+
+```java
 BasicSplit.of("foo.bar.").exactly(3).on('.');       // ["foo", "bar", ""]
 BasicSplit.of("foo.bar.").skipEmpty().on(".");      // ["foo", "bar"]
+```
+
+```java
 BasicParsing.parseIntSafe(str, -1);                 // never throws, falls back to -1
+BasicParsing.parseLongSafe(str, 0);                 // never throws, falls back to 0
 ```
 
 ### [`Tabular`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/Tabular.java) data formatting
+
 ```java
 Tabular<String> tab = ArrayTabular.of(
     arrayOf("foo", "bar"),
