@@ -2,6 +2,8 @@ package io.spbx.util.base;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.Stream;
+
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.base.AssertTuples.*;
 import static io.spbx.util.testing.TestingBasics.listOf;
@@ -177,5 +179,23 @@ public class TupleTest {
         assertTuple(Tuple.of(null, null).<Integer, String>mapNth(0, String::valueOf)).holds("null", null);
         assertTuple(Tuple.of(null, null).<Integer, String>mapNth(1, String::valueOf)).holds(null, "null");
         assertThrows(IndexOutOfBoundsException.class, () -> Tuple.of(1).mapNth(1, String::valueOf));
+    }
+
+    @Test
+    public void toTuple_simple() {
+        assertThat(streamOf(1, 2, 3).collect(Tuple.toTuple(3))).isEqualTo(Tuple.of(1, 2, 3));
+        assertThrows(IllegalStateException.class, () -> Stream.<Integer>of().collect(Tuple.toTuple(3)));
+        assertThrows(IllegalStateException.class, () -> streamOf(1).collect(Tuple.toTuple(3)));
+        assertThrows(IllegalStateException.class, () -> streamOf(1, 2).collect(Tuple.toTuple(3)));
+        assertThrows(IllegalStateException.class, () -> streamOf(1, 2, 3, 4).collect(Tuple.toTuple(3)));
+    }
+
+    @Test
+    public void toTupleSparse_simple() {
+        assertThat(Stream.<Integer>of().collect(Tuple.toTupleSparse(3))).isEqualTo(Tuple.of(null, null, null));
+        assertThat(streamOf(1).collect(Tuple.toTupleSparse(3))).isEqualTo(Tuple.of(1, null, null));
+        assertThat(streamOf(1, 2).collect(Tuple.toTupleSparse(3))).isEqualTo(Tuple.of(1, 2, null));
+        assertThat(streamOf(1, 2, 3).collect(Tuple.toTupleSparse(3))).isEqualTo(Tuple.of(1, 2, 3));
+        assertThrows(IllegalStateException.class, () -> streamOf(1, 2, 3, 4).collect(Tuple.toTupleSparse(3)));
     }
 }
