@@ -4,7 +4,7 @@ Takes care of the boilerplate so that you don't have to.
 
 ## API
 
-- Concise streams
+### Concise [streams](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/Streamer.java)
 
 ```java
 Streamer.of(1, 2, 3, null).toArrayList();                 // [1, 2, 3, null]
@@ -18,7 +18,7 @@ Streamer.of(list).toAtMostTwo();                          // get 0, 1 or 2 eleme
 Streamer.of(array).toExactlyTow();                        // get exactly 2 elements or throw
 ```
 
-- Non-verbose exceptions
+### Non-verbose exceptions
 
 ```java
 // Concise assertions
@@ -41,7 +41,7 @@ public Shell getAdminShell() {
 }
 ```
 
-- `Pair`, `Triple` and other convenient `Tuple`s
+### `Pair`, `Triple` and other convenient `Tuple`s
 
 ```java
 Pair.of(1, 2).mapFirst(i -> i * 3);                         // (3, 2)
@@ -52,7 +52,7 @@ OneOf.ofFirst(1).hasSecond();                               // false
 Pair.of(1, null).toOneOf();                                 // (1, null)
 ```
 
-- Convenient builders
+### Convenient builders
 
 ```java
 ListBuilder.of(1, 2, 3).add(4).addAll(5, 6).toArrayList();      // [1, 2, 3, 4, 5, 6]
@@ -61,7 +61,7 @@ MapBuilder.builder().put(1, 2).overwrite(1, 3).toTreeMap();     // {1: 3}
 MapBuilder.copyOf(map).overwrite(1, 2).bimaps().toGuavaBiMap(); // Guava BiMap
 ```
 
-- `DataSize` for size units (Kb, Mb, Gb, ...)
+### `DataSize` for size units (Kb, Mb, Gb, ...)
 
 ```java
 DataSize.parse("123.0KB").toBytes();            // 125952
@@ -70,7 +70,7 @@ DataSize.ofKilobytes(50000).toString();         // 48.83Mb
 DataSize.ofGigabytes(1).toString(Unit.Byte);    // 1073741824b
 ```
 
-- `Int128` for near native efficient 128-bit arithmetic
+### `Int128` for near native efficient 128-bit arithmetic
 
 ```java
 Int128 value = Int128.from("9619122375485128076391017781203171");
@@ -80,7 +80,7 @@ Int128.MAX_VALUE.toString();                // 170141183460469231731687303715884
 Int128.MIN_VALUE.toHexString();             // 80000000000000000000000000000000
 ```
 
-- Simple text processing
+### Simple text processing
 ```java
 BasicJoin.of(1, 2, null).join(',');                 // "1,2,"
 BasicJoin.of(1, 2, "").onlyNonEmpty().join(", ");   // "1, 2"
@@ -89,7 +89,7 @@ BasicSplit.of("foo.bar.").skipEmpty().on(".");      // ["foo", "bar"]
 BasicParsing.parseIntSafe(str, -1);                 // never throws, falls back to -1
 ```
 
-- Tabular data formatting
+### Tabular data formatting
 ```java
 Tabular<String> tab = ArrayTabular.of(
     arrayOf("foo", "bar"),
