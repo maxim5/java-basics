@@ -10,10 +10,14 @@ Takes care of the boilerplate so that you don't have to.
 Streamer.of(1, 2, 3, null).toArrayList();                 // [1, 2, 3, null]
 Streamer.repeat("abc", 3).join(" ");                      // "abc abc abc"
 Streamer.of(iterable).skipNulls().toNativeArray();        // native array without nulls
+```
 
+```java
 Streamer.of(mapOf(1, 2)).mapKeys(String::valueOf).toMap() // {"1" -> 2}
 Streamer.zip(keys, values).toLinkedHashMap();             // LinkedHashMap of keys -> values
+```
 
+```java
 Streamer.of(list).toAtMostTwo();                          // get 0, 1 or 2 elements or throw
 Streamer.of(array).toExactlyTow();                        // get exactly 2 elements or throw
 ```
@@ -25,16 +29,22 @@ Streamer.of(array).toExactlyTow();                        // get exactly 2 eleme
 IllegalArgumentExceptions.assure(value == null, "Key already present: %s", key);
 IllegalStateExceptions.failIf(state.done(), "Invalid `%s` state: %s", this, state);
 assert arg > 0 : newInternalError("`arg=%s` must be positive", arg);
+```
 
+```java
 // One-liners without checked exceptions
 List<String> lines = runRethrow(() -> Files.readAllLines(path));
 new Thread(rethrow(() -> runServer(port)));
+```
 
+```java
 // Unchecked throw of any throwable
 public void fail() {
     Unchecked.throwAny(new IOException("End of file"));
 }
+```
 
+```java
 // Concise NotImplemented
 public Shell getAdminShell() {
     throw notImplemented("getAdminShell() unsupported for engine: %s", table.engine());
