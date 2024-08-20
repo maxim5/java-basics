@@ -30,15 +30,13 @@ repositories {
 
 dependencies {
     compileOnly("org.jetbrains:annotations:24.1.0")
-
-    compileOnly("com.google.flogger:flogger:0.8")
-    runtimeOnly("com.google.flogger:flogger-log4j2-backend:0.8")
-
     compileOnly("com.google.errorprone:error_prone_annotations:2.28.0")
     compileOnly("org.checkerframework:checker-qual:3.44.0")
-    compileOnly("com.google.guava:guava:33.2.0-jre")
-    compileOnly("com.google.inject:guice:7.0.0")
+
+    implementation("com.google.guava:guava:33.2.0-jre")
     compileOnly("com.carrotsearch:hppc:0.10.0")
+    compileOnly("com.google.flogger:flogger:0.8")
+    compileOnly("com.google.inject:guice:7.0.0")
     compileOnly("com.palantir.patches.sourceforge:trove3:3.0.3-p9")
     compileOnly("io.netty:netty-all:4.1.110.Final")
 }
@@ -88,6 +86,7 @@ tasks.test {
     exclude("**/CharArrayTest*")
 }
 
+/*
 // https://h4pehl.medium.com/publish-your-gradle-artifacts-to-maven-central-f74a0af085b1
 // https://medium.com/@nowshadapu/how-to-create-a-java-library-and-publish-it-to-maven-with-gradle-7-e952837a7fc9
 publishing {
@@ -126,3 +125,4 @@ publishing {
         }
     }
 }
+*/
