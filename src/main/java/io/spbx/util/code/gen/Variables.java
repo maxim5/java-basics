@@ -40,10 +40,11 @@ public class Variables {
                                              key2, BasicStrings.toStringOrEmpty(val2)));
     }
 
-    public static @NotNull Variables fixUpKeys(@NotNull Map<String, String> map) {
+    public static @NotNull Variables fixUpKeys(@NotNull Map<String, ?> map) {
         ImmutableMap<String, String> fixed = Streamer.of(map)
             .mapKeys(key -> BasicStrings.ensurePrefix(key, "$"))
             .mapKeys(key -> BasicStrings.ensureSuffix(key, "$"))
+            .mapValues(val -> BasicStrings.toStringOrEmpty(val))
             .toGuavaImmutableMap();
         return new Variables(fixed);
     }

@@ -9,6 +9,8 @@ public class VariablesTest {
     @Test
     public void fixUpKeys_simple() {
         assertThat(Variables.fixUpKeys(mapOf("foo", "bar")).toMap()).containsExactly("$foo$", "bar").inOrder();
+        assertThat(Variables.fixUpKeys(mapOf("foo", null)).toMap()).containsExactly("$foo$", "").inOrder();
+        assertThat(Variables.fixUpKeys(mapOf("foo", 123)).toMap()).containsExactly("$foo$", "123").inOrder();
     }
 
     @Test
