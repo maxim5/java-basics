@@ -2,9 +2,10 @@ package io.spbx.util.collect;
 
 import com.google.common.truth.MapSubject;
 import io.spbx.util.base.Pair;
-import io.spbx.util.testing.AssertFailure;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
@@ -204,7 +205,37 @@ public class MapBuilderTest {
         assertBuilder(MapBuilder.of(1, 1).overwriteAll(iterableOf(pairOf(1, 2), pairOf(3, 4)))).isEqualTo(mapOf(1, 2, 3, 4));
     }
 
-    private static <K, V> @NotNull MapSubject assertBuilder(@NotNull MapBuilder<K, V> mapBuilder) {
+    @Test
+    public void builder_skipNulls() {
+        assertBuilder(MapBuilder.of(1, 2).skipNulls()).isEqualTo(mapOf(1, 2));
+        assertBuilder(MapBuilder.of(1, NULL).skipNulls()).isEmpty();
+        assertBuilder(MapBuilder.of(NULL, 1).skipNulls()).isEmpty();
+        assertBuilder(MapBuilder.of(1, 2, 3, NULL).skipNulls()).isEqualTo(mapOf(1, 2));
+        assertBuilder(MapBuilder.of(1, 2, 3, NULL, 5, NULL).skipNulls()).isEqualTo(mapOf(1, 2));
+        assertBuilder(MapBuilder.of(1, 2, 3, NULL, NULL, 5).skipNulls()).isEqualTo(mapOf(1, 2));
+    }
+
+    @Test
+    public void builder_skipNullKeys() {
+        assertBuilder(MapBuilder.of(1, 2).skipNullKeys()).isEqualTo(mapOf(1, 2));
+        assertBuilder(MapBuilder.of(1, NULL).skipNullKeys()).isEqualTo(mapOf(1, NULL));
+        assertBuilder(MapBuilder.of(NULL, 1).skipNullKeys()).isEmpty();
+        assertBuilder(MapBuilder.of(1, 2, 3, NULL).skipNullKeys()).isEqualTo(mapOf(1, 2, 3, NULL));
+        assertBuilder(MapBuilder.of(1, 2, 3, NULL, 5, NULL).skipNullKeys()).isEqualTo(mapOf(1, 2, 3, NULL, 5, NULL));
+        assertBuilder(MapBuilder.of(1, 2, 3, NULL, NULL, 5).skipNullKeys()).isEqualTo(mapOf(1, 2, 3, NULL));
+    }
+
+    @Test
+    public void builder_skipNullValues() {
+        assertBuilder(MapBuilder.of(1, 2).skipNullValues()).isEqualTo(mapOf(1, 2));
+        assertBuilder(MapBuilder.of(1, NULL).skipNullValues()).isEmpty();
+        assertBuilder(MapBuilder.of(NULL, 1).skipNullValues()).isEqualTo(mapOf(NULL, 1));
+        assertBuilder(MapBuilder.of(1, 2, 3, NULL).skipNullValues()).isEqualTo(mapOf(1, 2));
+        assertBuilder(MapBuilder.of(1, 2, 3, NULL, 5, NULL).skipNullValues()).isEqualTo(mapOf(1, 2));
+        assertBuilder(MapBuilder.of(1, 2, 3, NULL, NULL, 5).skipNullValues()).isEqualTo(mapOf(1, 2, NULL, 5));
+    }
+
+    private static <K, V> @NotNull MapSubject assertBuilder(@NotNull ToMapKvApi<K, V, Map.Entry<K, V>> mapBuilder) {
         return assertThat(mapBuilder.toLinkedHashMap());
     }
 }
