@@ -1,12 +1,15 @@
 package io.spbx.util.base;
 
+import io.spbx.util.testing.AssertFailure;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.Arrays;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spbx.util.testing.AssertFailure.assertFailure;
 
 public class AssertTuples {
     @CheckReturnValue
@@ -73,6 +76,14 @@ public class AssertTuples {
                 for (int i = 0; i < objects.length; i++) {
                     assertThat((Object) tuple.at(i)).isEqualTo(objects[i]);
                 }
+                for (int i = 1; i <= objects.length; i++) {
+                    assertThat((Object) tuple.at(-i)).isEqualTo(objects[objects.length - i]);
+                }
+            } else {
+                assertFailure(() -> tuple.first()).throwsAssertion();
+                assertFailure(() -> tuple.last()).throwsAssertion();
+                assertFailure(() -> tuple.at(objects.length)).throwsAssertion();
+                assertFailure(() -> tuple.at(-objects.length-1)).throwsAssertion();
             }
         }
     }

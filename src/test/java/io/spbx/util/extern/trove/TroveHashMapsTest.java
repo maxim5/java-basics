@@ -1,6 +1,6 @@
 package io.spbx.util.extern.trove;
 
-import io.spbx.util.base.CharArray;
+import io.spbx.util.array.CharArray;
 import io.spbx.util.extern.trove.TroveHashMaps.StringContentHashMap;
 import io.spbx.util.extern.trove.TroveHashMaps.StringHashMap;
 import org.jetbrains.annotations.NotNull;

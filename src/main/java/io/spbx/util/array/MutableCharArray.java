@@ -1,5 +1,6 @@
-package io.spbx.util.base;
+package io.spbx.util.array;
 
+import io.spbx.util.annotate.NegativeIndexingSupported;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.CharBuffer;
@@ -14,19 +15,29 @@ public class MutableCharArray extends CharArray {
     }
 
     public static @NotNull MutableCharArray wrap(char @NotNull[] chars) {
-        return MutableCharArray.wrap(chars, 0, chars.length);
+        return new MutableCharArray(chars, 0, chars.length);
     }
 
+    @NegativeIndexingSupported
     public static @NotNull MutableCharArray wrap(char @NotNull[] chars, int start, int end) {
-        return new MutableCharArray(chars, start, end);
+        assert rangeCheck(start, end, chars.length, wrap(chars), BEFORE_TRANSLATION | CLOSE_END_RANGE);
+        return new MutableCharArray(chars,
+                                    translateIndex(start, chars.length),
+                                    translateIndex(end, chars.length));
     }
 
     public static @NotNull MutableCharArray copyOf(char @NotNull[] chars) {
         return MutableCharArray.wrap(Arrays.copyOf(chars, chars.length));
     }
 
+    @NegativeIndexingSupported
     public static @NotNull MutableCharArray copyOf(char @NotNull[] chars, int start, int end) {
-        return MutableCharArray.wrap(Arrays.copyOfRange(chars, start, end));
+        assert rangeCheck(start, end, chars.length, wrap(chars), BEFORE_TRANSLATION | CLOSE_END_RANGE);
+        return MutableCharArray.wrap(
+            Arrays.copyOfRange(chars,
+                               translateIndex(start, chars.length),
+                               translateIndex(end, chars.length))
+        );
     }
 
     public static @NotNull MutableCharArray of(@NotNull String s) {
@@ -38,15 +49,23 @@ public class MutableCharArray extends CharArray {
     }
 
     public static @NotNull MutableCharArray of(@NotNull CharArray array) {
-        return MutableCharArray.wrap(array.chars, array.start, array.end);
+        return array.mutableCopy();
     }
 
+    @NegativeIndexingSupported
     public static @NotNull MutableCharArray of(@NotNull String s, int start, int end) {
-        return MutableCharArray.wrap(s.toCharArray(), start, end);
+        assert rangeCheck(start, end, s.length(), s, BEFORE_TRANSLATION | CLOSE_END_RANGE);
+        return MutableCharArray.wrap(s.toCharArray(),
+                                     translateIndex(start, s.length()),
+                                     translateIndex(end, s.length()));
     }
 
+    @NegativeIndexingSupported
     public static @NotNull MutableCharArray of(@NotNull CharSequence s, int start, int end) {
-        return MutableCharArray.of(s.toString(), start, end);
+        assert rangeCheck(start, end, s.length(), s, BEFORE_TRANSLATION | CLOSE_END_RANGE);
+        return MutableCharArray.of(s.toString(),
+                                   translateIndex(start, s.length()),
+                                   translateIndex(end, s.length()));
     }
 
     public static @NotNull MutableCharArray of(@NotNull CharBuffer buffer) {
@@ -55,18 +74,12 @@ public class MutableCharArray extends CharArray {
                                      buffer.isReadOnly() ? buffer.length() : buffer.position() + buffer.length());
     }
 
+    public static @NotNull MutableCharArray of(char ch) {
+        return MutableCharArray.wrap(new char[] { ch });
+    }
+
     public static @NotNull MutableCharArray asMutableCharArray(@NotNull CharSequence s) {
         return s instanceof CharArray array ? array.mutable() : MutableCharArray.of(s);
-    }
-
-    @Override
-    public int start() {
-        return start;
-    }
-
-    @Override
-    public int end() {
-        return end;
     }
 
     @Override
@@ -84,29 +97,25 @@ public class MutableCharArray extends CharArray {
         return CharArray.wrap(chars, start, end);
     }
 
+    @NegativeIndexingSupported
     public @NotNull MutableCharArray mutableSubstring(int start, int end) {
-        start = start >= 0 ? start : start + length();  // allows negative from the end (-1 is `length()-1`)
-        end = end >= 0 ? end : end + length();          // allows negative from the end (-1 is `length()-1`)
-        assert start >= 0 && start <= length() : "Start index is out of range: %d in `%s`".formatted(start, this);
-        assert end >= 0 && end <= length() : "End index is out of range: %d in `%s`".formatted(end, this);
-        assert start <= end : "Start index can't be larger than end index: %d >= %d".formatted(start, end);
-        return MutableCharArray.wrap(chars, this.start + start, this.start + end);
+        assert rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
+        return MutableCharArray.wrap(chars, this.start + translateIndex(start), this.start + translateIndex(end));
     }
 
+    @NegativeIndexingSupported
     public void sliceInPlace(int start, int end) {
-        start = start >= 0 ? start : start + length();  // allows negative from the end (-1 is `length()-1`)
-        end = end >= 0 ? end : end + length();          // allows negative from the end (-1 is `length()-1`)
-        assert start >= 0 && start <= length() : "Start index is out of range: %d in `%s`".formatted(start, this);
-        assert end >= 0 && end <= length() : "End index is out of range: %d in `%s`".formatted(end, this);
-        assert start <= end : "Start index can't be larger than end index: %d >= %d".formatted(start, end);
-        this.end = this.start + end;
-        this.start = this.start + start;
+        assert rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
+        this.end = this.start + translateIndex(end);
+        this.start = this.start + translateIndex(start);
     }
 
+    @NegativeIndexingSupported
     public void sliceFromInPlace(int start) {
         sliceInPlace(start, length());
     }
 
+    @NegativeIndexingSupported
     public void sliceUntilInPlace(int end) {
         sliceInPlace(0, end);
     }
@@ -134,7 +143,7 @@ public class MutableCharArray extends CharArray {
         end -= offset;
     }
 
-    public void offsetPrefix(CharArray prefix) {
+    public void offsetPrefix(@NotNull CharArray prefix) {
         int len = commonPrefix(prefix);
         if (len == prefix.length()) {
             offsetStart(len);
@@ -147,7 +156,7 @@ public class MutableCharArray extends CharArray {
         }
     }
 
-    public void offsetSuffix(CharArray suffix) {
+    public void offsetSuffix(@NotNull CharArray suffix) {
         int len = commonSuffix(suffix);
         if (len == suffix.length()) {
             offsetEnd(len);
@@ -161,9 +170,7 @@ public class MutableCharArray extends CharArray {
     }
 
     public static @NotNull MutableCharArray join(@NotNull CharArray lhs, @NotNull CharArray rhs) {
-        if (lhs.chars == rhs.chars && lhs.end == rhs.start) {
-            return MutableCharArray.wrap(lhs.chars, lhs.start, rhs.end);
-        }
-        return MutableCharArray.of(new StringBuilder(lhs.length() + rhs.length()).append(lhs).append(rhs));
+        // One more unnecessary object creation, but otherwise need to expose `chars`, `start` and `end`.
+        return CharArray.join(lhs, rhs).mutableCopy();
     }
 }

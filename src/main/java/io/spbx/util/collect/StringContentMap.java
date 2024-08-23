@@ -1,6 +1,6 @@
 package io.spbx.util.collect;
 
-import io.spbx.util.base.CharArray;
+import io.spbx.util.array.CharArray;
 import io.spbx.util.base.BasicStrings;
 import org.jetbrains.annotations.Nullable;
 

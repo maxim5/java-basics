@@ -28,7 +28,17 @@ repositories {
     mavenCentral()
 }
 
+val shared by sourceSets.creating
+val buffers by sourceSets.creating
+
 dependencies {
+    "buffersCompileOnly"(shared.output)
+    "buffersCompileOnly"("org.jetbrains:annotations:24.1.0")
+}
+
+dependencies {
+    implementation(shared.output)
+    implementation(buffers.output)
     compileOnly("org.jetbrains:annotations:24.1.0")
     compileOnly("com.google.errorprone:error_prone_annotations:2.28.0")
     compileOnly("org.checkerframework:checker-qual:3.44.0")
@@ -79,11 +89,6 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
-
-    // One test `create_invalid_pointers` is failing because it's throwing a different exception when built via gradle.
-    // It's a temp measure. The test should be updated. But I'd like to better understand how `@NotNull` annotations are
-    // applied by the compiler.
-    exclude("**/CharArrayTest*")
 }
 
 /*

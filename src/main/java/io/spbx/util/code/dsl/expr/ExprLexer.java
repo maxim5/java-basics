@@ -1,7 +1,7 @@
 package io.spbx.util.code.dsl.expr;
 
 import com.google.common.collect.ImmutableList;
-import io.spbx.util.base.CharArray;
+import io.spbx.util.array.CharArray;
 import io.spbx.util.collect.ListBuilder;
 import org.jetbrains.annotations.NotNull;
 
