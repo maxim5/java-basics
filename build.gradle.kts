@@ -28,8 +28,9 @@ repositories {
     mavenCentral()
 }
 
-val shared by sourceSets.creating
-val buffers by sourceSets.creating
+private val main by sourceSets
+private val shared by sourceSets.creating
+private val buffers by sourceSets.creating
 
 dependencies {
     "buffersCompileOnly"(shared.output)
@@ -89,6 +90,18 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.withType<Jar> {
+    from(shared.output)
+    from(buffers.output)
+    from(main.output)
+
+    // See also
+    // https://stackoverflow.com/questions/59401271/how-to-exclude-resources-from-the-jar-in-gradle-and-also-run-via-intellij
+    exclude("**/templates**")
+
+    manifest {}
 }
 
 /*
