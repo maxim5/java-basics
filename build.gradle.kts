@@ -104,6 +104,18 @@ tasks.withType<Jar> {
     manifest {}
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            artifactId = "basics"
+            version = project.version.toString()
+
+            from(components["java"])
+        }
+    }
+}
+
 /*
 // https://h4pehl.medium.com/publish-your-gradle-artifacts-to-maven-central-f74a0af085b1
 // https://medium.com/@nowshadapu/how-to-create-a-java-library-and-publish-it-to-maven-with-gradle-7-e952837a7fc9
