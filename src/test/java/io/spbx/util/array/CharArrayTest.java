@@ -1,14 +1,18 @@
-package io.spbx.util.base;
+package io.spbx.util.array;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.nio.CharBuffer;
+import java.util.function.Function;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.MoreTruth.assertAlso;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CharArrayTest {
+    private static final char[] NULL = Function.<char[]>identity().apply(null);  // `null` but keeps Intellij quiet
+
     @Test
     public void create_empty_string() {
         CharArray array = CharArray.of("");
@@ -26,15 +30,39 @@ public class CharArrayTest {
     }
 
     @Test
+    public void create_of_valid_pointers() {
+        assertThat(CharArray.of("foobar")).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar", 0, 5)).isEqualTo(CharArray.of("fooba"));
+        assertThat(CharArray.of("foobar", 1, 1)).isEqualTo(CharArray.of(""));
+        assertThat(CharArray.of("foobar", 1, 3)).isEqualTo(CharArray.of("oo"));
+        assertThat(CharArray.of("foobar", 1, 5)).isEqualTo(CharArray.of("ooba"));
+        assertThat(CharArray.of("foobar", 1, -1)).isEqualTo(CharArray.of("ooba"));
+        assertThat(CharArray.of("foobar", -3, 5)).isEqualTo(CharArray.of("ba"));
+        assertThat(CharArray.of("foobar", -3, -1)).isEqualTo(CharArray.of("ba"));
+    }
+
+    @Test
+    public void create_wrap_valid_pointers() {
+        assertThat(CharArray.wrap("foobar".toCharArray())).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.wrap("foobar".toCharArray(), 0, 5)).isEqualTo(CharArray.of("fooba"));
+        assertThat(CharArray.wrap("foobar".toCharArray(), 1, 1)).isEqualTo(CharArray.of(""));
+        assertThat(CharArray.wrap("foobar".toCharArray(), 1, 3)).isEqualTo(CharArray.of("oo"));
+        assertThat(CharArray.wrap("foobar".toCharArray(), 1, 5)).isEqualTo(CharArray.of("ooba"));
+        assertThat(CharArray.wrap("foobar".toCharArray(), 1, -1)).isEqualTo(CharArray.of("ooba"));
+        assertThat(CharArray.wrap("foobar".toCharArray(), -3, 5)).isEqualTo(CharArray.of("ba"));
+        assertThat(CharArray.wrap("foobar".toCharArray(), -3, -1)).isEqualTo(CharArray.of("ba"));
+    }
+
+    @Test
     public void create_from_nio_buffer_readonly() {
         CharBuffer nioBuffer = CharBuffer.wrap("foobar", 2, 5);
         assertThat(nioBuffer.isReadOnly()).isTrue();
 
         CharArray array = CharArray.of(nioBuffer);
         assertThat(CharArray.of("oba")).isEqualTo(array);
-        assertThat("oba".toCharArray()).isEqualTo(array.chars);
-        assertThat(0).isEqualTo(array.start);
-        assertThat(3).isEqualTo(array.end);
+        assertThat("oba".toCharArray()).isEqualTo(array._chars());
+        assertThat(array.start()).isEqualTo(0);
+        assertThat(array.end()).isEqualTo(3);
     }
 
     @Test
@@ -44,9 +72,9 @@ public class CharArrayTest {
 
         CharArray array = CharArray.of(nioBuffer);
         assertThat(CharArray.of("oba")).isEqualTo(array);
-        assertThat("foobar".toCharArray()).isEqualTo(array.chars);
-        assertThat(2).isEqualTo(array.start);
-        assertThat(5).isEqualTo(array.end);
+        assertThat("foobar".toCharArray()).isEqualTo(array._chars());
+        assertThat(array.start()).isEqualTo(2);
+        assertThat(array.end()).isEqualTo(5);
     }
 
     @Test
@@ -63,9 +91,10 @@ public class CharArrayTest {
 
     @Test
     public void create_invalid_pointers() {
-        // noinspection ConstantConditions
-        assertThrows(IllegalArgumentException.class, () -> CharArray.wrap(null, 0, 0));
-        assertThrows(AssertionError.class, () -> CharArray.of("foo", -1, 2));
+        var expected = isNullCheckAvailable() ? IllegalArgumentException.class : NullPointerException.class;
+        assertThrows(expected, () -> CharArray.wrap(NULL));
+        assertThrows(expected, () -> CharArray.wrap(NULL, 0, 0));
+        assertThrows(AssertionError.class, () -> CharArray.of("foo", -1, 1));
         assertThrows(AssertionError.class, () -> CharArray.of("foo", 2, 1));
         assertThrows(AssertionError.class, () -> CharArray.of("foo", 0, 4));
         assertThrows(AssertionError.class, () -> CharArray.of("foo", 4, 4));
@@ -81,8 +110,15 @@ public class CharArrayTest {
         assertThat(array.charAt(3)).isEqualTo('b');
         assertThat(array.charAt(4)).isEqualTo('a');
         assertThat(array.charAt(5)).isEqualTo('r');
-        assertThrows(AssertionError.class, () -> array.charAt(-1));
+        assertThat(array.charAt(-1)).isEqualTo('r');
+        assertThat(array.charAt(-2)).isEqualTo('a');
+        assertThat(array.charAt(-3)).isEqualTo('b');
+        assertThat(array.charAt(-4)).isEqualTo('o');
+        assertThat(array.charAt(-5)).isEqualTo('o');
+        assertThat(array.charAt(-6)).isEqualTo('f');
+        assertThrows(AssertionError.class, () -> array.charAt(-7));
         assertThrows(AssertionError.class, () -> array.charAt(6));
+        assertThrows(AssertionError.class, () -> array.charAt(7));
     }
 
     @Test
@@ -112,10 +148,10 @@ public class CharArrayTest {
         assertThat(CharArray.of("").iterator().hasNext()).isFalse();
 
         for (CharArray.CharCursor cursor : CharArray.of("foo").toIterable()) {
-            assertThat(cursor.ch).isEqualTo("foo".charAt(cursor.index));
+            assertThat(cursor.val).isEqualTo("foo".charAt(cursor.index));
         }
         for (CharArray.CharCursor cursor : CharArray.of("foobar").substring(3, 6).toIterable()) {
-            assertThat(cursor.ch).isEqualTo("bar".charAt(cursor.index));
+            assertThat(cursor.val).isEqualTo("bar".charAt(cursor.index));
         }
     }
 
@@ -142,6 +178,8 @@ public class CharArrayTest {
         assertThat(array.indexOf('-', 4, -2)).isEqualTo(7);
         assertThat(array.indexOf('-', 7, array.length())).isEqualTo(7);
         assertThat(array.indexOf('-', 8, array.length())).isEqualTo(11);
+        assertThat(array.indexOf('-', -4, array.length())).isEqualTo(7);
+        assertThat(array.indexOf('-', -3, array.length())).isEqualTo(11);
     }
 
     @Test
@@ -199,6 +237,8 @@ public class CharArrayTest {
         assertThat(array.indexOf(CharArray.of("a"), 2)).isEqualTo(5);
         assertThat(array.indexOf(CharArray.of("o"))).isEqualTo(-1);
         assertThat(array.indexOf(CharArray.of("o"), 0, -2)).isEqualTo(-2);
+        assertThat(array.indexOf(CharArray.of("-"), -3)).isEqualTo(3);
+        assertThat(array.indexOf(CharArray.of("-"), -2)).isEqualTo(-1);
     }
 
     @Test
@@ -211,44 +251,8 @@ public class CharArrayTest {
         assertThat(array.indexOf(i -> i > 'b', 1)).isEqualTo(1);
         assertThat(array.indexOf(i -> i > 'b', 2)).isEqualTo(-1);
         assertThat(array.indexOf(i -> i > 'b', 2, -2)).isEqualTo(-2);
-    }
-
-    @Test
-    public void indexOfAny() {
-        CharArray array = CharArray.of("foo-bar-baz");
-
-        assertThat(array.indexOfAny('f', 'o')).isEqualTo(0);
-        assertThat(array.indexOfAny('o', 'o')).isEqualTo(1);
-        assertThat(array.indexOfAny('a', '-')).isEqualTo(3);
-        assertThat(array.indexOfAny('a', 'z')).isEqualTo(5);
-        assertThat(array.indexOfAny('z', 'w')).isEqualTo(10);
-        assertThat(array.indexOfAny('x', 'y')).isEqualTo(-1);
-
-        assertThat(array.indexOfAny('f', 'g', 1)).isEqualTo(-1);
-        assertThat(array.indexOfAny('f', 'g', 1, -2)).isEqualTo(-2);
-        assertThat(array.indexOfAny('f', 'g', 1, array.length())).isEqualTo(11);
-        assertThat(array.indexOfAny('o', 'a', 1)).isEqualTo(1);
-        assertThat(array.indexOfAny('o', 'a', 1, -2)).isEqualTo(1);
-        assertThat(array.indexOfAny('-', 'a', 3)).isEqualTo(3);
-        assertThat(array.indexOfAny('-', 'a', 3, array.length())).isEqualTo(3);
-        assertThat(array.indexOfAny('z', '-', 4)).isEqualTo(7);
-        assertThat(array.indexOfAny('z', '-', 4, array.length())).isEqualTo(7);
-        assertThat(array.indexOfAny('z', '-', 4, -2)).isEqualTo(7);
-        assertThat(array.indexOfAny('z', '-', 7, array.length())).isEqualTo(7);
-        assertThat(array.indexOfAny('a', '-', 8, array.length())).isEqualTo(9);
-        assertThat(array.indexOfAny('z', '-', 8, array.length())).isEqualTo(10);
-        assertThat(array.indexOfAny('z', '-', 11, array.length())).isEqualTo(11);
-        assertThat(array.indexOfAny('o', '-', 8, array.length())).isEqualTo(11);
-    }
-
-    @Test
-    public void indexOfAny_subarray() {
-        CharArray array = CharArray.of("foobar", 1, 4);  // oob
-
-        assertThat(array.indexOfAny('f', 'a')).isEqualTo(-1);
-        assertThat(array.indexOfAny('f', 'b')).isEqualTo(2);
-        assertThat(array.indexOfAny('o', 'o', 3)).isEqualTo(-1);
-        assertThat(array.indexOfAny('o', 'o', 3, -2)).isEqualTo(-2);
+        assertThat(array.indexOf(i -> i > 'b', -3, -1)).isEqualTo(1);
+        assertThat(array.indexOf(i -> i > 'b', -2, -1)).isEqualTo(-1);
     }
 
     @Test
@@ -345,48 +349,9 @@ public class CharArrayTest {
         assertThat(array.lastIndexOf(i -> i > 'b')).isEqualTo(2);
         assertThat(array.lastIndexOf(i -> i > 'b', 1)).isEqualTo(-1);
         assertThat(array.lastIndexOf(i -> i > 'b', 1, -2)).isEqualTo(-2);
-    }
-
-    @Test
-    public void lastIndexOfAny() {
-        CharArray array = CharArray.of("foo-bar-baz");
-
-        assertThat(array.lastIndexOfAny('f', 'g')).isEqualTo(0);
-        assertThat(array.lastIndexOfAny('f', 'o')).isEqualTo(2);
-        assertThat(array.lastIndexOfAny('o', 'f')).isEqualTo(2);
-        assertThat(array.lastIndexOfAny('o', 'x')).isEqualTo(2);
-        assertThat(array.lastIndexOfAny('-', 'o')).isEqualTo(7);
-        assertThat(array.lastIndexOfAny('-', 'a')).isEqualTo(9);
-        assertThat(array.lastIndexOfAny('-', 'z')).isEqualTo(10);
-        assertThat(array.lastIndexOfAny('x', 'y')).isEqualTo(-1);
-
-        assertThat(array.lastIndexOfAny('f', 'g', 10)).isEqualTo(0);
-        assertThat(array.lastIndexOfAny('f', 'g', 10, -1)).isEqualTo(0);
-        assertThat(array.lastIndexOfAny('f', 'z', 10)).isEqualTo(10);
-        assertThat(array.lastIndexOfAny('f', 'z', 10, -1)).isEqualTo(10);
-        assertThat(array.lastIndexOfAny('a', 'z', 10)).isEqualTo(10);
-        assertThat(array.lastIndexOfAny('a', 'r', 10)).isEqualTo(9);
-        assertThat(array.lastIndexOfAny('a', 'z', 9)).isEqualTo(9);
-        assertThat(array.lastIndexOfAny('a', 'z', 8)).isEqualTo(5);
-        assertThat(array.lastIndexOfAny('a', 'r', 5)).isEqualTo(5);
-        assertThat(array.lastIndexOfAny('a', 'r', 4)).isEqualTo(-1);
-        assertThat(array.lastIndexOfAny('a', 'r', 4, -2)).isEqualTo(-2);
-    }
-
-    @Test
-    public void lastIndexOfAny_subarray() {
-        CharArray array = CharArray.of("foobar", 1, 4);  // oob
-
-        assertThat(array.lastIndexOfAny('f', 'a')).isEqualTo(-1);
-        assertThat(array.lastIndexOfAny('a', 'f')).isEqualTo(-1);
-        assertThat(array.lastIndexOfAny('a', 'f', 2)).isEqualTo(-1);
-        assertThat(array.lastIndexOfAny('a', 'f', 3)).isEqualTo(-1);
-        assertThat(array.lastIndexOfAny('b', 'o')).isEqualTo(2);
-        assertThat(array.lastIndexOfAny('b', 'o', 2)).isEqualTo(2);
-        assertThat(array.lastIndexOfAny('b', 'o', 3)).isEqualTo(2);
-        assertThat(array.lastIndexOfAny('o', 'f', 0)).isEqualTo(0);
-        assertThat(array.lastIndexOfAny('o', 'f', 3)).isEqualTo(1);
-        assertThat(array.lastIndexOfAny('o', 'f', 3, -2)).isEqualTo(1);
+        assertThat(array.lastIndexOf(i -> i > 'b', -1, -1)).isEqualTo(2);
+        assertThat(array.lastIndexOf(i -> i > 'b', -4, -1)).isEqualTo(2);
+        assertThat(array.lastIndexOf(i -> i > 'b', -5, -1)).isEqualTo(-1);
     }
 
     @Test
@@ -416,17 +381,6 @@ public class CharArrayTest {
     }
 
     @Test
-    public void containsAny() {
-        CharArray array = CharArray.of("foobar", 1, 4);  // oob
-
-        assertThat(array.containsAny('o', 'b')).isTrue();
-        assertThat(array.containsAny('o', 'x')).isTrue();
-        assertThat(array.containsAny('b', 'x')).isTrue();
-        assertThat(array.containsAny('b', 'a')).isTrue();
-        assertThat(array.containsAny('a', 'x')).isFalse();
-    }
-
-    @Test
     public void split_by_char() {
         assertThat(CharArray.of("").split('.')).containsExactly(CharArray.of(""));
         assertThat(CharArray.of(".").split('.')).containsExactly(CharArray.of(""), CharArray.of(""));
@@ -439,6 +393,10 @@ public class CharArrayTest {
         assertThat(CharArray.of(".ab").split('.')).containsExactly(CharArray.of(""), CharArray.of("ab"));
         assertThat(CharArray.of("ab.cd").split('.')).containsExactly(CharArray.of("ab"), CharArray.of("cd"));
         assertThat(CharArray.of("a.b.c").split('.')).containsExactly(CharArray.of("a"), CharArray.of("b"), CharArray.of("c"));
+
+        assertThat(CharArray.of(".abcd.").substring(1, -1).split('.')).containsExactly(CharArray.of("abcd"));
+        assertThat(CharArray.of(".a..d.").substring(1, -1).split('.')).containsExactly(CharArray.of('a'), CharArray.of(""), CharArray.of('d'));
+        assertThat(CharArray.of(".ab.cd.").substring(1, -1).split('.')).containsExactly(CharArray.of("ab"), CharArray.of("cd"));
     }
 
     @Test
@@ -699,9 +657,9 @@ public class CharArrayTest {
         CharArray bar = array.substringFrom(3);
         CharArray join = CharArray.join(foo, bar);
 
-        assertThat(array.chars).isSameInstanceAs(foo.chars);
-        assertThat(array.chars).isSameInstanceAs(bar.chars);
-        assertThat(array.chars).isSameInstanceAs(join.chars);
+        assertThat(array._chars()).isSameInstanceAs(foo._chars());
+        assertThat(array._chars()).isSameInstanceAs(bar._chars());
+        assertThat(array._chars()).isSameInstanceAs(join._chars());
         assertThat(array).isEqualTo(join);
     }
 
@@ -712,74 +670,74 @@ public class CharArrayTest {
         CharArray bar = CharArray.of("bar");
         CharArray join = CharArray.join(foo, bar);
 
-        assertThat(array.chars).isNotSameInstanceAs(foo.chars);
-        assertThat(array.chars).isNotSameInstanceAs(bar.chars);
-        assertThat(array.chars).isNotSameInstanceAs(join.chars);
+        assertThat(array._chars()).isNotSameInstanceAs(foo._chars());
+        assertThat(array._chars()).isNotSameInstanceAs(bar._chars());
+        assertThat(array._chars()).isNotSameInstanceAs(join._chars());
         assertThat(array).isEqualTo(join);
     }
 
     @Test
-    public void cutPrefix_array() {
+    public void removePrefix_array() {
         CharArray foobar = CharArray.of("foobar");
         CharArray foo = CharArray.of("foo");
         CharArray bar = CharArray.of("bar");
         CharArray empty = CharArray.of("");
 
-        assertThat(foobar.cutPrefix(empty)).isEqualTo(foobar);
-        assertThat(foobar.cutPrefix(foo)).isEqualTo(bar);
-        assertThat(foobar.cutPrefix(foo)).isEqualTo(bar);
-        assertThat(foobar.cutPrefix(foobar)).isEqualTo(empty);
+        assertThat(foobar.removePrefix(empty)).isEqualTo(foobar);
+        assertThat(foobar.removePrefix(foo)).isEqualTo(bar);
+        assertThat(foobar.removePrefix(foo)).isEqualTo(bar);
+        assertThat(foobar.removePrefix(foobar)).isEqualTo(empty);
 
         assertThat(foobar.substringFrom(3)).isEqualTo(bar);
-        assertThat(foobar.substringFrom(3).cutPrefix(foo)).isEqualTo(bar);
-        assertThat(foobar.substringFrom(3).cutPrefix(bar)).isEqualTo(empty);
-        assertThat(foobar.substringFrom(3).cutPrefix(bar.substringUntil(0))).isEqualTo(bar);
-        assertThat(foobar.substringFrom(3).cutPrefix(bar.substringUntil(1))).isEqualTo(CharArray.of("ar"));  // cut b
-        assertThat(foobar.substringFrom(3).cutPrefix(bar.substringUntil(2))).isEqualTo(CharArray.of("r"));   // cut ba
+        assertThat(foobar.substringFrom(3).removePrefix(foo)).isEqualTo(bar);
+        assertThat(foobar.substringFrom(3).removePrefix(bar)).isEqualTo(empty);
+        assertThat(foobar.substringFrom(3).removePrefix(bar.substringUntil(0))).isEqualTo(bar);
+        assertThat(foobar.substringFrom(3).removePrefix(bar.substringUntil(1))).isEqualTo(CharArray.of("ar"));  // cut b
+        assertThat(foobar.substringFrom(3).removePrefix(bar.substringUntil(2))).isEqualTo(CharArray.of("r"));   // cut ba
     }
 
     @Test
-    public void cutPrefix_str() {
-        assertThat(CharArray.of("foobar").cutPrefix("")).isEqualTo(CharArray.of("foobar"));
-        assertThat(CharArray.of("foobar").cutPrefix("foo")).isEqualTo(CharArray.of("bar"));
-        assertThat(CharArray.of("foobar").cutPrefix("bar")).isEqualTo(CharArray.of("foobar"));
-        assertThat(CharArray.of("foobar").cutPrefix("fooba")).isEqualTo(CharArray.of("r"));
-        assertThat(CharArray.of("foobar").cutPrefix("foobar")).isEqualTo(CharArray.of(""));
-        assertThat(CharArray.of("foobar").cutPrefix("foobarbaz")).isEqualTo(CharArray.of("foobar"));
-        assertThat(CharArray.of("foobar").cutPrefix('f')).isEqualTo(CharArray.of("oobar"));
-        assertThat(CharArray.of("foobar").cutPrefix('o')).isEqualTo(CharArray.of("foobar"));
+    public void removePrefix_str() {
+        assertThat(CharArray.of("foobar").removePrefix("")).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removePrefix("foo")).isEqualTo(CharArray.of("bar"));
+        assertThat(CharArray.of("foobar").removePrefix("bar")).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removePrefix("fooba")).isEqualTo(CharArray.of("r"));
+        assertThat(CharArray.of("foobar").removePrefix("foobar")).isEqualTo(CharArray.of(""));
+        assertThat(CharArray.of("foobar").removePrefix("foobarbaz")).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removePrefix('f')).isEqualTo(CharArray.of("oobar"));
+        assertThat(CharArray.of("foobar").removePrefix('o')).isEqualTo(CharArray.of("foobar"));
     }
 
     @Test
-    public void cutSuffix_array() {
+    public void removeSuffix_array() {
         CharArray foobar = CharArray.of("foobar");
         CharArray foo = CharArray.of("foo");
         CharArray bar = CharArray.of("bar");
         CharArray empty = CharArray.of("");
 
-        assertThat(foobar.cutSuffix(empty)).isEqualTo(foobar);
-        assertThat(foobar.cutSuffix(bar)).isEqualTo(foo);
-        assertThat(foobar.cutSuffix(foo)).isEqualTo(foobar);
-        assertThat(foobar.cutSuffix(foobar)).isEqualTo(empty);
+        assertThat(foobar.removeSuffix(empty)).isEqualTo(foobar);
+        assertThat(foobar.removeSuffix(bar)).isEqualTo(foo);
+        assertThat(foobar.removeSuffix(foo)).isEqualTo(foobar);
+        assertThat(foobar.removeSuffix(foobar)).isEqualTo(empty);
 
         assertThat(foobar.substringFrom(3)).isEqualTo(bar);
-        assertThat(foobar.substringFrom(3).cutSuffix(foo)).isEqualTo(bar);
-        assertThat(foobar.substringFrom(3).cutSuffix(bar)).isEqualTo(empty);
-        assertThat(foobar.substringFrom(3).cutSuffix(bar.substringFrom(1))).isEqualTo(CharArray.of("b"));   // cut ar
-        assertThat(foobar.substringFrom(3).cutSuffix(bar.substringFrom(2))).isEqualTo(CharArray.of("ba"));  // cut r
-        assertThat(foobar.substringFrom(3).cutSuffix(bar.substringFrom(3))).isEqualTo(bar);
+        assertThat(foobar.substringFrom(3).removeSuffix(foo)).isEqualTo(bar);
+        assertThat(foobar.substringFrom(3).removeSuffix(bar)).isEqualTo(empty);
+        assertThat(foobar.substringFrom(3).removeSuffix(bar.substringFrom(1))).isEqualTo(CharArray.of("b"));   // cut ar
+        assertThat(foobar.substringFrom(3).removeSuffix(bar.substringFrom(2))).isEqualTo(CharArray.of("ba"));  // cut r
+        assertThat(foobar.substringFrom(3).removeSuffix(bar.substringFrom(3))).isEqualTo(bar);
     }
 
     @Test
-    public void cutSuffix_str() {
-        assertThat(CharArray.of("foobar").cutSuffix("")).isEqualTo(CharArray.of("foobar"));
-        assertThat(CharArray.of("foobar").cutSuffix("bar")).isEqualTo(CharArray.of("foo"));
-        assertThat(CharArray.of("foobar").cutSuffix("foo")).isEqualTo(CharArray.of("foobar"));
-        assertThat(CharArray.of("foobar").cutSuffix("oobar")).isEqualTo(CharArray.of("f"));
-        assertThat(CharArray.of("foobar").cutSuffix("foobar")).isEqualTo(CharArray.of(""));
-        assertThat(CharArray.of("foobar").cutSuffix("foofoobar")).isEqualTo(CharArray.of("foobar"));
-        assertThat(CharArray.of("foobar").cutSuffix('r')).isEqualTo(CharArray.of("fooba"));
-        assertThat(CharArray.of("foobar").cutSuffix('a')).isEqualTo(CharArray.of("foobar"));
+    public void removeSuffix_str() {
+        assertThat(CharArray.of("foobar").removeSuffix("")).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removeSuffix("bar")).isEqualTo(CharArray.of("foo"));
+        assertThat(CharArray.of("foobar").removeSuffix("foo")).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removeSuffix("oobar")).isEqualTo(CharArray.of("f"));
+        assertThat(CharArray.of("foobar").removeSuffix("foobar")).isEqualTo(CharArray.of(""));
+        assertThat(CharArray.of("foobar").removeSuffix("foofoobar")).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removeSuffix('r')).isEqualTo(CharArray.of("fooba"));
+        assertThat(CharArray.of("foobar").removeSuffix('a')).isEqualTo(CharArray.of("foobar"));
     }
 
     @Test
@@ -886,5 +844,17 @@ public class CharArrayTest {
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("oo")).isFalse();
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("fof")).isFalse();
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("")).isFalse();
+    }
+
+    // Checks whether @NotNull runtime checks are in the byte-code:
+    // IntelliJ compiler respects @NotNull, Gradle javac does not.
+    private static boolean isNullCheckAvailable() {
+        try {
+            record Temp(@NotNull Object obj) {}
+            new Temp(NULL);
+            return false;
+        } catch (IllegalArgumentException e) {
+            return true;
+        }
     }
 }

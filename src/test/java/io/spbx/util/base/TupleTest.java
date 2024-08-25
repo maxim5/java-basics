@@ -51,6 +51,9 @@ public class TupleTest {
         assertTuple(Tuple.of(1, 2, 3).slice(1, 3)).holds(2, 3);
         assertTuple(Tuple.of(1, 2, 3).slice(1, 2)).holds(2);
         assertTuple(Tuple.of(1, 2, 3).slice(1, 1)).holds();
+        assertTuple(Tuple.of(1, 2, 3).slice(-2, 3)).holds(2, 3);
+        assertTuple(Tuple.of(1, 2, 3).slice(-2, -1)).holds(2);
+        assertTuple(Tuple.of(1, 2, 3).slice(-2, -2)).holds();
     }
 
     @Test
@@ -156,11 +159,16 @@ public class TupleTest {
 
     @Test
     public void tuple_withNth() {
-        assertTuple(Tuple.of(1, 2).withNth(0, -1)).holds(-1, 2);
+        assertTuple(Tuple.of(1, 2).withNth(0, 777)).holds(777, 2);
         assertTuple(Tuple.of(1, 2).withNth(0, null)).holds(null, 2);
-        assertTuple(Tuple.of(1, 2).withNth(1, -2)).holds(1, -2);
+        assertTuple(Tuple.of(1, 2).withNth(1, 777)).holds(1, 777);
         assertTuple(Tuple.of(1, 2).withNth(1, null)).holds(1, null);
-        assertThrows(IndexOutOfBoundsException.class, () -> Tuple.of(1).withNth(1, null));
+
+        assertTuple(Tuple.of(1, 2).withNth(-1, 777)).holds(1, 777);
+        assertTuple(Tuple.of(1, 2).withNth(-2, 777)).holds(777, 2);
+
+        assertThrows(AssertionError.class, () -> Tuple.of(1).withNth(1, null));
+        assertThrows(AssertionError.class, () -> Tuple.of(1).withNth(-2, null));
     }
 
     @Test
@@ -169,7 +177,12 @@ public class TupleTest {
         assertThat(Tuple.of(1, 2).<Integer>testNth(0, x -> x != 1)).isFalse();
         assertThat(Tuple.of(1, null).testNth(1, java.util.Objects::isNull)).isTrue();
         assertThat(Tuple.of(1, null).testNth(1, java.util.Objects::nonNull)).isFalse();
-        assertThrows(IndexOutOfBoundsException.class, () -> Tuple.of(1).testNth(1, java.util.Objects::isNull));
+
+        assertThat(Tuple.of(1, 2).<Integer>testNth(-1, x -> x == 1)).isFalse();
+        assertThat(Tuple.of(1, 2).<Integer>testNth(-2, x -> x == 1)).isTrue();
+
+        assertThrows(AssertionError.class, () -> Tuple.of(1).testNth(1, java.util.Objects::isNull));
+        assertThrows(AssertionError.class, () -> Tuple.of(1).testNth(-2, java.util.Objects::isNull));
     }
 
     @Test
@@ -178,7 +191,12 @@ public class TupleTest {
         assertTuple(Tuple.of(1, 2).<Integer, String>mapNth(1, String::valueOf)).holds(1, "2");
         assertTuple(Tuple.of(null, null).<Integer, String>mapNth(0, String::valueOf)).holds("null", null);
         assertTuple(Tuple.of(null, null).<Integer, String>mapNth(1, String::valueOf)).holds(null, "null");
-        assertThrows(IndexOutOfBoundsException.class, () -> Tuple.of(1).mapNth(1, String::valueOf));
+
+        assertTuple(Tuple.of(1, 2).<Integer, String>mapNth(-1, String::valueOf)).holds(1, "2");
+        assertTuple(Tuple.of(1, 2).<Integer, String>mapNth(-2, String::valueOf)).holds("1", 2);
+
+        assertThrows(AssertionError.class, () -> Tuple.of(1).mapNth(1, String::valueOf));
+        assertThrows(AssertionError.class, () -> Tuple.of(1).mapNth(-2, String::valueOf));
     }
 
     @Test

@@ -1,4 +1,4 @@
-package io.spbx.util.base;
+package io.spbx.util.array;
 
 import org.junit.jupiter.api.Test;
 
@@ -151,13 +151,13 @@ public class MutableCharArrayTest {
         CharArray bar = foobar.substring(3, 6);
 
         assertThat(MutableCharArray.join(foo, bar)).isEqualTo(foobar);
-        assertThat(MutableCharArray.join(foo, bar).chars).isSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo.immutableCopy(), bar).chars).isSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo, bar.immutableCopy()).chars).isSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo.immutableCopy(), bar.immutableCopy()).chars).isSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo.mutable(), bar).chars).isSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo, bar.mutable()).chars).isSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo.mutable(), bar.mutable()).chars).isSameInstanceAs(foobar.chars);
+        assertThat(MutableCharArray.join(foo, bar)._chars()).isSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo.immutableCopy(), bar)._chars()).isSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo, bar.immutableCopy())._chars()).isSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo.immutableCopy(), bar.immutableCopy())._chars()).isSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo.mutable(), bar)._chars()).isSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo, bar.mutable())._chars()).isSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo.mutable(), bar.mutable())._chars()).isSameInstanceAs(foobar._chars());
     }
 
     @Test
@@ -167,12 +167,12 @@ public class MutableCharArrayTest {
         CharArray bar = CharArray.of("bar");
 
         assertThat(MutableCharArray.join(foo, bar)).isEqualTo(foobar);
-        assertThat(MutableCharArray.join(foo, bar).chars).isNotSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo.immutableCopy(), bar).chars).isNotSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo, bar.immutableCopy()).chars).isNotSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo.immutableCopy(), bar.immutableCopy()).chars).isNotSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo.mutable(), bar).chars).isNotSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo, bar.mutable()).chars).isNotSameInstanceAs(foobar.chars);
-        assertThat(MutableCharArray.join(foo.mutable(), bar.mutable()).chars).isNotSameInstanceAs(foobar.chars);
+        assertThat(MutableCharArray.join(foo, bar)._chars()).isNotSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo.immutableCopy(), bar)._chars()).isNotSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo, bar.immutableCopy())._chars()).isNotSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo.immutableCopy(), bar.immutableCopy())._chars()).isNotSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo.mutable(), bar)._chars()).isNotSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo, bar.mutable())._chars()).isNotSameInstanceAs(foobar._chars());
+        assertThat(MutableCharArray.join(foo.mutable(), bar.mutable())._chars()).isNotSameInstanceAs(foobar._chars());
     }
 }

@@ -1,6 +1,6 @@
 package io.spbx.util.code.dsl.expr;
 
-import io.spbx.util.base.CharArray;
+import io.spbx.util.array.CharArray;
 import io.spbx.util.base.Pair;
 import org.jetbrains.annotations.NotNull;
 

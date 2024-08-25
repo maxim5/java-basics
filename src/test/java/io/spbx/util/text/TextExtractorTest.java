@@ -1,9 +1,9 @@
 package io.spbx.util.text;
 
 import com.google.common.truth.MapSubject;
-import io.spbx.util.base.CharArray;
+import io.spbx.util.array.CharArray;
+import io.spbx.util.array.MutableCharArray;
 import io.spbx.util.base.BasicParsing;
-import io.spbx.util.base.MutableCharArray;
 import io.spbx.util.collect.Streamer;
 import io.spbx.util.testing.MockConsumer;
 import io.spbx.util.testing.ext.FluentLoggingCapture;

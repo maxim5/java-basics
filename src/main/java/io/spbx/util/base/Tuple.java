@@ -1,7 +1,9 @@
 package io.spbx.util.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spbx.util.annotate.NegativeIndexingSupported;
 import io.spbx.util.base.BasicExceptions.IllegalStateExceptions;
+import io.spbx.util.buf.BaseBuf;
 import io.spbx.util.func.Chains;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +30,7 @@ import static io.spbx.util.func.ScopeFunctions.with;
  * @see OneOf
  */
 @Immutable
-public final class Tuple implements Iterable<Object>, Serializable {
+public final class Tuple extends BaseBuf implements Iterable<Object>, Serializable {
     private static final Tuple EMPTY = new Tuple(new Object[0]);
 
     private final Object[] values;
@@ -49,24 +51,28 @@ public final class Tuple implements Iterable<Object>, Serializable {
         return with(stream.toArray(), array -> array.length == 0 ? EMPTY : new Tuple(array));
     }
 
+    @Override
     public int length() {
         return values.length;
     }
 
     public <T> T first() {
+        assert length() > 0 : "Tuple is empty";
         return castAny(values[0]);
     }
 
     public <T> T last() {
+        assert length() > 0 : "Tuple is empty";
         return castAny(values[values.length - 1]);
     }
 
-    // FIX[minor]: support negative and add to Pair/Triple
+    @NegativeIndexingSupported
     public <T> T at(int i) {
-        return castAny(values[i]);
+        assert rangeCheck(i, BEFORE_TRANSLATION | OPEN_END_RANGE);
+        return castAny(values[translateIndex(i)]);
     }
 
-    // FIX[minor]: support negative
+    @NegativeIndexingSupported
     public @NotNull Tuple slice(int i, int j) {
         Object[] slice = toArray(i, j);
         return Tuple.of(slice);
@@ -106,17 +112,25 @@ public final class Tuple implements Iterable<Object>, Serializable {
         return stream().mapToInt(val -> val == null ? 0 : 1).sum();
     }
 
+    @NegativeIndexingSupported
     public @NotNull Tuple withNth(int i, @Nullable Object value) {
+        assert rangeCheck(i, BEFORE_TRANSLATION | OPEN_END_RANGE);
         Object[] copy = toArray();
-        copy[i] = value;
+        copy[translateIndex(i)] = value;
         return Tuple.of(copy);
     }
 
+    @NegativeIndexingSupported
     public <T, R> @NotNull Tuple mapNth(int i, @NotNull Function<T, R> convert) {
+        assert rangeCheck(i, BEFORE_TRANSLATION | OPEN_END_RANGE);
+        i = translateIndex(i);
         return withNth(i, convert.apply(at(i)));
     }
 
+    @NegativeIndexingSupported
     public <T> boolean testNth(int i, @NotNull Predicate<T> predicate) {
+        assert rangeCheck(i, BEFORE_TRANSLATION | OPEN_END_RANGE);
+        i = translateIndex(i);
         return predicate.test(at(i));
     }
 
@@ -137,8 +151,10 @@ public final class Tuple implements Iterable<Object>, Serializable {
         return Arrays.copyOf(values, values.length);
     }
 
+    @NegativeIndexingSupported
     public Object @NotNull[] toArray(int i, int j) {
-        return Arrays.copyOfRange(values, i, j);
+        assert rangeCheck(i, j, BEFORE_TRANSLATION | CLOSE_END_RANGE);
+        return Arrays.copyOfRange(values, translateIndex(i), translateIndex(j));
     }
 
     @Override

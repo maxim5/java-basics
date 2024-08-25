@@ -1,7 +1,7 @@
 package io.spbx.util.code.dsl.expr;
 
 import com.google.common.flogger.FluentLogger;
-import io.spbx.util.base.CharArray;
+import io.spbx.util.array.CharArray;
 import io.spbx.util.base.BasicExceptions.IllegalStateExceptions;
 import io.spbx.util.base.Pair;
 import io.spbx.util.collect.ListBuilder;

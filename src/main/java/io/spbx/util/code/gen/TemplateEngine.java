@@ -27,6 +27,7 @@ import java.util.logging.Level;
 
 import static io.spbx.util.base.BasicExceptions.newIllegalStateException;
 import static io.spbx.util.base.BasicExceptions.newInternalError;
+import static io.spbx.util.code.gen.SkipTemplateException.newSkipTemplateException;
 
 public class TemplateEngine {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
@@ -153,14 +154,14 @@ public class TemplateEngine {
                     case PLACEHOLDER -> {
                         ctx.builder().removeLastIfBlank();
                         String multilineValue = ctx.vars().vars().get(directive.placeholder());
-                        IllegalStateExceptions.assureNonNull(multilineValue, "Unresolved placeholder: %s", directive);
+                        IllegalStateExceptions.assureNonNull(multilineValue, "Unresolved placeholder:", directive);
                         ctx.builder().appendMultiline(multilineValue);
                     }
                     case ASSUME -> {
                         ctx.builder().removeLastIfBlank();
                         boolean eval = directive.evalCondition(ctx.vars().vars());
                         if (!eval) {
-                            throw new SkipTemplateException("Assumption not met: " + directive);
+                            throw newSkipTemplateException("Assumption not met:", directive);
                         }
                     }
                     case ASSERT -> {
@@ -181,10 +182,10 @@ public class TemplateEngine {
                     case NONE ->
                         renderBlocks(innerBlocks, ctx);
                     default ->
-                        throw newInternalError("Unrecognized directive: " + directive);
+                        throw newInternalError("Unrecognized directive:", directive);
                 }
             }
-            default -> throw newIllegalStateException("Unrecognized block: " + block);
+            default -> throw newIllegalStateException("Unrecognized block:", block);
         }
     }
 

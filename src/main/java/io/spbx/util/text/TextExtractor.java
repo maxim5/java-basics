@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
-import io.spbx.util.base.CharArray;
-import io.spbx.util.base.MutableCharArray;
+import io.spbx.util.array.CharArray;
+import io.spbx.util.array.MutableCharArray;
 import io.spbx.util.collect.BasicMaps;
 import io.spbx.util.lazy.AtomicLazyRecycle;
 import io.spbx.util.lazy.LazyRecycle;
@@ -26,9 +26,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static io.spbx.util.base.EasyCast.castAny;
 import static io.spbx.util.base.BasicExceptions.newIllegalStateException;
 import static io.spbx.util.base.BasicExceptions.newInternalError;
+import static io.spbx.util.base.EasyCast.castAny;
 import static java.util.Objects.requireNonNull;
 
 @Immutable

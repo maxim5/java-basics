@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.spbx"
-version = "0.1.1"
+version = "0.1.2"
 
 tasks.wrapper {
     gradleVersion = "8.10"
@@ -28,7 +28,19 @@ repositories {
     mavenCentral()
 }
 
+private val main by sourceSets
+private val shared by sourceSets.creating
+private val buffers by sourceSets.creating
+
 dependencies {
+    "buffersCompileOnly"(shared.output)
+    "buffersCompileOnly"("org.jetbrains:annotations:24.1.0")
+    "sharedCompileOnly"("org.jetbrains:annotations:24.1.0")
+}
+
+dependencies {
+    implementation(shared.output)
+    implementation(buffers.output)
     compileOnly("org.jetbrains:annotations:24.1.0")
     compileOnly("com.google.errorprone:error_prone_annotations:2.28.0")
     compileOnly("org.checkerframework:checker-qual:3.44.0")
@@ -79,11 +91,30 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
 
-    // One test `create_invalid_pointers` is failing because it's throwing a different exception when built via gradle.
-    // It's a temp measure. The test should be updated. But I'd like to better understand how `@NotNull` annotations are
-    // applied by the compiler.
-    exclude("**/CharArrayTest*")
+tasks.withType<Jar> {
+    from(shared.output)
+    from(buffers.output)
+    from(main.output)
+
+    // See also
+    // https://stackoverflow.com/questions/59401271/how-to-exclude-resources-from-the-jar-in-gradle-and-also-run-via-intellij
+    exclude("**/templates**")
+
+    manifest {}
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            artifactId = "basics"
+            version = project.version.toString()
+
+            from(components["java"])
+        }
+    }
 }
 
 /*

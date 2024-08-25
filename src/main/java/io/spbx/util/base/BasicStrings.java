@@ -1,5 +1,6 @@
 package io.spbx.util.base;
 
+import io.spbx.util.array.CharArray;
 import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
