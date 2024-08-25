@@ -35,6 +35,7 @@ private val buffers by sourceSets.creating
 dependencies {
     "buffersCompileOnly"(shared.output)
     "buffersCompileOnly"("org.jetbrains:annotations:24.1.0")
+    "sharedCompileOnly"("org.jetbrains:annotations:24.1.0")
 }
 
 dependencies {
