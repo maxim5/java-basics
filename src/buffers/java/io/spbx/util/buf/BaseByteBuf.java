@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  * {@code buf.at(buf.length()-2)}.
  */
 @NegativeIndexingSupported
-@Generated(value = "Base$Type$Buf.java", date = "2024-08-22T16:22:53.837582533Z")
+@Generated(value = "Base$Type$Buf.java", date = "2024-08-25T16:08:05.817822126Z")
 public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf implements Serializable {
     protected final byte[] bytes;
     protected /* final */ int start;

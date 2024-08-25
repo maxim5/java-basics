@@ -3,23 +3,23 @@ package io.spbx.util.base;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class FmtRuntimeException extends RuntimeException {
-    protected FmtRuntimeException() {
+public abstract class BasicRuntimeException extends RuntimeException {
+    protected BasicRuntimeException() {
     }
 
-    protected FmtRuntimeException(@NotNull String message) {
+    protected BasicRuntimeException(@NotNull String message) {
         super(message);
     }
 
-    protected FmtRuntimeException(@NotNull String message, @Nullable Object @NotNull[] args) {
+    protected BasicRuntimeException(@NotNull String message, @Nullable Object @NotNull[] args) {
         super(formatMsg(message, args));
     }
 
-    protected FmtRuntimeException(@NotNull String message, @Nullable Throwable cause) {
+    protected BasicRuntimeException(@NotNull String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 
-    protected FmtRuntimeException(@Nullable Throwable cause) {
+    protected BasicRuntimeException(@Nullable Throwable cause) {
         super(cause);
     }
 

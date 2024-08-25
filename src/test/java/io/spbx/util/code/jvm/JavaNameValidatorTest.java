@@ -12,7 +12,7 @@ public class JavaNameValidatorTest {
         assertThat(isValidJavaIdentifier("test")).isTrue();
         assertThat(isValidJavaIdentifier("e2")).isTrue();
         assertThat(isValidJavaIdentifier("w")).isTrue();
-        assertThat(isValidJavaIdentifier("привет")).isTrue();
+        assertThat(isValidJavaIdentifier("\u043F\u0440\u0438\u0432\u0435\u0442")).isTrue();
     }
 
     @Test
@@ -20,7 +20,7 @@ public class JavaNameValidatorTest {
         assertThat(isValidJavaIdentifier("$test")).isTrue();
         assertThat(isValidJavaIdentifier("$e2")).isTrue();
         assertThat(isValidJavaIdentifier("$w")).isTrue();
-        assertThat(isValidJavaIdentifier("$привет")).isTrue();
+        assertThat(isValidJavaIdentifier("$\u043F\u0440\u0438\u0432\u0435\u0442")).isTrue();
         assertThat(isValidJavaIdentifier("$")).isTrue();
         assertThat(isValidJavaIdentifier("$55")).isTrue();
     }
@@ -30,7 +30,7 @@ public class JavaNameValidatorTest {
         assertThat(isValidJavaIdentifier("_test")).isTrue();
         assertThat(isValidJavaIdentifier("_e2")).isTrue();
         assertThat(isValidJavaIdentifier("_w")).isTrue();
-        assertThat(isValidJavaIdentifier("_привет")).isTrue();
+        assertThat(isValidJavaIdentifier("_\u043F\u0440\u0438\u0432\u0435\u0442")).isTrue();
         assertThat(isValidJavaIdentifier("_55")).isTrue();
     }
 

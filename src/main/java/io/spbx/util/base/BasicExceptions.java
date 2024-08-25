@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-import static io.spbx.util.base.FmtRuntimeException.formatMsg;
+import static io.spbx.util.base.BasicRuntimeException.formatMsg;
 
 @CheckReturnValue
 public class BasicExceptions {

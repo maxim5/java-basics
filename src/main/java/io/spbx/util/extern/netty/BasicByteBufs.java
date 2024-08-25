@@ -4,14 +4,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.util.AsciiString;
-import io.spbx.util.classpath.RuntimeRequirement;
+import io.spbx.util.rt.RuntimeRequirement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
-public class BasicByteBuf {
+public class BasicByteBufs {
     static {
         RuntimeRequirement.verify("io.netty.buffer.ByteBuf");
     }

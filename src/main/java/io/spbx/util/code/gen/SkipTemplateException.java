@@ -1,10 +1,10 @@
 package io.spbx.util.code.gen;
 
-import io.spbx.util.base.FmtRuntimeException;
+import io.spbx.util.base.BasicRuntimeException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SkipTemplateException extends FmtRuntimeException {
+public class SkipTemplateException extends BasicRuntimeException {
     public SkipTemplateException(@NotNull String message) {
         super(message);
     }
