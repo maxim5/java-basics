@@ -136,8 +136,6 @@ And more.
 
 ```kotlin
 repositories {
-    mavenCentral()
-    // ...
     maven("https://jitpack.io")
 }
 
