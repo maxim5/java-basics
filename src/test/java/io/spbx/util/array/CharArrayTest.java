@@ -1,6 +1,5 @@
 package io.spbx.util.array;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.nio.CharBuffer;
@@ -92,6 +91,7 @@ public class CharArrayTest {
     @Test
     public void create_invalid_pointers() {
         var expected = isNullCheckAvailable() ? IllegalArgumentException.class : NullPointerException.class;
+        assertThrows(expected, () -> new CharArray(NULL, 0, 0));
         assertThrows(expected, () -> CharArray.wrap(NULL));
         assertThrows(expected, () -> CharArray.wrap(NULL, 0, 0));
         assertThrows(AssertionError.class, () -> CharArray.of("foo", -1, 1));
@@ -847,14 +847,15 @@ public class CharArrayTest {
     }
 
     // Checks whether @NotNull runtime checks are in the byte-code:
-    // IntelliJ compiler respects @NotNull, Gradle javac does not.
+    // IntelliJ compiler modifies the byte-code respecting @NotNull arguments, Gradle javac does not.
     private static boolean isNullCheckAvailable() {
         try {
-            record Temp(@NotNull Object obj) {}
-            new Temp(NULL);
+            new CharArray(NULL, 0, 0);
             return false;
         } catch (IllegalArgumentException e) {
             return true;
+        } catch (NullPointerException e) {
+            return false;
         }
     }
 }

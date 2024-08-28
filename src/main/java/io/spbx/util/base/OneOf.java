@@ -75,6 +75,10 @@ public final class OneOf<U, V> implements Serializable {
         return Pair.of(first, second);
     }
 
+    public @NotNull OneOf<V, U> swap() {
+        return OneOf.of(second, first);
+    }
+
     public <T, S> @NotNull OneOf<T, S> map(@NotNull Function<U, T> convertFirst, @NotNull Function<V, S> convertSecond) {
         return mapToObj(first -> ofFirst(convertFirst.apply(first)), second -> ofSecond(convertSecond.apply(second)));
     }

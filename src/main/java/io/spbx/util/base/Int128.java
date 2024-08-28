@@ -116,9 +116,12 @@ public final class Int128 extends Number implements Comparable<Int128> {
         return fromBits(fastZeroOrMinusOne(value), value);
     }
 
-    @Beta
     public static @NotNull Int128 from(double value) {
-        return from(toBigInteger(value));
+        // See toBigInteger(double) below.
+        long bits = Double.doubleToLongBits(value);
+        int exp = ((int) (bits >> 52) & 0x7ff) - 1075;
+        Int128 result = Int128.from((bits & ((1L << 52)) - 1) | (1L << 52)).shiftLeft(exp);
+        return bits >= 0 ? result : result.negate();
     }
 
     /* Bit-level conversions */

@@ -21,9 +21,9 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spbx.util.base.BasicExceptions.newInternalError;
 import static io.spbx.util.base.EasyCast.castAny;
 import static io.spbx.util.base.EasyCast.castToInt;
-import static io.spbx.util.base.BasicExceptions.newInternalError;
 import static io.spbx.util.collect.BasicIterables.concatToList;
 import static io.spbx.util.testing.TestingBasics.listOf;
 import static io.spbx.util.testing.TestingBasics.streamOf;
@@ -182,6 +182,15 @@ public class Int128Test {
         for (BigInteger num : BIG_INTEGERS) {
             assertConstruction(num.toString());
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {
+        0, 1, -1, 0.5, -0.5, 2147483647.0, 2147483648.0, -2147483647.0, -2147483648.0,
+        9223372036854775807.0, 9223372036854775808.0, -9223372036854775807.0, -9223372036854775808.0,
+    })
+    public void construction_from_double_simple(double num) {
+        assertConstructionFromDouble(num);
     }
 
     @ParameterizedTest
@@ -718,6 +727,44 @@ public class Int128Test {
         return test == 0 ? 0 : 1;
     }
 
+    /** {@link Int128#toBigInteger(double)} */
+
+    @Test
+    public void toBigInteger_positive() {
+        assertThat(Int128.toBigInteger(0.0)).isEqualTo($0);
+        assertThat(Int128.toBigInteger(0.1)).isEqualTo($0);
+        assertThat(Int128.toBigInteger(0.5)).isEqualTo($0);
+
+        assertThat(Int128.toBigInteger(1.0)).isEqualTo($1);
+        assertThat(Int128.toBigInteger(2.0)).isEqualTo($2);
+        assertThat(Int128.toBigInteger(10.0)).isEqualTo($10);
+        assertThat(Int128.toBigInteger(1_000_000_000.0)).isEqualTo($("1000000000"));
+        assertThat(Int128.toBigInteger(1_000_000_000_000.0)).isEqualTo($("1000000000000"));
+        assertThat(Int128.toBigInteger(1_000_000_000_001.0)).isEqualTo($("1000000000001"));
+
+        assertThat(Int128.toBigInteger(2147483648.0)).isEqualTo($2_31);
+        assertThat(Int128.toBigInteger(4294967296.0)).isEqualTo($2_32);
+        assertThat(Int128.toBigInteger(9223372036854775808.0)).isEqualTo($2_63);
+    }
+
+    @Test
+    public void toBigInteger_negative() {
+        assertThat(Int128.toBigInteger(-0.0)).isEqualTo($0);
+        assertThat(Int128.toBigInteger(-0.1)).isEqualTo($0);
+        assertThat(Int128.toBigInteger(-0.5)).isEqualTo($0);
+
+        assertThat(Int128.toBigInteger(-1.0)).isEqualTo($1.negate());
+        assertThat(Int128.toBigInteger(-2.0)).isEqualTo($2.negate());
+        assertThat(Int128.toBigInteger(-10.0)).isEqualTo($10.negate());
+        assertThat(Int128.toBigInteger(-1_000_000_000.0)).isEqualTo($("-1000000000"));
+        assertThat(Int128.toBigInteger(-1_000_000_000_000.0)).isEqualTo($("-1000000000000"));
+        assertThat(Int128.toBigInteger(-1_000_000_000_001.0)).isEqualTo($("-1000000000001"));
+
+        assertThat(Int128.toBigInteger(-2147483648.0)).isEqualTo($2_31.negate());
+        assertThat(Int128.toBigInteger(-4294967296.0)).isEqualTo($2_32.negate());
+        assertThat(Int128.toBigInteger(-9223372036854775808.0)).isEqualTo($2_63.negate());
+    }
+
     /** Assertion utils */
 
     @CheckReturnValue
@@ -953,15 +1000,26 @@ public class Int128Test {
     private static void assertConstructionFromDouble(double num) {
         Int128 value = Int128.from(num);
 
-        assertThat(value.longValue()).isEqualTo((long) num);
-        assertThat(value.intValue()).isEqualTo((int) num);
-        assertThat(value.shortValue()).isEqualTo((short) num);
-        assertThat(value.byteValue()).isEqualTo((byte) num);
-        assertThat(value.floatValue()).isEqualTo((float) num);
-        assertThat(value.doubleValue()).isEqualTo(num);
+        assertThat(value.doubleValue()).isEqualTo((double) (long) (num));
+        assertThat(value.floatValue()).isEqualTo((float) (long) (num));
 
-        assertThat(value.toString()).isEqualTo(String.valueOf((long) num));
-        assertThat(value.toBigInteger()).isEqualTo($((long) num));
+        if (value.is64Bit()) {
+            assertThat(value.longValue()).isEqualTo((long) num);
+        }
+        if (value.is32Bit()) {
+            assertThat(value.intValue()).isEqualTo((int) num);
+            assertThat(value.shortValue()).isEqualTo((short) num);
+            assertThat(value.byteValue()).isEqualTo((byte) num);
+        }
+
+        if (value.is64Bit()) {
+            assertThat(value.toString()).isEqualTo(String.valueOf((long) num));
+            assertThat(value.toBigInteger()).isEqualTo($((long) num));
+        } else {
+            BigInteger expected = Int128.toBigInteger(num);  // the only reliable way to convert double to BigInteger
+            assertThat(value.toString()).isEqualTo(expected.toString());
+            assertThat(value.toBigInteger()).isEqualTo(expected);
+        }
     }
 
     private static void assertConstructionFromLongBits(long high, long low) {

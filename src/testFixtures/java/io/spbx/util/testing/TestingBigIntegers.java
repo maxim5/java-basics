@@ -3,6 +3,7 @@ package io.spbx.util.testing;
 import com.google.common.collect.Range;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class TestingBigIntegers {
@@ -52,6 +53,10 @@ public class TestingBigIntegers {
 
     public static @NotNull BigInteger $(@NotNull String s) {
         return new BigInteger(s);
+    }
+
+    public static @NotNull BigInteger $(double value) {
+        return BigDecimal.valueOf(value).toBigInteger();
     }
 
     public static @NotNull BigInteger $pow2(int n) {

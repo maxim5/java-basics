@@ -34,6 +34,12 @@ public class OneOfTest {
     }
 
     @Test
+    public void oneOf_swap() {
+        assertOneOf(OneOf.ofFirst(1).swap()).holds(null, 1);
+        assertOneOf(OneOf.ofSecond(2).swap()).holds(2, null);
+    }
+
+    @Test
     public void oneOf_map() {
         assertOneOf(OneOf.ofFirst(1).mapFirst(x1 -> -x1)).holds(-1, null);
         assertOneOf(OneOf.ofFirst(1).map(x1 -> -x1, String::valueOf)).holds(-1, null);
