@@ -41,11 +41,11 @@ dependencies {
 dependencies {
     implementation(shared.output)
     implementation(buffers.output)
+
     compileOnly("org.jetbrains:annotations:24.1.0")
     compileOnly("com.google.errorprone:error_prone_annotations:2.28.0")
-    compileOnly("org.checkerframework:checker-qual:3.44.0")
-
     implementation("com.google.guava:guava:33.2.0-jre")
+
     compileOnly("com.carrotsearch:hppc:0.10.0")
     compileOnly("com.google.flogger:flogger:0.8")
     compileOnly("com.google.inject:guice:7.0.0")
