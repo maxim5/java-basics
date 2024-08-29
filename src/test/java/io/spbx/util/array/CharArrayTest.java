@@ -197,9 +197,6 @@ public class CharArrayTest {
     public void indexOf_array() {
         CharArray array = CharArray.of("foo-bar-baz");
 
-        assertThat(array.indexOf("foo")).isEqualTo(0);
-        assertThat(array.indexOf("bar")).isEqualTo(4);
-        assertThat(array.indexOf("baz")).isEqualTo(8);
         assertThat(array.indexOf(CharArray.of("foo"))).isEqualTo(0);
         assertThat(array.indexOf(CharArray.of("bar"))).isEqualTo(4);
         assertThat(array.indexOf(CharArray.of("baz"))).isEqualTo(8);
@@ -217,6 +214,52 @@ public class CharArrayTest {
         assertThat(array.indexOf(CharArray.of("foo"), 1, -2)).isEqualTo(-2);
         assertThat(array.indexOf(CharArray.of("bar"), 5, -2)).isEqualTo(-2);
         assertThat(array.indexOf(CharArray.of("baz"), 10, -2)).isEqualTo(-2);
+    }
+
+    @Test
+    public void indexOf_string() {
+        CharArray array = CharArray.of("foo-bar-baz");
+
+        assertThat(array.indexOf("foo")).isEqualTo(0);
+        assertThat(array.indexOf("bar")).isEqualTo(4);
+        assertThat(array.indexOf("baz")).isEqualTo(8);
+        assertThat(array.indexOf("foo-bar-baz")).isEqualTo(0);
+
+        assertThat(array.indexOf("-")).isEqualTo(3);
+        assertThat(array.indexOf("-", 4)).isEqualTo(7);
+        assertThat(array.indexOf("o")).isEqualTo(1);
+        assertThat(array.indexOf("o", 2)).isEqualTo(2);
+        assertThat(array.indexOf("a")).isEqualTo(5);
+        assertThat(array.indexOf("a", 6)).isEqualTo(9);
+        assertThat(array.indexOf("z")).isEqualTo(10);
+        assertThat(array.indexOf("z", 11)).isEqualTo(-1);
+
+        assertThat(array.indexOf("foo", 1, -2)).isEqualTo(-2);
+        assertThat(array.indexOf("bar", 5, -2)).isEqualTo(-2);
+        assertThat(array.indexOf("baz", 10, -2)).isEqualTo(-2);
+    }
+
+    @Test
+    public void indexOf_native_array() {
+        CharArray array = CharArray.of("foo-bar-baz");
+
+        assertThat(array.indexOf("foo".toCharArray())).isEqualTo(0);
+        assertThat(array.indexOf("bar".toCharArray())).isEqualTo(4);
+        assertThat(array.indexOf("baz".toCharArray())).isEqualTo(8);
+        assertThat(array.indexOf("foo-bar-baz".toCharArray())).isEqualTo(0);
+
+        assertThat(array.indexOf("-".toCharArray())).isEqualTo(3);
+        assertThat(array.indexOf("-".toCharArray(), 4)).isEqualTo(7);
+        assertThat(array.indexOf("o".toCharArray())).isEqualTo(1);
+        assertThat(array.indexOf("o".toCharArray(), 2)).isEqualTo(2);
+        assertThat(array.indexOf("a".toCharArray())).isEqualTo(5);
+        assertThat(array.indexOf("a".toCharArray(), 6)).isEqualTo(9);
+        assertThat(array.indexOf("z".toCharArray())).isEqualTo(10);
+        assertThat(array.indexOf("z".toCharArray(), 11)).isEqualTo(-1);
+
+        assertThat(array.indexOf("foo".toCharArray(), 1, -2)).isEqualTo(-2);
+        assertThat(array.indexOf("bar".toCharArray(), 5, -2)).isEqualTo(-2);
+        assertThat(array.indexOf("baz".toCharArray(), 10, -2)).isEqualTo(-2);
     }
 
     @Test
@@ -296,20 +339,10 @@ public class CharArrayTest {
     public void lastIndexOf_array() {
         CharArray array = CharArray.of("foo-bar-baz");
 
-        assertThat(array.lastIndexOf("foo")).isEqualTo(0);
-        assertThat(array.lastIndexOf("bar")).isEqualTo(4);
-        assertThat(array.lastIndexOf("baz")).isEqualTo(8);
         assertThat(array.lastIndexOf(CharArray.of("foo"))).isEqualTo(0);
         assertThat(array.lastIndexOf(CharArray.of("bar"))).isEqualTo(4);
         assertThat(array.lastIndexOf(CharArray.of("baz"))).isEqualTo(8);
         assertThat(array.lastIndexOf(array)).isEqualTo(0);
-
-        assertThat(array.lastIndexOf("f")).isEqualTo(0);
-        assertThat(array.lastIndexOf("o")).isEqualTo(2);
-        assertThat(array.lastIndexOf("-")).isEqualTo(7);
-        assertThat(array.lastIndexOf("a")).isEqualTo(9);
-        assertThat(array.lastIndexOf("z")).isEqualTo(10);
-        assertThat(array.lastIndexOf("w")).isEqualTo(-1);
 
         assertThat(array.lastIndexOf(CharArray.of("f"), 10)).isEqualTo(0);
         assertThat(array.lastIndexOf(CharArray.of("f"), 10, -1)).isEqualTo(0);
@@ -320,6 +353,60 @@ public class CharArrayTest {
         assertThat(array.lastIndexOf(CharArray.of("a"), 8)).isEqualTo(5);
         assertThat(array.lastIndexOf(CharArray.of("a"), 4)).isEqualTo(-1);
         assertThat(array.lastIndexOf(CharArray.of("a"), 4, -2)).isEqualTo(-2);
+    }
+
+    @Test
+    public void lastIndexOf_string() {
+        CharArray array = CharArray.of("foo-bar-baz");
+
+        assertThat(array.lastIndexOf("foo")).isEqualTo(0);
+        assertThat(array.lastIndexOf("bar")).isEqualTo(4);
+        assertThat(array.lastIndexOf("baz")).isEqualTo(8);
+        assertThat(array.lastIndexOf("foo-bar-baz")).isEqualTo(0);
+
+        assertThat(array.lastIndexOf("f")).isEqualTo(0);
+        assertThat(array.lastIndexOf("o")).isEqualTo(2);
+        assertThat(array.lastIndexOf("-")).isEqualTo(7);
+        assertThat(array.lastIndexOf("a")).isEqualTo(9);
+        assertThat(array.lastIndexOf("z")).isEqualTo(10);
+        assertThat(array.lastIndexOf("w")).isEqualTo(-1);
+
+        assertThat(array.lastIndexOf("f", 10)).isEqualTo(0);
+        assertThat(array.lastIndexOf("f", 10, -1)).isEqualTo(0);
+        assertThat(array.lastIndexOf("o")).isEqualTo(2);
+        assertThat(array.lastIndexOf("o", 1)).isEqualTo(1);
+        assertThat(array.lastIndexOf("o", 0)).isEqualTo(-1);
+        assertThat(array.lastIndexOf("a")).isEqualTo(9);
+        assertThat(array.lastIndexOf("a", 8)).isEqualTo(5);
+        assertThat(array.lastIndexOf("a", 4)).isEqualTo(-1);
+        assertThat(array.lastIndexOf("a", 4, -2)).isEqualTo(-2);
+    }
+
+    @Test
+    public void lastIndexOf_native_array() {
+        CharArray array = CharArray.of("foo-bar-baz");
+
+        assertThat(array.lastIndexOf("foo".toCharArray())).isEqualTo(0);
+        assertThat(array.lastIndexOf("bar".toCharArray())).isEqualTo(4);
+        assertThat(array.lastIndexOf("baz".toCharArray())).isEqualTo(8);
+        assertThat(array.lastIndexOf("foo-bar-baz".toCharArray())).isEqualTo(0);
+
+        assertThat(array.lastIndexOf("f".toCharArray())).isEqualTo(0);
+        assertThat(array.lastIndexOf("o".toCharArray())).isEqualTo(2);
+        assertThat(array.lastIndexOf("-".toCharArray())).isEqualTo(7);
+        assertThat(array.lastIndexOf("a".toCharArray())).isEqualTo(9);
+        assertThat(array.lastIndexOf("z".toCharArray())).isEqualTo(10);
+        assertThat(array.lastIndexOf("w".toCharArray())).isEqualTo(-1);
+
+        assertThat(array.lastIndexOf("f".toCharArray(), 10)).isEqualTo(0);
+        assertThat(array.lastIndexOf("f".toCharArray(), 10, -1)).isEqualTo(0);
+        assertThat(array.lastIndexOf("o".toCharArray())).isEqualTo(2);
+        assertThat(array.lastIndexOf("o".toCharArray(), 1)).isEqualTo(1);
+        assertThat(array.lastIndexOf("o".toCharArray(), 0)).isEqualTo(-1);
+        assertThat(array.lastIndexOf("a".toCharArray())).isEqualTo(9);
+        assertThat(array.lastIndexOf("a".toCharArray(), 8)).isEqualTo(5);
+        assertThat(array.lastIndexOf("a".toCharArray(), 4)).isEqualTo(-1);
+        assertThat(array.lastIndexOf("a".toCharArray(), 4, -2)).isEqualTo(-2);
     }
 
     @Test
@@ -565,6 +652,21 @@ public class CharArrayTest {
     }
 
     @Test
+    public void startsWith_native_array() {
+        CharArray array = CharArray.of("foo");
+        assertThat(array.startsWith("".toCharArray())).isTrue();
+        assertThat(array.startsWith("f".toCharArray())).isTrue();
+        assertThat(array.startsWith("fo".toCharArray())).isTrue();
+        assertThat(array.startsWith("foo".toCharArray())).isTrue();
+
+        assertThat(array.startsWith("x".toCharArray())).isFalse();
+        assertThat(array.startsWith("bar".toCharArray())).isFalse();
+        assertThat(array.startsWith("foe".toCharArray())).isFalse();
+        assertThat(array.startsWith("foo!".toCharArray())).isFalse();
+        assertThat(array.startsWith("foobar".toCharArray())).isFalse();
+    }
+
+    @Test
     public void startsWith_char() {
         CharArray array = CharArray.of("foo");
         assertThat(array.startsWith('f')).isTrue();
@@ -603,6 +705,21 @@ public class CharArrayTest {
         assertThat(array.endsWith("boo")).isFalse();
         assertThat(array.endsWith("!foo")).isFalse();
         assertThat(array.endsWith("barfoo")).isFalse();
+    }
+
+    @Test
+    public void endsWith_native_array() {
+        CharArray array = CharArray.of("foo");
+        assertThat(array.endsWith("".toCharArray())).isTrue();
+        assertThat(array.endsWith("o".toCharArray())).isTrue();
+        assertThat(array.endsWith("oo".toCharArray())).isTrue();
+        assertThat(array.endsWith("foo".toCharArray())).isTrue();
+
+        assertThat(array.endsWith("x".toCharArray())).isFalse();
+        assertThat(array.endsWith("bar".toCharArray())).isFalse();
+        assertThat(array.endsWith("boo".toCharArray())).isFalse();
+        assertThat(array.endsWith("!foo".toCharArray())).isFalse();
+        assertThat(array.endsWith("barfoo".toCharArray())).isFalse();
     }
 
     @Test

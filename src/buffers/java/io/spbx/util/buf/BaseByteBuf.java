@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  * {@code buf.at(buf.length()-2)}.
  */
 @NegativeIndexingSupported
-@Generated(value = "Base$Type$Buf.java", date = "2024-08-25T16:01:31.023082Z")
+@Generated(value = "Base$Type$Buf.java", date = "2024-08-29T17:27:52.047597800Z")
 public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf implements Serializable {
     protected final byte[] bytes;
     protected /* final */ int start;
@@ -147,6 +147,14 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
                Arrays.equals(bytes, end - suffix.length(), end, suffix.bytes, suffix.start, suffix.end);
     }
 
+    public boolean startsWith(byte[] prefix) {
+        return length() >= prefix.length && Arrays.equals(bytes, start, start + prefix.length, prefix, 0, prefix.length);
+    }
+
+    public boolean endsWith(byte[] suffix) {
+        return length() >= suffix.length && Arrays.equals(bytes, end - suffix.length, end, suffix, 0, suffix.length);
+    }
+
     public boolean startsWith(byte val) {
         return isNotEmpty() && bytes[start] == val;
     }
@@ -221,6 +229,22 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return def;
     }
 
+    /* Index of: `byte[]` */
+
+    public int indexOf(byte[] array) {
+        return this.indexOf(array, 0, -1);
+    }
+
+    @NegativeIndexingSupported
+    public int indexOf(byte[] array, int from) {
+        return this.indexOf(array, from, -1);
+    }
+
+    @NegativeIndexingSupported
+    public int indexOf(byte[] array, int from, int def) {
+        return this.indexOf(_wrap(array, 0, array.length), from, def);
+    }
+
     /* Last index of: `IntPredicate` */
 
     public int lastIndexOf(@NotNull IntPredicate check) {
@@ -287,6 +311,22 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return def;
     }
 
+    /* Last index of: `byte[]` */
+
+    public int lastIndexOf(byte[] array) {
+        return this.lastIndexOf(array, length() - 1, -1);
+    }
+
+    @NegativeIndexingSupported
+    public int lastIndexOf(byte[] array, int from) {
+        return this.lastIndexOf(array, from, -1);
+    }
+
+    @NegativeIndexingSupported
+    public int lastIndexOf(byte[] array, int from, int def) {
+        return this.lastIndexOf(_wrap(array, 0, array.length), from, def);
+    }
+
     /* Contains */
 
     public boolean contains(byte val) {
@@ -295,6 +335,10 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
 
     public boolean contains(@NotNull B array) {
         return indexOf(array) >= 0;
+    }
+
+    public boolean contains(byte[] val) {
+        return indexOf(val) >= 0;
     }
 
     /* Split */
