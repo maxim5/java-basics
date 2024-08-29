@@ -124,6 +124,15 @@ public class TripleTest {
     }
 
     @Test
+    public void triple_toOneOf() {
+        assertOneOf(Triple.of(1, null, null).toOneOf()).holds(1, null, null);
+        assertOneOf(Triple.of(null, 2, null).toOneOf()).holds(null, 2, null);
+        assertOneOf(Triple.of(null, null, 3).toOneOf()).holds(null, null, 3);
+        assertThrows(AssertionError.class, () -> Triple.of(1, 2, 3).toOneOf());
+        assertThrows(AssertionError.class, () -> Triple.of(null, null, null).toOneOf());
+    }
+
+    @Test
     public void triple_isAnyOf() {
         assertThat(Triple.of(1, 2, 3).isAnyOf()).isTrue();
         assertThat(Triple.of(1, 2, null).isAnyOf()).isTrue();

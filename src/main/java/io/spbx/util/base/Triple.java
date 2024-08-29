@@ -121,6 +121,11 @@ public final class Triple<U, V, W> implements Serializable {
         return first == null ? second == null ^ third == null : second == null && third == null;
     }
 
+    public @NotNull OneOfThree<U, V, W> toOneOf() {
+        assert isOneOf() : "Can't convert a triple to a one-of: " + this;
+        return OneOfThree.of(first, second, third);
+    }
+
     public boolean isAnyOf() {
         return first != null || second != null || third != null;
     }
