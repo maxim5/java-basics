@@ -111,7 +111,6 @@ publishing {
             groupId = project.group.toString()
             artifactId = "basics"
             version = project.version.toString()
-
             from(components["java"])
         }
     }
