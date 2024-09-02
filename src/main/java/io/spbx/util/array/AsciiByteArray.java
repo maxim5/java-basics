@@ -130,6 +130,36 @@ public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharS
         return new String(bytes, start, end - start, StandardCharsets.US_ASCII);
     }
 
+    /* Equality check */
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o || o instanceof AsciiByteArray that && contentEquals(that);
+    }
+
+    public boolean contentEquals(@NotNull String str) {
+        return str.contentEquals(this);
+    }
+
+    public boolean contentEquals(@NotNull CharSequence str) {
+        if (length() != str.length()) {
+            return false;
+        }
+        for (int i = 0, len = length(); i < len; ++i) {
+            if (charAt(i) != str.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /* Hash code */
+
+    @Override
+    public int hashCode() {
+        return hashCode(bytes, start, end);
+    }
+
     /* Helpers */
 
     final byte[] _bytes() {

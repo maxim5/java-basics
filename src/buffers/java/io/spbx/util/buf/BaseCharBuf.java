@@ -7,11 +7,10 @@ import javax.annotation.processing.Generated;
 import java.io.Serializable;
 import java.nio.CharBuffer;
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
 import java.util.function.Consumer;
 
 /**
@@ -21,7 +20,7 @@ import java.util.function.Consumer;
  * {@code buf.at(buf.length()-2)}.
  */
 @NegativeIndexingSupported
-@Generated(value = "Base$Type$Buf.java", date = "2024-08-29T17:27:52.047597800Z")
+@Generated(value = "Base$Type$Buf.java", date = "2024-08-31T22:08:33.632214Z")
 public abstract class BaseCharBuf<B extends BaseCharBuf> extends BaseBuf implements Serializable {
     protected final char[] chars;
     protected /* final */ int start;
@@ -343,24 +342,72 @@ public abstract class BaseCharBuf<B extends BaseCharBuf> extends BaseBuf impleme
 
     /* Split */
 
+    public @NotNull Iterator<B> split(char val) {
+        return split(start -> indexOf(val, start), 1);
+    }
+
+    public @NotNull Iterator<B> split(@NotNull B array) {
+        assert array.isNotEmpty() : "Separator is empty";
+        return split(start -> indexOf(array, start), array.length());
+    }
+
+    public @NotNull Iterator<B> split(char[] val) {
+        assert val.length > 0 : "Separator is empty";
+        return split(start -> indexOf(val, start), val.length);
+    }
+
     public void split(char val, @NotNull Consumer<B> callback) {
+        split(start -> indexOf(val, start), callback, 1);
+    }
+
+    public void split(@NotNull B array, @NotNull Consumer<B> callback) {
+        assert array.isNotEmpty() : "Separator is empty";
+        split(start -> indexOf(array, start), callback, array.length());
+    }
+
+    public void split(char[] val, @NotNull Consumer<B> callback) {
+        assert val.length > 0 : "Separator is empty";
+        split(start -> indexOf(val, start), callback, val.length);
+    }
+
+    public @NotNull Iterator<B> split(@NotNull IntPredicate predicate) {
+        return split(start -> indexOf(predicate, start), 1);
+    }
+
+    public void split(@NotNull IntPredicate predicate, @NotNull Consumer<B> callback) {
+        split(start -> indexOf(predicate, start), callback, 1);
+    }
+
+    protected @NotNull Iterator<B> split(@NotNull IntUnaryOperator indexOf, int separatorLength) {
+        return new Iterator<>() {
+            private final int len = length();
+            private int index = 0;
+            @Override public boolean hasNext() {
+                return index <= len;
+            }
+            @Override public B next() {
+                assert index <= len : "No more elements to iterate";
+                int next = indexOf.applyAsInt(index);
+                next = next < 0 ? len : next;
+                B buf = _wrap(chars, start + index, start + next);
+                index = next + separatorLength;
+                return buf;
+            }
+        };
+    }
+
+    protected void split(@NotNull IntUnaryOperator indexOf, @NotNull Consumer<B> callback, int separatorLength) {
         int start = 0;
         while (true) {
-            int end = indexOf(val, start);
-            if (end == -1) {
+            int index = indexOf.applyAsInt(start);
+            if (index == -1) {
                 callback.accept(_wrap(chars, this.start + start, this.end));
                 return;
             } else {
-                callback.accept(_wrap(chars, this.start + start, this.start + end));
-                start = end + 1;
+                callback.accept(_wrap(chars, this.start + start, this.start + index));
+                start = index + separatorLength;
             }
         }
-    }
-
-    public @NotNull List<B> split(char val) {
-        List<B> list = new ArrayList<>();
-        split(val, list::add);
-        return list;
     }
 
     /* Trim */
@@ -429,6 +476,10 @@ public abstract class BaseCharBuf<B extends BaseCharBuf> extends BaseBuf impleme
         return startsWith(val) ? _wrap(chars, start + 1, end) : _this();
     }
 
+    public @NotNull B removePrefix(char[] prefix) {
+        return startsWith(prefix) ? _wrap(chars, start + prefix.length, end) : _this();
+    }
+
     /* Remove suffix */
 
     public @NotNull B removeSuffix(@NotNull B suffix) {
@@ -438,6 +489,10 @@ public abstract class BaseCharBuf<B extends BaseCharBuf> extends BaseBuf impleme
 
     public @NotNull B removeSuffix(char val) {
         return endsWith(val) ? _wrap(chars, start, end - 1) : _this();
+    }
+
+    public @NotNull B removeSuffix(char[] prefix) {
+        return endsWith(prefix) ? _wrap(chars, start, end - prefix.length) : _this();
     }
 
     /* Equality check */
@@ -450,9 +505,57 @@ public abstract class BaseCharBuf<B extends BaseCharBuf> extends BaseBuf impleme
         return length() == 1 && at(0) == val;
     }
 
+    public boolean contentEquals(char[] that) {
+        return Arrays.equals(chars, start, end, that, 0, that.length);
+    }
+
     /* Hash code */
 
-    protected int hashCode(int seed, int l, int r) {
+    // Based on the shift-add-xor class of string hashing functions
+    // cf. Ramakrishna and Zobel,
+    //     "Performance in Practice of String Hashing Functions"
+    //
+    // Values left=5, right=2 work well for ASCII inputs.
+
+    protected static final int HASH_SEED = 31;
+    protected static final int HASH_LEFT = 5;
+    protected static final int HASH_RIGHT = 2;
+
+    public static int hashCode(char[] chars) {
+        return hashCode(chars, HASH_SEED, HASH_LEFT, HASH_RIGHT);
+    }
+
+    public static int hashCode(char[] chars, int start, int end) {
+        return hashCode(chars, start, end, HASH_SEED, HASH_LEFT, HASH_RIGHT);
+    }
+
+    public static int hashCode(char[] chars, int start, int end, @NotNull CharFunc func) {
+        return hashCode(chars, start, end, func, HASH_SEED, HASH_LEFT, HASH_RIGHT);
+    }
+
+    public static <T> int hashCode(@NotNull T instance, int len, @NotNull CharAtFunction<T> charAt) {
+        return hashCode(instance, len, charAt, HASH_SEED, HASH_LEFT, HASH_RIGHT);
+    }
+
+    // FIX: Primitive-candidate
+    public interface CharFunc {
+        char apply(char val);
+    }
+
+    // FIX: Primitive-candidate
+    public interface CharAtFunction<T> {
+        int charAt(@NotNull T instance, int index);
+    }
+
+    protected static int hashCode(char[] chars, int seed, int l, int r) {
+        int hash = seed;
+        for (char val : chars) {
+            hash = hash ^ ((hash << l) + (hash >> r) + val);
+        }
+        return hash;
+    }
+
+    protected static int hashCode(char[] chars, int start, int end, int seed, int l, int r) {
         int hash = seed;
         for (int i = start; i < end; ++i) {
             hash = hash ^ ((hash << l) + (hash >> r) + chars[i]);
@@ -460,7 +563,7 @@ public abstract class BaseCharBuf<B extends BaseCharBuf> extends BaseBuf impleme
         return hash;
     }
 
-    protected int hashCode(int seed, int l, int r, @NotNull CharFunc func) {
+    protected static int hashCode(char[] chars, int start, int end, @NotNull CharFunc func, int seed, int l, int r) {
         int hash = seed;
         for (int i = start; i < end; ++i) {
             hash = hash ^ ((hash << l) + (hash >> r) + func.apply(chars[i]));
@@ -468,9 +571,13 @@ public abstract class BaseCharBuf<B extends BaseCharBuf> extends BaseBuf impleme
         return hash;
     }
 
-    // FIX: Primitive-candidate
-    protected interface CharFunc {
-        char apply(char val);
+    protected static <T> int hashCode(@NotNull T instance, int len, @NotNull CharAtFunction<T> charAtFunc,
+                                      int seed, int l, int r) {
+        int hash = seed;
+        for (int i = 0; i < len; ++i) {
+            hash = hash ^ ((hash << l) + (hash >> r) + charAtFunc.charAt(instance, i));
+        }
+        return hash;
     }
 
     /* Helper */

@@ -8,6 +8,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 import java.nio.CharBuffer;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -234,6 +236,53 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence, C
         return indexOf(str) >= 0;
     }
 
+    public boolean contains(@NotNull Pattern pattern) {
+        return indexOf(pattern) != null;
+    }
+
+    /* Split */
+
+    public @NotNull Iterator<CharArray> split(@NotNull CharSequence str) {
+        assert !str.isEmpty() : "Separator is empty";
+        return split(start -> indexOf(str, start), str.length());
+    }
+
+    public void split(@NotNull CharSequence str, @NotNull Consumer<CharArray> callback) {
+        assert !str.isEmpty() : "Separator is empty";
+        split(start -> indexOf(str, start), callback, str.length());
+    }
+
+    public @NotNull Iterator<CharArray> split(@NotNull Pattern pattern) {
+        return new Iterator<>() {
+            private final Matcher matcher = pattern.matcher(CharArray.this);
+            private final int len = length();
+            private int index = 0;
+            @Override public boolean hasNext() {
+                return index <= len;
+            }
+            @Override public CharArray next() {
+                assert index <= len : "No more elements to iterate";
+                if (matcher.find(index)) {
+                    assert matcher.start() < matcher.end() : "Empty match at " + matcher.start();
+                    CharArray buf = _wrap(chars, start + index, start + matcher.start());
+                    index = matcher.end();
+                    return buf;
+                } else {
+                    CharArray buf = _wrap(chars, start + index, end);
+                    index = len + 1;
+                    return buf;
+                }
+            }
+        };
+    }
+
+    // https://stackoverflow.com/questions/426397/do-line-endings-differ-between-windows-and-linux
+    private static final Pattern NEW_LINE_PATTERN = Pattern.compile("\r\n|\n|\r");
+
+    public @NotNull Iterator<CharArray> lines() {
+        return split(NEW_LINE_PATTERN);
+    }
+
     /* Trim */
 
     public @NotNull CharArray trim() {
@@ -338,11 +387,11 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence, C
 
     @Override
     public int hashCode() {
-        return hashCode(/* seed = */ 31, /* l = */ 5, /* r = */ 2);
+        return hashCode(chars, start, end);
     }
 
     public int hashCodeIgnoreCase() {
-        return hashCode(/* seed = */ 31, /* l = */ 5, /* r = */ 2, Character::toLowerCase);
+        return hashCode(chars, start, end, Character::toLowerCase);
     }
 
     /* Helpers */

@@ -1,6 +1,7 @@
 package io.spbx.util.collect;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -34,6 +35,10 @@ public record Addable<T>(T value) implements Supplier<T> {
     }
 
     public void addTo(@NotNull ImmutableList.Builder<T> builder) {
+        builder.add(value);
+    }
+
+    public void addTo(@NotNull ImmutableSet.Builder<T> builder) {
         builder.add(value);
     }
 

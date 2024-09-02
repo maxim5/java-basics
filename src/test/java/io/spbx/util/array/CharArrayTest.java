@@ -1,9 +1,14 @@
 package io.spbx.util.array;
 
+import com.google.common.truth.IterableSubject;
+import io.spbx.util.collect.BasicStreams;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.nio.CharBuffer;
+import java.util.Iterator;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.MoreTruth.assertAlso;
@@ -11,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CharArrayTest {
     private static final char[] NULL = Function.<char[]>identity().apply(null);  // `null` but keeps Intellij quiet
+
+    /** {@link CharArray#of} **/
 
     @Test
     public void create_empty_string() {
@@ -40,6 +47,8 @@ public class CharArrayTest {
         assertThat(CharArray.of("foobar", -3, -1)).isEqualTo(CharArray.of("ba"));
     }
 
+    /** {@link CharArray#wrap} **/
+
     @Test
     public void create_wrap_valid_pointers() {
         assertThat(CharArray.wrap("foobar".toCharArray())).isEqualTo(CharArray.of("foobar"));
@@ -51,6 +60,8 @@ public class CharArrayTest {
         assertThat(CharArray.wrap("foobar".toCharArray(), -3, 5)).isEqualTo(CharArray.of("ba"));
         assertThat(CharArray.wrap("foobar".toCharArray(), -3, -1)).isEqualTo(CharArray.of("ba"));
     }
+
+    /** {@link CharArray#of(CharBuffer)} **/
 
     @Test
     public void create_from_nio_buffer_readonly() {
@@ -76,8 +87,10 @@ public class CharArrayTest {
         assertThat(array.end()).isEqualTo(5);
     }
 
+    /** {@link CharArray#equals(Object)}, {@link CharArray#hashCode()}, {@link CharArray#toString()} **/
+
     @Test
-    public void equals_and_hashCode() {
+    public void equals_hashCode_toString() {
         assertAlso(CharArray.of("")).isEquivalentTo(CharArray.of(""));
         assertAlso(CharArray.of("")).isEquivalentTo(CharArray.of("foo", 0, 0));
         assertAlso(CharArray.of("")).isEquivalentTo(CharArray.of("foo", 1, 1));
@@ -87,6 +100,8 @@ public class CharArrayTest {
         assertAlso(CharArray.of("foo")).isEquivalentTo(CharArray.of("foobar", 0, 3));
         assertAlso(CharArray.of("foo")).isEquivalentTo(CharArray.of("barfoo", 3, 6));
     }
+
+    /** {@link CharArray#wrap}, {@link CharArray#of} **/
 
     @Test
     public void create_invalid_pointers() {
@@ -99,6 +114,8 @@ public class CharArrayTest {
         assertThrows(AssertionError.class, () -> CharArray.of("foo", 0, 4));
         assertThrows(AssertionError.class, () -> CharArray.of("foo", 4, 4));
     }
+
+    /** {@link CharArray#charAt(int)} **/
 
     @Test
     public void char_at() {
@@ -120,6 +137,8 @@ public class CharArrayTest {
         assertThrows(AssertionError.class, () -> array.charAt(6));
         assertThrows(AssertionError.class, () -> array.charAt(7));
     }
+
+    /** {@link CharArray#at(int)} **/
 
     @Test
     public void at() {
@@ -143,6 +162,8 @@ public class CharArrayTest {
         assertThat(array.at(-100)).isEqualTo(-1);
     }
 
+    /** {@link CharArray#iterator()} **/
+
     @Test
     public void iterator() {
         assertThat(CharArray.of("").iterator().hasNext()).isFalse();
@@ -154,6 +175,8 @@ public class CharArrayTest {
             assertThat(cursor.val).isEqualTo("bar".charAt(cursor.index));
         }
     }
+
+    /** {@link CharArray#indexOf} **/
 
     @Test
     public void indexOf_char() {
@@ -299,6 +322,19 @@ public class CharArrayTest {
     }
 
     @Test
+    public void indexOf_pattern() {
+        CharArray array = CharArray.of("-foo-bar-baz", 1, 8);  // foo-bar
+
+        assertThat(array.indexOf(Pattern.compile("[a-z]")).start()).isEqualTo(0);
+        assertThat(array.indexOf(Pattern.compile("-")).start()).isEqualTo(3);
+        assertThat(array.indexOf(Pattern.compile("[bB]")).start()).isEqualTo(4);
+        assertThat(array.indexOf(Pattern.compile("[aA]")).start()).isEqualTo(5);
+        assertThat(array.indexOf(Pattern.compile("x"))).isNull();
+    }
+
+    /** {@link CharArray#lastIndexOf} **/
+
+    @Test
     public void lastIndexOf_char() {
         CharArray array = CharArray.of("foo-bar-baz");
 
@@ -441,6 +477,8 @@ public class CharArrayTest {
         assertThat(array.lastIndexOf(i -> i > 'b', -5, -1)).isEqualTo(-1);
     }
 
+    /** {@link CharArray#contains} **/
+
     @Test
     public void contains_char() {
         CharArray array = CharArray.of("foobar", 1, 4);  // oob
@@ -456,6 +494,21 @@ public class CharArrayTest {
     public void contains_array() {
         CharArray array = CharArray.of("foobar", 1, 4);  // oob
 
+        assertThat(array.contains(CharArray.of("o"))).isTrue();
+        assertThat(array.contains(CharArray.of("b"))).isTrue();
+        assertThat(array.contains(CharArray.of("f"))).isFalse();
+        assertThat(array.contains(CharArray.of("a"))).isFalse();
+        assertThat(array.contains(CharArray.of("x"))).isFalse();
+
+        assertThat(array.contains(CharArray.of("oo"))).isTrue();
+        assertThat(array.contains(CharArray.of("ob"))).isTrue();
+        assertThat(array.contains(array)).isTrue();
+    }
+
+    @Test
+    public void contains_string() {
+        CharArray array = CharArray.of("foobar", 1, 4);  // oob
+
         assertThat(array.contains("o")).isTrue();
         assertThat(array.contains("b")).isTrue();
         assertThat(array.contains("f")).isFalse();
@@ -464,27 +517,188 @@ public class CharArrayTest {
 
         assertThat(array.contains("oo")).isTrue();
         assertThat(array.contains("ob")).isTrue();
-        assertThat(array.contains(array)).isTrue();
+        assertThat(array.contains("oob")).isTrue();
     }
 
     @Test
-    public void split_by_char() {
-        assertThat(CharArray.of("").split('.')).containsExactly(CharArray.of(""));
-        assertThat(CharArray.of(".").split('.')).containsExactly(CharArray.of(""), CharArray.of(""));
-        assertThat(CharArray.of("..").split('.')).containsExactly(CharArray.of(""), CharArray.of(""), CharArray.of(""));
-        assertThat(CharArray.of("a.").split('.')).containsExactly(CharArray.of("a"), CharArray.of(""));
-        assertThat(CharArray.of("a.b").split('.')).containsExactly(CharArray.of("a"), CharArray.of("b"));
-        assertThat(CharArray.of("a..b").split('.')).containsExactly(CharArray.of("a"), CharArray.of(""), CharArray.of("b"));
-        assertThat(CharArray.of("ab").split('.')).containsExactly(CharArray.of("ab"));
-        assertThat(CharArray.of("ab.").split('.')).containsExactly(CharArray.of("ab"), CharArray.of(""));
-        assertThat(CharArray.of(".ab").split('.')).containsExactly(CharArray.of(""), CharArray.of("ab"));
-        assertThat(CharArray.of("ab.cd").split('.')).containsExactly(CharArray.of("ab"), CharArray.of("cd"));
-        assertThat(CharArray.of("a.b.c").split('.')).containsExactly(CharArray.of("a"), CharArray.of("b"), CharArray.of("c"));
+    public void contains_native_array() {
+        CharArray array = CharArray.of("foobar", 1, 4);  // oob
 
-        assertThat(CharArray.of(".abcd.").substring(1, -1).split('.')).containsExactly(CharArray.of("abcd"));
-        assertThat(CharArray.of(".a..d.").substring(1, -1).split('.')).containsExactly(CharArray.of('a'), CharArray.of(""), CharArray.of('d'));
-        assertThat(CharArray.of(".ab.cd.").substring(1, -1).split('.')).containsExactly(CharArray.of("ab"), CharArray.of("cd"));
+        assertThat(array.contains("o".toCharArray())).isTrue();
+        assertThat(array.contains("b".toCharArray())).isTrue();
+        assertThat(array.contains("f".toCharArray())).isFalse();
+        assertThat(array.contains("a".toCharArray())).isFalse();
+        assertThat(array.contains("x".toCharArray())).isFalse();
+
+        assertThat(array.contains("oo".toCharArray())).isTrue();
+        assertThat(array.contains("ob".toCharArray())).isTrue();
+        assertThat(array.contains("oob".toCharArray())).isTrue();
     }
+
+    @Test
+    public void contains_pattern() {
+        CharArray array = CharArray.of("-foo-bar-baz", 1, 8);  // foo-bar
+
+        assertThat(array.contains(Pattern.compile("[a-z]"))).isTrue();
+        assertThat(array.contains(Pattern.compile("-"))).isTrue();
+        assertThat(array.contains(Pattern.compile("[bB]"))).isTrue();
+        assertThat(array.contains(Pattern.compile("[aA]"))).isTrue();
+        assertThat(array.contains(Pattern.compile("x"))).isFalse();
+    }
+
+    /** {@link CharArray#split} **/
+
+    @Test
+    public void split_by_char() {
+        assertSplit(CharArray.of("").split('.')).containsExactly("");
+        assertSplit(CharArray.of(".").split('.')).containsExactly("", "");
+        assertSplit(CharArray.of("..").split('.')).containsExactly("", "", "");
+        assertSplit(CharArray.of("a.").split('.')).containsExactly("a", "");
+        assertSplit(CharArray.of("a.b").split('.')).containsExactly("a", "b");
+        assertSplit(CharArray.of("a..b").split('.')).containsExactly("a", "", "b");
+        assertSplit(CharArray.of("ab").split('.')).containsExactly("ab");
+        assertSplit(CharArray.of("ab.").split('.')).containsExactly("ab", "");
+        assertSplit(CharArray.of(".ab").split('.')).containsExactly("", "ab");
+        assertSplit(CharArray.of("ab.cd").split('.')).containsExactly("ab", "cd");
+        assertSplit(CharArray.of("a.b.c").split('.')).containsExactly("a", "b", "c");
+
+        assertSplit(CharArray.of(".abcd.").substring(1, -1).split('.')).containsExactly("abcd");
+        assertSplit(CharArray.of(".a..d.").substring(1, -1).split('.')).containsExactly("a", "", "d");
+        assertSplit(CharArray.of(".ab.cd.").substring(1, -1).split('.')).containsExactly("ab", "cd");
+    }
+
+    @Test
+    public void split_by_string() {
+        assertSplit(CharArray.of("").split(".")).containsExactly("");
+        assertSplit(CharArray.of(".").split(".")).containsExactly("", "");
+        assertSplit(CharArray.of("..").split(".")).containsExactly("", "", "");
+        assertSplit(CharArray.of("a.").split(".")).containsExactly("a", "");
+        assertSplit(CharArray.of("a.b").split(".")).containsExactly("a", "b");
+        assertSplit(CharArray.of("a..b").split(".")).containsExactly("a", "", "b");
+        assertSplit(CharArray.of("ab").split(".")).containsExactly("ab");
+        assertSplit(CharArray.of("ab.").split(".")).containsExactly("ab", "");
+        assertSplit(CharArray.of(".ab").split(".")).containsExactly("", "ab");
+        assertSplit(CharArray.of("ab.cd").split(".")).containsExactly("ab", "cd");
+        assertSplit(CharArray.of("a.b.c").split(".")).containsExactly("a", "b", "c");
+
+        assertSplit(CharArray.of(".abcd.").substring(1, -1).split(".")).containsExactly("abcd");
+        assertSplit(CharArray.of(".a..d.").substring(1, -1).split(".")).containsExactly("a", "", "d");
+        assertSplit(CharArray.of(".ab.cd.").substring(1, -1).split(".")).containsExactly("ab", "cd");
+    }
+
+    @Test
+    public void split_by_string_long() {
+        assertSplit(CharArray.of("").split("---")).containsExactly("");
+        assertSplit(CharArray.of("-").split("---")).containsExactly("-");
+        assertSplit(CharArray.of("--").split("---")).containsExactly("--");
+        assertSplit(CharArray.of("---").split("---")).containsExactly("", "");
+        assertSplit(CharArray.of("----").split("---")).containsExactly("", "-");
+        assertSplit(CharArray.of("------").split("---")).containsExactly("", "", "");
+        assertSplit(CharArray.of("a---b").split("---")).containsExactly("a", "b");
+        assertSplit(CharArray.of("a---b---").split("---")).containsExactly("a", "b", "");
+        assertSplit(CharArray.of("a---b---c").split("---")).containsExactly("a", "b", "c");
+    }
+
+    @Test
+    public void split_by_native_array_long() {
+        assertSplit(CharArray.of("").split("---".toCharArray())).containsExactly("");
+        assertSplit(CharArray.of("-").split("---".toCharArray())).containsExactly("-");
+        assertSplit(CharArray.of("--").split("---".toCharArray())).containsExactly("--");
+        assertSplit(CharArray.of("---").split("---".toCharArray())).containsExactly("", "");
+        assertSplit(CharArray.of("----").split("---".toCharArray())).containsExactly("", "-");
+        assertSplit(CharArray.of("------").split("---".toCharArray())).containsExactly("", "", "");
+        assertSplit(CharArray.of("a---b").split("---".toCharArray())).containsExactly("a", "b");
+        assertSplit(CharArray.of("a---b---").split("---".toCharArray())).containsExactly("a", "b", "");
+        assertSplit(CharArray.of("a---b---c").split("---".toCharArray())).containsExactly("a", "b", "c");
+    }
+
+    @Test
+    public void split_by_array() {
+        assertSplit(CharArray.of("").split(CharArray.of("---"))).containsExactly("");
+        assertSplit(CharArray.of("-").split(CharArray.of("---"))).containsExactly("-");
+        assertSplit(CharArray.of("--").split(CharArray.of("---"))).containsExactly("--");
+        assertSplit(CharArray.of("---").split(CharArray.of("---"))).containsExactly("", "");
+        assertSplit(CharArray.of("----").split(CharArray.of("---"))).containsExactly("", "-");
+        assertSplit(CharArray.of("------").split(CharArray.of("---"))).containsExactly("", "", "");
+        assertSplit(CharArray.of("a---b").split(CharArray.of("---"))).containsExactly("a", "b");
+        assertSplit(CharArray.of("a---b---").split(CharArray.of("---"))).containsExactly("a", "b", "");
+        assertSplit(CharArray.of("a---b---c").split(CharArray.of("---"))).containsExactly("a", "b", "c");
+    }
+
+    @Test
+    public void split_by_predicate() {
+        assertSplit(CharArray.of("").split(ch -> ch == '.')).containsExactly("");
+        assertSplit(CharArray.of(".").split(ch -> ch == '.')).containsExactly("", "");
+        assertSplit(CharArray.of("..").split(ch -> ch == '.')).containsExactly("", "", "");
+        assertSplit(CharArray.of("a.").split(ch -> ch == '.')).containsExactly("a", "");
+        assertSplit(CharArray.of("a.b").split(ch -> ch == '.')).containsExactly("a", "b");
+        assertSplit(CharArray.of("a..b").split(ch -> ch == '.')).containsExactly("a", "", "b");
+        assertSplit(CharArray.of("ab").split(ch -> ch == '.')).containsExactly("ab");
+        assertSplit(CharArray.of("ab.").split(ch -> ch == '.')).containsExactly("ab", "");
+        assertSplit(CharArray.of(".ab").split(ch -> ch == '.')).containsExactly("", "ab");
+        assertSplit(CharArray.of("ab.cd").split(ch -> ch == '.')).containsExactly("ab", "cd");
+        assertSplit(CharArray.of("a.b.c").split(ch -> ch == '.')).containsExactly("a", "b", "c");
+
+        assertSplit(CharArray.of(".abcd.").substring(1, -1).split(ch -> ch == '.')).containsExactly("abcd");
+        assertSplit(CharArray.of(".a..d.").substring(1, -1).split(ch -> ch == '.')).containsExactly("a", "", "d");
+        assertSplit(CharArray.of(".ab.cd.").substring(1, -1).split(ch -> ch == '.')).containsExactly("ab", "cd");
+    }
+
+    @Test
+    public void split_by_pattern() {
+        Pattern pattern = Pattern.compile("[ _-]+");
+
+        assertSplit(CharArray.of("").split(pattern)).containsExactly("");
+        assertSplit(CharArray.of("-").split(pattern)).containsExactly("", "");
+        assertSplit(CharArray.of("____").split(pattern)).containsExactly("", "");
+
+        assertSplit(CharArray.of("abc").split(pattern)).containsExactly("abc");
+        assertSplit(CharArray.of("abc   ").split(pattern)).containsExactly("abc", "");
+        assertSplit(CharArray.of("   abc").split(pattern)).containsExactly("", "abc");
+        assertSplit(CharArray.of("   abc   ").split(pattern)).containsExactly("", "abc", "");
+
+        assertSplit(CharArray.of("a b c").split(pattern)).containsExactly("a", "b", "c");
+        assertSplit(CharArray.of("a_b_c").split(pattern)).containsExactly("a", "b", "c");
+        assertSplit(CharArray.of("a-b-c").split(pattern)).containsExactly("a", "b", "c");
+        assertSplit(CharArray.of("a----b----c").split(pattern)).containsExactly("a", "b", "c");
+    }
+
+    @Test
+    public void split_by_empty() {
+        assertThrows(AssertionError.class, () -> CharArray.of("abc").split(""));
+        assertThrows(AssertionError.class, () -> CharArray.of("abc").split("".toCharArray()));
+        assertThrows(AssertionError.class, () -> CharArray.of("abc").split(CharArray.EMPTY));
+        assertThrows(AssertionError.class, () -> CharArray.of("abc").split(Pattern.compile("")).next());
+    }
+
+    @Test
+    public void split_lines() {
+        assertSplit(CharArray.of("").lines()).containsExactly("");
+
+        assertSplit(CharArray.of("\n").lines()).containsExactly("", "");
+        assertSplit(CharArray.of("\n\n").lines()).containsExactly("", "", "");
+        assertSplit(CharArray.of("foo\nbar\n").lines()).containsExactly("foo", "bar", "");
+        assertSplit(CharArray.of("\nfoo\nbar").lines()).containsExactly("", "foo", "bar");
+        assertSplit(CharArray.of("\nfoo\nbar\n").lines()).containsExactly("", "foo", "bar", "");
+
+        assertSplit(CharArray.of("\r").lines()).containsExactly("", "");
+        assertSplit(CharArray.of("\r\r").lines()).containsExactly("", "", "");
+        assertSplit(CharArray.of("foo\rbar\r").lines()).containsExactly("foo", "bar", "");
+        assertSplit(CharArray.of("\rfoo\rbar").lines()).containsExactly("", "foo", "bar");
+        assertSplit(CharArray.of("\rfoo\rbar\r").lines()).containsExactly("", "foo", "bar", "");
+
+        assertSplit(CharArray.of("\r\n").lines()).containsExactly("", "");
+        assertSplit(CharArray.of("\r\n\r\n").lines()).containsExactly("", "", "");
+        assertSplit(CharArray.of("foo\r\nbar\r\n").lines()).containsExactly("foo", "bar", "");
+        assertSplit(CharArray.of("\r\nfoo\r\nbar").lines()).containsExactly("", "foo", "bar");
+        assertSplit(CharArray.of("\r\nfoo\r\nbar\r\n").lines()).containsExactly("", "foo", "bar", "");
+    }
+
+    private static <T> @NotNull IterableSubject assertSplit(@NotNull Iterator<T> iterator) {
+        return assertThat(BasicStreams.streamOf(iterator).map(Object::toString).toList());
+    }
+
+    /** {@link CharArray#trim} **/
 
     @Test
     public void trim_by_predicate() {
@@ -524,6 +738,8 @@ public class CharArrayTest {
         assertThat(CharArray.of("  \t\n\r").trim()).isEqualTo(CharArray.of(""));
         assertThat(CharArray.of("\nfoo bar  \t\t").trim()).isEqualTo(CharArray.of("foo bar"));
     }
+
+    /** {@link CharArray#commonPrefix} **/
 
     @Test
     public void commonPrefix() {
@@ -573,6 +789,8 @@ public class CharArrayTest {
         assertThat(CharArray.of("").isPrefixOf(CharArray.of("foo"))).isTrue();
     }
 
+    /** {@link CharArray#commonSuffix} **/
+
     @Test
     public void commonSuffix() {
         assertThat(CharArray.of("foo").commonSuffix("bar")).isEqualTo(0);
@@ -620,6 +838,8 @@ public class CharArrayTest {
         assertThat(CharArray.of("foo").isSuffixOf(CharArray.of(""))).isFalse();
         assertThat(CharArray.of("").isSuffixOf(CharArray.of("foo"))).isTrue();
     }
+
+    /** {@link CharArray#startsWith} **/
 
     @Test
     public void startsWith() {
@@ -677,6 +897,8 @@ public class CharArrayTest {
         assertThat(CharArray.of("").startsWith(' ')).isFalse();
     }
 
+    /** {@link CharArray#endsWith} **/
+
     @Test
     public void endsWith() {
         CharArray array = CharArray.of("foo");
@@ -733,6 +955,8 @@ public class CharArrayTest {
         assertThat(CharArray.of("").endsWith(' ')).isFalse();
     }
 
+    /** {@link CharArray#substring} **/
+
     @Test
     public void substring_valid() {
         assertThat(CharArray.of("foobar").substring(0, 3)).isEqualTo(CharArray.of("foo"));
@@ -767,6 +991,8 @@ public class CharArrayTest {
         assertThrows(AssertionError.class, () -> CharArray.of("foobar").substring(1, 0));
     }
 
+    /** {@link CharArray#join} **/
+
     @Test
     public void join_same_buffer() {
         CharArray array = CharArray.of("foobar");
@@ -793,6 +1019,8 @@ public class CharArrayTest {
         assertThat(array).isEqualTo(join);
     }
 
+    /** {@link CharArray#removePrefix} **/
+
     @Test
     public void removePrefix_array() {
         CharArray foobar = CharArray.of("foobar");
@@ -814,16 +1042,36 @@ public class CharArrayTest {
     }
 
     @Test
-    public void removePrefix_str() {
+    public void removePrefix_char() {
+        assertThat(CharArray.of("foobar").removePrefix('f')).isEqualTo(CharArray.of("oobar"));
+        assertThat(CharArray.of("foobar").removePrefix('o')).isEqualTo(CharArray.of("foobar"));
+    }
+
+    @Test
+    public void removePrefix_string() {
         assertThat(CharArray.of("foobar").removePrefix("")).isEqualTo(CharArray.of("foobar"));
         assertThat(CharArray.of("foobar").removePrefix("foo")).isEqualTo(CharArray.of("bar"));
         assertThat(CharArray.of("foobar").removePrefix("bar")).isEqualTo(CharArray.of("foobar"));
         assertThat(CharArray.of("foobar").removePrefix("fooba")).isEqualTo(CharArray.of("r"));
         assertThat(CharArray.of("foobar").removePrefix("foobar")).isEqualTo(CharArray.of(""));
         assertThat(CharArray.of("foobar").removePrefix("foobarbaz")).isEqualTo(CharArray.of("foobar"));
-        assertThat(CharArray.of("foobar").removePrefix('f')).isEqualTo(CharArray.of("oobar"));
-        assertThat(CharArray.of("foobar").removePrefix('o')).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removePrefix("f")).isEqualTo(CharArray.of("oobar"));
+        assertThat(CharArray.of("foobar").removePrefix("o")).isEqualTo(CharArray.of("foobar"));
     }
+
+    @Test
+    public void removePrefix_native_array() {
+        assertThat(CharArray.of("foobar").removePrefix("".toCharArray())).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removePrefix("foo".toCharArray())).isEqualTo(CharArray.of("bar"));
+        assertThat(CharArray.of("foobar").removePrefix("bar".toCharArray())).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removePrefix("fooba".toCharArray())).isEqualTo(CharArray.of("r"));
+        assertThat(CharArray.of("foobar").removePrefix("foobar".toCharArray())).isEqualTo(CharArray.of(""));
+        assertThat(CharArray.of("foobar").removePrefix("foobarbaz".toCharArray())).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removePrefix("f".toCharArray())).isEqualTo(CharArray.of("oobar"));
+        assertThat(CharArray.of("foobar").removePrefix("o".toCharArray())).isEqualTo(CharArray.of("foobar"));
+    }
+
+    /** {@link CharArray#removeSuffix} **/
 
     @Test
     public void removeSuffix_array() {
@@ -846,16 +1094,36 @@ public class CharArrayTest {
     }
 
     @Test
-    public void removeSuffix_str() {
+    public void removeSuffix_char() {
+        assertThat(CharArray.of("foobar").removeSuffix('r')).isEqualTo(CharArray.of("fooba"));
+        assertThat(CharArray.of("foobar").removeSuffix('a')).isEqualTo(CharArray.of("foobar"));
+    }
+
+    @Test
+    public void removeSuffix_string() {
         assertThat(CharArray.of("foobar").removeSuffix("")).isEqualTo(CharArray.of("foobar"));
         assertThat(CharArray.of("foobar").removeSuffix("bar")).isEqualTo(CharArray.of("foo"));
         assertThat(CharArray.of("foobar").removeSuffix("foo")).isEqualTo(CharArray.of("foobar"));
         assertThat(CharArray.of("foobar").removeSuffix("oobar")).isEqualTo(CharArray.of("f"));
         assertThat(CharArray.of("foobar").removeSuffix("foobar")).isEqualTo(CharArray.of(""));
         assertThat(CharArray.of("foobar").removeSuffix("foofoobar")).isEqualTo(CharArray.of("foobar"));
-        assertThat(CharArray.of("foobar").removeSuffix('r')).isEqualTo(CharArray.of("fooba"));
-        assertThat(CharArray.of("foobar").removeSuffix('a')).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removeSuffix("r")).isEqualTo(CharArray.of("fooba"));
+        assertThat(CharArray.of("foobar").removeSuffix("a")).isEqualTo(CharArray.of("foobar"));
     }
+
+    @Test
+    public void removeSuffix_native_array() {
+        assertThat(CharArray.of("foobar").removeSuffix("".toCharArray())).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removeSuffix("bar".toCharArray())).isEqualTo(CharArray.of("foo"));
+        assertThat(CharArray.of("foobar").removeSuffix("foo".toCharArray())).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removeSuffix("oobar".toCharArray())).isEqualTo(CharArray.of("f"));
+        assertThat(CharArray.of("foobar").removeSuffix("foobar".toCharArray())).isEqualTo(CharArray.of(""));
+        assertThat(CharArray.of("foobar").removeSuffix("foofoobar".toCharArray())).isEqualTo(CharArray.of("foobar"));
+        assertThat(CharArray.of("foobar").removeSuffix("r".toCharArray())).isEqualTo(CharArray.of("fooba"));
+        assertThat(CharArray.of("foobar").removeSuffix("a".toCharArray())).isEqualTo(CharArray.of("foobar"));
+    }
+
+    /** {@link CharArray#chars()} **/
 
     @Test
     public void chars() {
@@ -875,6 +1143,8 @@ public class CharArrayTest {
         assertThat(array).isEqualTo(new int[] { 111, 111 });
     }
 
+    /** {@link CharArray#codePoints()} **/
+
     @Test
     public void codepoints() {
         int[] array = CharArray.of("foobar").codePoints().toArray();
@@ -892,6 +1162,8 @@ public class CharArrayTest {
         int[] array = CharArray.of("foobar", 1, 3).codePoints().toArray();
         assertThat(array).isEqualTo(new int[] { 111, 111 });
     }
+
+    /** {@link CharArray#compareTo} **/
 
     @Test
     public void compareTo_array_simple() {
@@ -925,6 +1197,8 @@ public class CharArrayTest {
         assertThat(CharArray.of("").compareTo("foo")).isAtMost(-1);
     }
 
+    /** {@link CharArray#contentEquals} **/
+
     @Test
     public void contentEquals_char() {
         assertThat(CharArray.of("").contentEquals('a')).isFalse();
@@ -950,6 +1224,24 @@ public class CharArrayTest {
     }
 
     @Test
+    public void contentEquals_native_array() {
+        assertThat(CharArray.of("").contentEquals("".toCharArray())).isTrue();
+        assertThat(CharArray.of("").contentEquals("foo".toCharArray())).isFalse();
+
+        assertThat(CharArray.of("a").contentEquals("".toCharArray())).isFalse();
+        assertThat(CharArray.of("a").contentEquals("a".toCharArray())).isTrue();
+        assertThat(CharArray.of("a").contentEquals("A".toCharArray())).isFalse();
+        assertThat(CharArray.of("a").contentEquals("foo".toCharArray())).isFalse();
+
+        assertThat(CharArray.of("foo").contentEquals("".toCharArray())).isFalse();
+        assertThat(CharArray.of("foo").contentEquals("a".toCharArray())).isFalse();
+        assertThat(CharArray.of("foo").contentEquals("foo".toCharArray())).isTrue();
+        assertThat(CharArray.of("foo").contentEquals("Foo".toCharArray())).isFalse();
+    }
+
+    /** {@link CharArray#contentEqualsIgnoreCase(CharSequence)} **/
+
+    @Test
     public void contentEqualsIgnoreCase() {
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("foo")).isTrue();
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("FOO")).isTrue();
@@ -962,6 +1254,8 @@ public class CharArrayTest {
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("fof")).isFalse();
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("")).isFalse();
     }
+
+    /** Test utils **/
 
     // Checks whether @NotNull runtime checks are in the byte-code:
     // IntelliJ compiler modifies the byte-code respecting @NotNull arguments, Gradle javac does not.
