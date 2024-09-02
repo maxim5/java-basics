@@ -1,10 +1,8 @@
 package io.spbx.util.base;
 
-import io.spbx.util.testing.AssertFailure;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.junit.jupiter.api.Assertions;
 
 import java.util.Arrays;
 
@@ -30,6 +28,11 @@ public class AssertTuples {
     @CheckReturnValue
     public static <U, V> @NotNull OneOfSubject<U, V> assertOneOf(@NotNull OneOf<U, V> oneOf) {
         return new OneOfSubject<>(oneOf);
+    }
+
+    @CheckReturnValue
+    public static <U, V, W> @NotNull OneOfThreeSubject<U, V, W> assertOneOf(@NotNull OneOfThree<U, V, W> oneOfThree) {
+        return new OneOfThreeSubject<>(oneOfThree);
     }
 
     public record PairSubject<U, V>(@NotNull Pair<U, V> pair) {
@@ -107,6 +110,35 @@ public class AssertTuples {
 
         public void holdsSecond(@NotNull Object second) {
             holds(null, second);
+        }
+    }
+
+    public record OneOfThreeSubject<U, V, W>(@NotNull OneOfThree<U, V, W> oneOfThree) {
+        public void holds(@Nullable Object first, @Nullable Object second, @Nullable Object third) {
+            assertThat(oneOfThree.hasFirst()).isEqualTo(first != null);
+            assertThat(oneOfThree.hasSecond()).isEqualTo(second != null);
+            assertThat(oneOfThree.hasThird()).isEqualTo(third != null);
+            assertThat(oneOfThree.first()).isEqualTo(first);
+            assertThat(oneOfThree.second()).isEqualTo(second);
+            assertThat(oneOfThree.third()).isEqualTo(third);
+            assertThat(oneOfThree.getCase())
+                .isEqualTo(first != null ? OneOfThree.Which.FIRST : second != null ? OneOfThree.Which.SECOND : OneOfThree.Which.THIRD);
+
+            assertThat(oneOfThree).isEqualTo(OneOfThree.of(first, second, third));
+            assertThat(oneOfThree.hashCode()).isEqualTo(OneOfThree.of(first, second, third).hashCode());
+            assertThat(oneOfThree.toString()).isEqualTo(OneOfThree.of(first, second, third).toString());
+        }
+
+        public void holdsFirst(@NotNull Object first) {
+            holds(first, null, null);
+        }
+
+        public void holdsSecond(@NotNull Object second) {
+            holds(null, second, null);
+        }
+
+        public void holdsThird(@NotNull Object third) {
+            holds(null, null, third);
         }
     }
 }

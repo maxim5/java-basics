@@ -438,6 +438,7 @@ public class Int128Test {
     /** {@link Int128#negate()}, {@link Int128#and}, {@link Int128#andNot}, {@link Int128#or}, {@link Int128#xor} */
 
     private static final UnOpTester<Int128, BigInteger> NEGATE = test(Int128::negate, BigInteger::negate);
+    private static final UnOpTester<Int128, BigInteger> NOT = test(Int128::not, BigInteger::not);
     private static final BiOpTester<Int128, BigInteger> AND = test(Int128::and, BigInteger::and).noFitIn128();
     private static final BiOpTester<Int128, BigInteger> AND_NOT = test(Int128::andNot, BigInteger::andNot).noFitIn128();
     private static final BiOpTester<Int128, BigInteger> OR = test(Int128::or, BigInteger::or).noFitIn128();
@@ -454,6 +455,11 @@ public class Int128Test {
     @Test
     public void negate_ultimate() {
         NEGATE.assertMatchAll(BIG_INTEGERS);
+    }
+
+    @Test
+    public void not_ultimate() {
+        NOT.assertMatchAll(BIG_INTEGERS);
     }
 
     @Test

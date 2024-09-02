@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.spbx"
-version = "0.1.2"
+version = "0.1.3"
 
 tasks.wrapper {
     gradleVersion = "8.10"
@@ -111,7 +111,6 @@ publishing {
             groupId = project.group.toString()
             artifactId = "basics"
             version = project.version.toString()
-
             from(components["java"])
         }
     }

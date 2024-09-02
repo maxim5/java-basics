@@ -40,6 +40,10 @@ public class GuavaClasspathScanner implements ClasspathScanner {
         return fromClassLoader(ClassLoader.getSystemClassLoader());
     }
 
+    public static @NotNull ClasspathScanner fromDefaultClassLoader() {
+        return fromClassLoader(GuavaClasspathScanner.class.getClassLoader());
+    }
+
     @Override
     public void scan(@NotNull ClassNamePredicate classNamePredicate,
                      @NotNull ClassPredicate classPredicate,

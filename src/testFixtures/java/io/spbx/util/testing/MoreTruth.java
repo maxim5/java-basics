@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -39,6 +40,12 @@ public class MoreTruth {
                 return new MoreStringSubject(metadata, str);
             }
         }).that();
+    }
+
+    @CheckReturnValue
+    public static <T> @NotNull IterableSubject assertThat(@Nullable Iterator<T> iterator) {
+        Iterable<T> iterable = iterator == null ? null : () -> iterator;
+        return Truth.assertThat(iterable);
     }
 
     @CheckReturnValue

@@ -91,7 +91,7 @@ public class BasicSplit {
             assert !skipEmpty : newInternalError("Both `exact=%s` and `skipEmpty` are set: `%s`", exact, input);
             assert skipRestAfterLimit : newInternalError("Both `exact=%s` and `includeRestAfterLimit` are set: `%s`", exact, input);
 
-            String[] split = pattern.split(input, Integer.MAX_VALUE);
+            String[] split = pattern.split(input, -1);
             if (split.length == exact) {
                 return BasicStreams.streamOf(split);
             }
@@ -110,7 +110,7 @@ public class BasicSplit {
 
         int limitForCall;
         if (skipRestAfterLimit) {
-            limitForCall = Integer.MAX_VALUE;
+            limitForCall = -1;
         } else {
             assert limit >= 0 : newInternalError("If `includeRestAfterLimit` is set, `limit` must as well: `%s`", input);
             limitForCall = limit + 1;

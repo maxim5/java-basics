@@ -7,11 +7,10 @@ import javax.annotation.processing.Generated;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
 import java.util.function.Consumer;
 
 /**
@@ -21,7 +20,7 @@ import java.util.function.Consumer;
  * {@code buf.at(buf.length()-2)}.
  */
 @NegativeIndexingSupported
-@Generated(value = "Base$Type$Buf.java", date = "2024-08-25T16:01:31.023082Z")
+@Generated(value = "Base$Type$Buf.java", date = "2024-08-31T22:08:33.632214Z")
 public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf implements Serializable {
     protected final byte[] bytes;
     protected /* final */ int start;
@@ -147,6 +146,14 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
                Arrays.equals(bytes, end - suffix.length(), end, suffix.bytes, suffix.start, suffix.end);
     }
 
+    public boolean startsWith(byte[] prefix) {
+        return length() >= prefix.length && Arrays.equals(bytes, start, start + prefix.length, prefix, 0, prefix.length);
+    }
+
+    public boolean endsWith(byte[] suffix) {
+        return length() >= suffix.length && Arrays.equals(bytes, end - suffix.length, end, suffix, 0, suffix.length);
+    }
+
     public boolean startsWith(byte val) {
         return isNotEmpty() && bytes[start] == val;
     }
@@ -221,6 +228,22 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return def;
     }
 
+    /* Index of: `byte[]` */
+
+    public int indexOf(byte[] array) {
+        return this.indexOf(array, 0, -1);
+    }
+
+    @NegativeIndexingSupported
+    public int indexOf(byte[] array, int from) {
+        return this.indexOf(array, from, -1);
+    }
+
+    @NegativeIndexingSupported
+    public int indexOf(byte[] array, int from, int def) {
+        return this.indexOf(_wrap(array, 0, array.length), from, def);
+    }
+
     /* Last index of: `IntPredicate` */
 
     public int lastIndexOf(@NotNull IntPredicate check) {
@@ -287,6 +310,22 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return def;
     }
 
+    /* Last index of: `byte[]` */
+
+    public int lastIndexOf(byte[] array) {
+        return this.lastIndexOf(array, length() - 1, -1);
+    }
+
+    @NegativeIndexingSupported
+    public int lastIndexOf(byte[] array, int from) {
+        return this.lastIndexOf(array, from, -1);
+    }
+
+    @NegativeIndexingSupported
+    public int lastIndexOf(byte[] array, int from, int def) {
+        return this.lastIndexOf(_wrap(array, 0, array.length), from, def);
+    }
+
     /* Contains */
 
     public boolean contains(byte val) {
@@ -297,26 +336,78 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return indexOf(array) >= 0;
     }
 
+    public boolean contains(byte[] val) {
+        return indexOf(val) >= 0;
+    }
+
     /* Split */
 
+    public @NotNull Iterator<B> split(byte val) {
+        return split(start -> indexOf(val, start), 1);
+    }
+
+    public @NotNull Iterator<B> split(@NotNull B array) {
+        assert array.isNotEmpty() : "Separator is empty";
+        return split(start -> indexOf(array, start), array.length());
+    }
+
+    public @NotNull Iterator<B> split(byte[] val) {
+        assert val.length > 0 : "Separator is empty";
+        return split(start -> indexOf(val, start), val.length);
+    }
+
     public void split(byte val, @NotNull Consumer<B> callback) {
+        split(start -> indexOf(val, start), callback, 1);
+    }
+
+    public void split(@NotNull B array, @NotNull Consumer<B> callback) {
+        assert array.isNotEmpty() : "Separator is empty";
+        split(start -> indexOf(array, start), callback, array.length());
+    }
+
+    public void split(byte[] val, @NotNull Consumer<B> callback) {
+        assert val.length > 0 : "Separator is empty";
+        split(start -> indexOf(val, start), callback, val.length);
+    }
+
+    public @NotNull Iterator<B> split(@NotNull IntPredicate predicate) {
+        return split(start -> indexOf(predicate, start), 1);
+    }
+
+    public void split(@NotNull IntPredicate predicate, @NotNull Consumer<B> callback) {
+        split(start -> indexOf(predicate, start), callback, 1);
+    }
+
+    protected @NotNull Iterator<B> split(@NotNull IntUnaryOperator indexOf, int separatorLength) {
+        return new Iterator<>() {
+            private final int len = length();
+            private int index = 0;
+            @Override public boolean hasNext() {
+                return index <= len;
+            }
+            @Override public B next() {
+                assert index <= len : "No more elements to iterate";
+                int next = indexOf.applyAsInt(index);
+                next = next < 0 ? len : next;
+                B buf = _wrap(bytes, start + index, start + next);
+                index = next + separatorLength;
+                return buf;
+            }
+        };
+    }
+
+    protected void split(@NotNull IntUnaryOperator indexOf, @NotNull Consumer<B> callback, int separatorLength) {
         int start = 0;
         while (true) {
-            int end = indexOf(val, start);
-            if (end == -1) {
+            int index = indexOf.applyAsInt(start);
+            if (index == -1) {
                 callback.accept(_wrap(bytes, this.start + start, this.end));
                 return;
             } else {
-                callback.accept(_wrap(bytes, this.start + start, this.start + end));
-                start = end + 1;
+                callback.accept(_wrap(bytes, this.start + start, this.start + index));
+                start = index + separatorLength;
             }
         }
-    }
-
-    public @NotNull List<B> split(byte val) {
-        List<B> list = new ArrayList<>();
-        split(val, list::add);
-        return list;
     }
 
     /* Trim */
@@ -385,6 +476,10 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return startsWith(val) ? _wrap(bytes, start + 1, end) : _this();
     }
 
+    public @NotNull B removePrefix(byte[] prefix) {
+        return startsWith(prefix) ? _wrap(bytes, start + prefix.length, end) : _this();
+    }
+
     /* Remove suffix */
 
     public @NotNull B removeSuffix(@NotNull B suffix) {
@@ -394,6 +489,10 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
 
     public @NotNull B removeSuffix(byte val) {
         return endsWith(val) ? _wrap(bytes, start, end - 1) : _this();
+    }
+
+    public @NotNull B removeSuffix(byte[] prefix) {
+        return endsWith(prefix) ? _wrap(bytes, start, end - prefix.length) : _this();
     }
 
     /* Equality check */
@@ -406,9 +505,57 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return length() == 1 && at(0) == val;
     }
 
+    public boolean contentEquals(byte[] that) {
+        return Arrays.equals(bytes, start, end, that, 0, that.length);
+    }
+
     /* Hash code */
 
-    protected int hashCode(int seed, int l, int r) {
+    // Based on the shift-add-xor class of string hashing functions
+    // cf. Ramakrishna and Zobel,
+    //     "Performance in Practice of String Hashing Functions"
+    //
+    // Values left=5, right=2 work well for ASCII inputs.
+
+    protected static final int HASH_SEED = 31;
+    protected static final int HASH_LEFT = 5;
+    protected static final int HASH_RIGHT = 2;
+
+    public static int hashCode(byte[] bytes) {
+        return hashCode(bytes, HASH_SEED, HASH_LEFT, HASH_RIGHT);
+    }
+
+    public static int hashCode(byte[] bytes, int start, int end) {
+        return hashCode(bytes, start, end, HASH_SEED, HASH_LEFT, HASH_RIGHT);
+    }
+
+    public static int hashCode(byte[] bytes, int start, int end, @NotNull ByteFunc func) {
+        return hashCode(bytes, start, end, func, HASH_SEED, HASH_LEFT, HASH_RIGHT);
+    }
+
+    public static <T> int hashCode(@NotNull T instance, int len, @NotNull ByteAtFunction<T> byteAt) {
+        return hashCode(instance, len, byteAt, HASH_SEED, HASH_LEFT, HASH_RIGHT);
+    }
+
+    // FIX: Primitive-candidate
+    public interface ByteFunc {
+        byte apply(byte val);
+    }
+
+    // FIX: Primitive-candidate
+    public interface ByteAtFunction<T> {
+        int byteAt(@NotNull T instance, int index);
+    }
+
+    protected static int hashCode(byte[] bytes, int seed, int l, int r) {
+        int hash = seed;
+        for (byte val : bytes) {
+            hash = hash ^ ((hash << l) + (hash >> r) + val);
+        }
+        return hash;
+    }
+
+    protected static int hashCode(byte[] bytes, int start, int end, int seed, int l, int r) {
         int hash = seed;
         for (int i = start; i < end; ++i) {
             hash = hash ^ ((hash << l) + (hash >> r) + bytes[i]);
@@ -416,7 +563,7 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return hash;
     }
 
-    protected int hashCode(int seed, int l, int r, @NotNull ByteFunc func) {
+    protected static int hashCode(byte[] bytes, int start, int end, @NotNull ByteFunc func, int seed, int l, int r) {
         int hash = seed;
         for (int i = start; i < end; ++i) {
             hash = hash ^ ((hash << l) + (hash >> r) + func.apply(bytes[i]));
@@ -424,9 +571,13 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return hash;
     }
 
-    // FIX: Primitive-candidate
-    protected interface ByteFunc {
-        byte apply(byte val);
+    protected static <T> int hashCode(@NotNull T instance, int len, @NotNull ByteAtFunction<T> byteAtFunc,
+                                      int seed, int l, int r) {
+        int hash = seed;
+        for (int i = 0; i < len; ++i) {
+            hash = hash ^ ((hash << l) + (hash >> r) + byteAtFunc.byteAt(instance, i));
+        }
+        return hash;
     }
 
     /* Helper */
