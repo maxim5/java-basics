@@ -1,8 +1,9 @@
 package io.spbx.util.lazy;
 
-import com.google.errorprone.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.concurrent.ThreadSafe;
 
 @ThreadSafe
 public class AtomicLazyRecycle<T> extends AtomicLazyInit<T> implements LazyRecycle<T> {

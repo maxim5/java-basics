@@ -15,7 +15,6 @@ import io.spbx.util.text.TextExtractor.MoveIntoRegion;
 import io.spbx.util.text.TextExtractor.MoveTo;
 import io.spbx.util.text.TextExtractor.RegionMoveTo;
 import io.spbx.util.text.TextExtractor.Sanitizer;
-import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import java.util.regex.Pattern;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spbx.util.testing.ext.FluentLoggingCapture.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("slow")
@@ -390,9 +390,11 @@ public class TextExtractorTest {
         TextExtractor extractor = TextExtractor.of(
             TextExtractor.captureBetween("<body>", "</body>")
         );
-        ExtractedMap map = extractor.extract("  <body id='id'>TheBody</body>");
-        assertExtractedMap(map).toCaptured().isEmpty();
-        assertThat(LOGGING.logRecordsContaining("start mark not found `<body>`")).isNotEmpty();
+        LOGGING.withCustomLog4jLevel(WARN, () -> {
+            ExtractedMap map = extractor.extract("  <body id='id'>TheBody</body>");
+            assertExtractedMap(map).toCaptured().isEmpty();
+            assertThat(LOGGING.logRecordsContaining("start mark not found `<body>`")).isNotEmpty();
+        });
     }
 
     @Test
@@ -408,9 +410,11 @@ public class TextExtractorTest {
         TextExtractor extractor = TextExtractor.of(
             TextExtractor.captureBetween("<body>", "</body>")
         );
-        ExtractedMap map = extractor.extract("  <body>TheBody</body");
-        assertExtractedMap(map).toCaptured().isEmpty();
-        assertThat(LOGGING.logRecordsContaining("end mark not found `</body>`")).isNotEmpty();
+        LOGGING.withCustomLog4jLevel(WARN, () -> {
+            ExtractedMap map = extractor.extract("  <body>TheBody</body");
+            assertExtractedMap(map).toCaptured().isEmpty();
+            assertThat(LOGGING.logRecordsContaining("end mark not found `</body>`")).isNotEmpty();
+        });
     }
 
     @Test
@@ -595,7 +599,7 @@ public class TextExtractorTest {
         TextExtractor extractor = TextExtractor.of(
             TextExtractor.skipTo("a").orElseIgnore()
         );
-        LOGGING.withCustomLog4jLevel(Level.INFO, Level.TRACE, () -> {
+        LOGGING.withCustomLog4jLevel(TRACE, () -> {
             extractor.extract("");
             assertThat(LOGGING.logRecordsContaining("mark not found `a`")).isEmpty();
         });
@@ -606,7 +610,7 @@ public class TextExtractorTest {
         TextExtractor extractor = TextExtractor.of(
             TextExtractor.skipTo("a").orElse(Fallback.LOG_FINE)
         );
-        LOGGING.withCustomLog4jLevel(Level.INFO, Level.TRACE, () -> {
+        LOGGING.withCustomLog4jLevel(TRACE, () -> {
             extractor.extract("");
             assertThat(LOGGING.logRecordsContaining("mark not found `a`")).isNotEmpty();
         });
@@ -617,7 +621,7 @@ public class TextExtractorTest {
         TextExtractor extractor = TextExtractor.of(
             TextExtractor.skipTo("a").orElse(Fallback.LOG_INFO)
         );
-        LOGGING.withCustomLog4jLevel(Level.INFO, Level.INFO, () -> {
+        LOGGING.withCustomLog4jLevel(INFO, () -> {
             extractor.extract("");
             assertThat(LOGGING.logRecordsContaining("mark not found `a`")).isNotEmpty();
         });
@@ -629,7 +633,7 @@ public class TextExtractorTest {
             TextExtractor.skipTo("a").orElse(Fallback.LOG_WARN)
         );
         extractor.extract("");
-        LOGGING.withCustomLog4jLevel(Level.INFO, Level.WARN, () -> {
+        LOGGING.withCustomLog4jLevel(WARN, () -> {
             extractor.extract("");
             assertThat(LOGGING.logRecordsContaining("mark not found `a`")).isNotEmpty();
         });
@@ -640,7 +644,7 @@ public class TextExtractorTest {
         TextExtractor extractor = TextExtractor.of(
             TextExtractor.skipTo("a").orElse(Fallback.LOG_SEVERE)
         );
-        LOGGING.withCustomLog4jLevel(Level.INFO, Level.ERROR, () -> {
+        LOGGING.withCustomLog4jLevel(ERROR, () -> {
             extractor.extract("");
             assertThat(LOGGING.logRecordsContaining("mark not found `a`")).isNotEmpty();
         });

@@ -11,7 +11,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.TestingBytes.asByteBuf;
 import static io.spbx.util.testing.TestingBytes.assertBytes;
 
-
 public class BasicByteBufsTest {
     public static final byte DASH = (byte) '-';
     public static final byte UNDER = (byte) '_';

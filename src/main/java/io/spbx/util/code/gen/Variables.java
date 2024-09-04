@@ -2,7 +2,6 @@ package io.spbx.util.code.gen;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.Immutable;
-import io.spbx.util.base.BasicExceptions;
 import io.spbx.util.base.BasicStrings;
 import io.spbx.util.collect.BasicMaps;
 import io.spbx.util.collect.Streamer;
@@ -11,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+import static io.spbx.util.base.BasicExceptions.runOnlyInDev;
+
 @Immutable
 public class Variables {
     public static final Variables EMPTY = Variables.of(ImmutableMap.of());
@@ -18,7 +19,7 @@ public class Variables {
     private final @NotNull ImmutableMap<String, String> map;
 
     private Variables(@NotNull ImmutableMap<String, String> map) {
-        assert BasicExceptions.runOnlyInDev(() -> {
+        assert runOnlyInDev(() -> {
             map.forEach((key, val) -> {
                 assert key.startsWith("$") : "Invalid variable name. Must start with a `$`: " + key;
             });

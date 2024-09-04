@@ -1,8 +1,8 @@
 package io.spbx.util.lazy;
 
-import com.google.errorprone.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 

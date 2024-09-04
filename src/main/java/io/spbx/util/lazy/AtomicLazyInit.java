@@ -1,9 +1,9 @@
 package io.spbx.util.lazy;
 
-import com.google.errorprone.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
