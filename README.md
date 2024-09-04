@@ -140,7 +140,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.maxim5:java-basics:0.1.3")
+    implementation("com.github.maxim5:java-basics:0.1.4")
 }
 ```
 
