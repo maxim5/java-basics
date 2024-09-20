@@ -13,7 +13,7 @@ import java.util.function.ToLongFunction;
  * @link <a href="https://kotlinlang.org/docs/scope-functions.html">Kotlin Scope Functions</a>
  * @see ScopeFunctions
  */
-@Generated(value = "$Type$ScopeFunctions.java", date = "2024-09-18T16:02:26.720074721Z")
+@Generated(value = "$Type$ScopeFunctions.java", date = "2024-09-20T11:07:11.307434954Z")
 public class LongScopeFunctions {
     public static long alsoApply(long instance, @NotNull LongConsumer action) {
         action.accept(instance);

@@ -11,7 +11,7 @@ import java.util.function.IntPredicate;
  *
  * @see Consumers
  */
-@Generated(value = "$Type$Consumers.java", date = "2024-09-18T16:02:26.716685443Z")
+@Generated(value = "$Type$Consumers.java", date = "2024-09-20T11:07:11.299179299Z")
 public class IntConsumers {
     public static @NotNull IntConsumer chain(@NotNull IntPredicate p, @NotNull IntConsumer c) {
         return t -> {

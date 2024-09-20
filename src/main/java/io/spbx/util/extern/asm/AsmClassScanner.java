@@ -1,5 +1,6 @@
 package io.spbx.util.extern.asm;
 
+import io.spbx.util.base.Unchecked;
 import io.spbx.util.rt.RuntimeRequirement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,16 +10,19 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import static io.spbx.util.base.Unchecked.Suppliers.runQuietlyOrNull;
 import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
 import static io.spbx.util.collect.BasicIterables.newMutableList;
 import static io.spbx.util.func.IntPredicates.equalTo;
 import static io.spbx.util.func.Predicates.equalTo;
+import static java.util.Objects.requireNonNull;
 
 public class AsmClassScanner {
     static {
@@ -53,26 +57,38 @@ public class AsmClassScanner {
         return new AsmClassScanner(runRethrow(() -> new ClassReader(input)));
     }
 
+    public static @NotNull AsmClassScanner of(@NotNull ClassLoader loader, @NotNull String className) {
+        try (InputStream input = loader.getResourceAsStream(toResourceName(className))) {
+            return new AsmClassScanner(new ClassReader(requireNonNull(input, () -> "Class not found: " + className)));
+        } catch (IOException e) {
+            return Unchecked.rethrow(e);
+        }
+    }
+
     public static class IfSupportedOrNull {
         public static @Nullable AsmClassScanner of(@NotNull Class<?> klass) {
             return IfSupportedOrNull.of(klass.getName());
         }
 
         public static @Nullable AsmClassScanner of(@NotNull String className) {
-            try {
-                return new AsmClassScanner(new ClassReader(className));
-            } catch (Throwable e) {
-                return null;
-            }
+            return runQuietlyOrNull(() -> new AsmClassScanner(new ClassReader(className)));
         }
 
         public static @Nullable AsmClassScanner of(@NotNull InputStream input) {
-            try {
-                return new AsmClassScanner(new ClassReader(input));
+            return runQuietlyOrNull(() -> new AsmClassScanner(new ClassReader(input)));
+        }
+
+        public static @Nullable AsmClassScanner of(@NotNull ClassLoader loader, @NotNull String className) {
+            try (InputStream input = loader.getResourceAsStream(toResourceName(className))) {
+                return input != null ? new AsmClassScanner(new ClassReader(input)) : null;
             } catch (Throwable e) {
                 return null;
             }
         }
+    }
+
+    private static @NotNull String toResourceName(@NotNull String className) {
+        return className.replace('.', '/') + ".class";
     }
 
     public @NotNull AsmClassScanner with(@NotNull Api api) {

@@ -20,7 +20,7 @@ import java.util.function.Consumer;
  * {@code buf.at(buf.length()-2)}.
  */
 @NegativeIndexingSupported
-@Generated(value = "Base$Type$Buf.java", date = "2024-09-18T16:02:05.411025283Z")
+@Generated(value = "Base$Type$Buf.java", date = "2024-09-20T11:06:19.295010037Z")
 public abstract class BaseCharBuf<B extends BaseCharBuf> extends BaseBuf implements Comparable<B>, Serializable {
     protected final char[] chars;
     protected /* final */ int start;

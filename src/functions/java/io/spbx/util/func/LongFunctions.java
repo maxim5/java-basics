@@ -11,7 +11,7 @@ import java.util.function.LongFunction;
  *
  * @see Functions
  */
-@Generated(value = "$Type$Functions.java", date = "2024-09-18T16:02:26.718445406Z")
+@Generated(value = "$Type$Functions.java", date = "2024-09-20T11:07:11.302983713Z")
 public class LongFunctions {
     public static <R> @NotNull LongFunction<R> constant(R value) {
         return t -> value;

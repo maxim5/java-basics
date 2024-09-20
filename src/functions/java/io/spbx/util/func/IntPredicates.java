@@ -11,7 +11,7 @@ import java.util.function.IntPredicate;
  *
  * @see Predicates
  */
-@Generated(value = "$Type$Predicates.java", date = "2024-09-18T16:02:26.713475257Z")
+@Generated(value = "$Type$Predicates.java", date = "2024-09-20T11:07:11.293556362Z")
 public class IntPredicates {
     public static final IntPredicate TRUE = t -> true;
     public static final IntPredicate FALSE = t -> false;

@@ -68,6 +68,13 @@ public class Unchecked {
                 Unchecked.rethrow(e);
             }
         }
+
+        public static <E extends Throwable> void runQuietly(@NotNull ThrowRunnable<E> action) {
+            try {
+                action.run();
+            } catch (Throwable ignore) {
+            }
+        }
     }
 
     public static class Consumers {
@@ -119,6 +126,18 @@ public class Unchecked {
                 return Unchecked.rethrow(e);
             }
         }
+
+        public static <T, E extends Throwable> T runQuietlyOrDefault(@NotNull ThrowSupplier<T, E> action, T def) {
+            try {
+                return action.get();
+            } catch (Throwable e) {
+                return def;
+            }
+        }
+
+        public static <T, E extends Throwable> T runQuietlyOrNull(@NotNull ThrowSupplier<T, E> action) {
+            return runQuietlyOrDefault(action, null);
+        }
     }
 
     public static class IntSuppliers {
@@ -131,6 +150,18 @@ public class Unchecked {
                 return Unchecked.rethrow(e);
             }
         }
+
+        public static <E extends Throwable> int runQuietlyOrDefault(@NotNull ThrowIntSupplier<E> action, int def) {
+            try {
+                return action.getAsInt();
+            } catch (Throwable e) {
+                return def;
+            }
+        }
+
+        public static <E extends Throwable> int runQuietly(@NotNull ThrowIntSupplier<E> action) {
+            return runQuietlyOrDefault(action, 0);
+        }
     }
 
     public static class LongSuppliers {
@@ -142,6 +173,18 @@ public class Unchecked {
             } catch (Throwable e) {
                 return Unchecked.rethrow(e);
             }
+        }
+
+        public static <E extends Throwable> long runQuietlyOrDefault(@NotNull ThrowLongSupplier<E> action, long def) {
+            try {
+                return action.getAsLong();
+            } catch (Throwable e) {
+                return def;
+            }
+        }
+
+        public static <E extends Throwable> long runQuietly(@NotNull ThrowLongSupplier<E> action) {
+            return runQuietlyOrDefault(action, 0);
         }
     }
 
@@ -157,10 +200,24 @@ public class Unchecked {
                 }
             };
         }
+
+        public static <T, R, E extends Throwable>
+                @NotNull Function<T, R> runQuietlyOrDefault(@NotNull ThrowFunction<T, R, E> func, R def) {
+            return value -> {
+                try {
+                    return func.apply(value);
+                } catch (Throwable e) {
+                    return def;
+                }
+            };
+        }
+
+        public static <T, R, E extends Throwable> @NotNull Function<T, R> runQuietlyOrNull(@NotNull ThrowFunction<T, R, E> func) {
+            return runQuietlyOrDefault(func, null);
+        }
     }
 
     public static class Guava {
-        @SuppressWarnings("Guava")
         public static @NotNull <T, R, E extends Throwable>
                 com.google.common.base.Function<T, R> rethrow(@NotNull ThrowFunction<T, R, E> func) {
             return value -> {
@@ -172,6 +229,22 @@ public class Unchecked {
                     return Unchecked.rethrow(e);
                 }
             };
+        }
+
+        public static @NotNull <T, R, E extends Throwable>
+                com.google.common.base.Function<T, R> runQuietlyOrDefault(@NotNull ThrowFunction<T, R, E> func, R def) {
+            return value -> {
+                try {
+                    return func.apply(value);
+                } catch (Throwable e) {
+                    return def;
+                }
+            };
+        }
+
+        public static @NotNull <T, R, E extends Throwable>
+                com.google.common.base.Function<T, R> runQuietlyOrNull(@NotNull ThrowFunction<T, R, E> func) {
+            return runQuietlyOrDefault(func, null);
         }
     }
 }
