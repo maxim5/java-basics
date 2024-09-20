@@ -1,5 +1,6 @@
 package io.spbx.util.time;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -8,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Tag("fast")
 public class BasicTimeTest {
     @Test
     public void toUnit_duration_to_time_unit() {

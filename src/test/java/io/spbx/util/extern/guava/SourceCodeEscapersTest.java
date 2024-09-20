@@ -1,5 +1,6 @@
 package io.spbx.util.extern.guava;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -9,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 // https://chromium.googlesource.com/external/guava-libraries/+/484ed1848fc76d4541eacf605100e68018db5af3/
 //   guava-tests/test/com/google/common/escape/SourceCodeEscapersTest.java
+@Tag("fast")
 public class SourceCodeEscapersTest {
     // ASCII control characters.
     private static final String ASCII_CONTROL_UNESCAPED =

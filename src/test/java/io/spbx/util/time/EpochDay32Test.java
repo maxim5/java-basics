@@ -1,12 +1,14 @@
 package io.spbx.util.time;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
 import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
 
+@Tag("fast")
 public class EpochDay32Test {
     @Test
     public void localDate_roundtrip() {

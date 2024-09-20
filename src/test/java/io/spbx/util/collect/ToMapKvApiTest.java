@@ -1,6 +1,7 @@
 package io.spbx.util.collect;
 
 import io.spbx.util.collect.TestingMapCollectors.InputMapCase;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -15,6 +16,7 @@ import static io.spbx.util.collect.TestingMapCollectors.DUP_KEY_ERR_GUAVA;
 import static io.spbx.util.collect.TestingMapCollectors.Merge.IGNORE;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 
+@Tag("fast")
 @SuppressWarnings("Convert2MethodRef")
 public class ToMapKvApiTest {
     @ParameterizedTest @EnumSource(InputMapCase.class)
@@ -62,6 +64,7 @@ public class ToMapKvApiTest {
     public void to_maps_ad_hoc_accept_anything(InputMapCase input) {
         var api = ToMapKvApi.of(input.pairs());
         assertThat(api.toMap(ignoreDuplicates(), () -> new HashMap<>())).containsExactlyEntriesIn(input.map(IGNORE));
+        assertThat(api.toMapIgnoreDuplicateKeys()).containsExactlyEntriesIn(input.map(IGNORE));
         assertThat(api.toMapIgnoreDuplicateKeys(() -> new HashMap<>())).containsExactlyEntriesIn(input.map(IGNORE));
     }
 

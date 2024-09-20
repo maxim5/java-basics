@@ -5,10 +5,12 @@ import io.spbx.util.extern.trove.TroveHashMaps.StringContentHashMap;
 import io.spbx.util.extern.trove.TroveHashMaps.StringHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Tag("fast")
 @SuppressWarnings("SuspiciousMethodCalls")
 public class TroveHashMapsTest {
     @Test

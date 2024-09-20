@@ -2,7 +2,7 @@ package io.spbx.util.testing.ext;
 
 import com.carrotsearch.hppc.HashContainers;
 import io.spbx.util.base.Unchecked;
-import io.spbx.util.reflect.BasicMembers;
+import io.spbx.util.reflect.BasicMembers.Fields;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -36,8 +36,7 @@ public class HppcReflectionExtension implements BeforeEachCallback {
     }
 
     private static @NotNull AtomicInteger findSeedRef() {
-        Field iterationSeedField = BasicMembers.findField(HashContainers.class, "ITERATION_SEED");
-        assert iterationSeedField != null : "Failed to find the iteration seed in HashContainers";
+        Field iterationSeedField = Fields.of(HashContainers.class).getOrDie("ITERATION_SEED");
         iterationSeedField.setAccessible(true);
         return (AtomicInteger) Unchecked.Suppliers.rethrow(() -> iterationSeedField.get(null)).get();
     }

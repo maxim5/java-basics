@@ -4,11 +4,13 @@ import com.google.common.truth.Truth;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static io.spbx.util.testing.TestingBasics.*;
 import static org.junit.Assert.assertThrows;
 
+@Tag("fast")
 public class CodeBuilderTest {
     @Test
     public void build_via_appendLine() {

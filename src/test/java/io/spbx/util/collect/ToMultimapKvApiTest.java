@@ -1,12 +1,14 @@
 package io.spbx.util.collect;
 
 import io.spbx.util.collect.TestingMapCollectors.InputMapCase;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 
+@Tag("fast")
 @SuppressWarnings("Convert2MethodRef")
 public class ToMultimapKvApiTest {
     @ParameterizedTest @EnumSource(InputMapCase.class)

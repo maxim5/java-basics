@@ -4,12 +4,11 @@ import io.spbx.util.annotate.NegativeIndexingSupported;
 import io.spbx.util.buf.BaseByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 @NegativeIndexingSupported
-public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharSequence, Comparable<AsciiByteArray>, Serializable {
+public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharSequence {
     public static final AsciiByteArray EMPTY = AsciiByteArray.wrap(new byte[0]);
 
     protected AsciiByteArray(byte @NotNull[] bytes, int start, int end) {
@@ -113,11 +112,6 @@ public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharS
     }
 
     /* Comparison */
-
-    @Override
-    public int compareTo(@NotNull AsciiByteArray that) {
-        return Arrays.compare(bytes, start, end, that.bytes, that.start, that.end);
-    }
 
     public int compareTo(@NotNull CharSequence str) {
         return CharSequence.compare(this, str);

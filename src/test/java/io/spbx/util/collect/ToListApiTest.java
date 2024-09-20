@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import io.spbx.util.base.Tuple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -16,6 +17,7 @@ import static io.spbx.util.testing.AssertCollections.assertThat;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.listOf;
 
+@Tag("fast")
 public class ToListApiTest {
     @ParameterizedTest @EnumSource(InputListCase.class)
     public void to_list_api(InputListCase inputListCase) {

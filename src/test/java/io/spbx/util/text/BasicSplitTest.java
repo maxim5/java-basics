@@ -1,10 +1,12 @@
 package io.spbx.util.text;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static io.spbx.util.testing.AssertStreamer.assertStream;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 
+@Tag("fast")
 public class BasicSplitTest {
     @Test
     public void empty_input() {

@@ -10,7 +10,7 @@ import io.spbx.util.code.gen.CompiledTemplate.LiteralBlock;
 import io.spbx.util.collect.BasicIterables;
 import io.spbx.util.collect.BasicMaps;
 import io.spbx.util.collect.Streamer;
-import io.spbx.util.func.Chains;
+import io.spbx.util.func.Functions;
 import io.spbx.util.io.BasicFiles;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,7 +91,7 @@ public class TemplateEngine {
         CompileContext compiled = CompileContext.of(map);
         RenderContext context = RenderContext.create(compiled, vars);
         renderTemplate(templateId, context);
-        return context.builder().mapToNew(Chains.chain(vars.vars()::interpolate, String::stripTrailing));
+        return context.builder().mapToNew(Functions.chain(vars.vars()::interpolate, String::stripTrailing));
     }
 
     private void renderTemplate(@NotNull TemplateId templateId, @NotNull RenderContext ctx) {

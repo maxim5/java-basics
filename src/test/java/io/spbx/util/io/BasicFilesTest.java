@@ -1,10 +1,12 @@
 package io.spbx.util.io;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.TestingBasics.toPath;
 
+@Tag("fast")
 public class BasicFilesTest {
     @Test
     public void getFileExtension_simple() {

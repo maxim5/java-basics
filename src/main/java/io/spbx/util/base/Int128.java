@@ -537,15 +537,14 @@ public final class Int128 extends Number implements Comparable<Int128> {
     /* Implementation details */
 
     /**
-     * Branch-less form of <code>return test < 0 ? value : 0;</code> or
-     * <pre>
+     * Branch-less form of {@code test < 0 ? value : 0;} or
+     * {@snippet lang="java" :
      * if (test < 0) {
      *   return value;
      * }
      * else {
      *   return 0;
-     * }
-     * </pre>
+     * }}
      */
     @VisibleForTesting
     static long fastZeroOrValue(long test, long value) {
@@ -553,7 +552,7 @@ public final class Int128 extends Number implements Comparable<Int128> {
     }
 
     /**
-     * Branch-less form of <code>return test < 0 ? -1 : 0;</code> or <code>return test >= 0 ? 0 : -1;</code>
+     * Branch-less form of {@code test < 0 ? -1 : 0;} or {@code test >= 0 ? 0 : -1;}
      */
     @VisibleForTesting
     static long fastZeroOrMinusOne(long test) {
@@ -561,7 +560,7 @@ public final class Int128 extends Number implements Comparable<Int128> {
     }
 
     /**
-     * Branch-less form of <code>return test == 0 ? 0 : 1;</code>
+     * Branch-less form of {@code test == 0 ? 0 : 1;}
      */
     @VisibleForTesting
     static int fastZeroOrOne(long test) {
@@ -583,6 +582,7 @@ public final class Int128 extends Number implements Comparable<Int128> {
         return (int) value;
     }
 
+    // FIX: Primitive-candidate
     private static long parseHexChar(char ch) {
         if (ch >= '0' && ch <= '9') return (long) ch - '0';
         if (ch >= 'a' && ch <= 'f') return (long) ch - 'a' + 10;

@@ -42,6 +42,11 @@ public interface ToMapKvApi<K, V, E extends Entry<K, V>> extends ToStreamApi<E> 
     }
 
     @AcceptsNulls
+    default @NotNull Map<K, V> toMapIgnoreDuplicateKeys() {
+        return toMapIgnoreDuplicateKeys(HashMap::new);
+    }
+
+    @AcceptsNulls
     default <M extends Map<K, V>> @NotNull M toMap(@NotNull BinaryOperator<V> mergeFunc, @NotNull Supplier<M> supplier) {
         return toMap(BasicCollectors.toMap(Entry::getKey, Entry::getValue, mergeFunc, supplier));
     }

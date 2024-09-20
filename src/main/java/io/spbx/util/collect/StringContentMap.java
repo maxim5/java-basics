@@ -10,23 +10,23 @@ import java.util.Map;
  * The {@link CharSequence}-key {@link Map} based on the key <em>content equivalence</em> rather than key equality.
  * <p>
  * If the {@link StringContentMap} implementation is hash-based, this means that it computes custom
- * <code>hashCode()</code> and <code>equals()</code> values
+ * {@code #hashCode()} and {@code #equals()} values
  * for the keys so that it only by takes into account the chars contents and ignores the key type.
  * <p>
  * For example, the following keys are <em>content</em> equivalent:
  * <ul>
- *     <li><code>"foo"</code></li>
- *     <li><code>new StringBuilder("foo")</code></li>
- *     <li><code>CharArray.of("foo")</code></li>
- *     <li><code>CharArray.of("foobar").substring(0, 3)</code></li>
- *     <li><code>"foo".toCharArray()</code></li>
+ *     <li>{@code "foo"}</li>
+ *     <li>{@code new StringBuilder("foo")}</li>
+ *     <li>{@code CharArray.of("foo")}</li>
+ *     <li>{@code CharArray.of("foobar").substring(0, 3)}</li>
+ *     <li>{@code "foo".toCharArray()}</li>
  *     <li>etc ...</li>
  * </ul>
  *
  * <p>
  *
- * The implementation may or may not permit <code>null</code> keys or values,
- * in addition support case ignore/insensitivity, <code>intern</code> stored keys or do other optimizations.
+ * The implementation may or may not permit {@code null} keys or values,
+ * in addition support case ignore/insensitivity, {@code intern} stored keys or do other optimizations.
  *
  * @see String#contentEquals(CharSequence)
  * @see String#equalsIgnoreCase(String)

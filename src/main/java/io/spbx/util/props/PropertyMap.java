@@ -1,6 +1,6 @@
 package io.spbx.util.props;
 
-import io.spbx.util.func.Chains;
+import io.spbx.util.func.Functions;
 import io.spbx.util.func.Reversible;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
@@ -72,8 +72,8 @@ public interface PropertyMap {
         }
 
         default @NotNull <U> TypeExtractor<U> map(@NotNull Reversible<T, U> reversible) {
-            return TypeExtractor.of(Chains.chain(this::forward, reversible::forward),
-                                    Chains.chain(reversible::backward, this::backward));
+            return TypeExtractor.of(Functions.chain(this::forward, reversible::forward),
+                                    Functions.chain(reversible::backward, this::backward));
         }
 
         static <T> @NotNull TypeExtractor<T> of(@NotNull Reversible<String, T> reversible) {

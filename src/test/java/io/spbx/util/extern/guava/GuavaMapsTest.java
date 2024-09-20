@@ -1,5 +1,6 @@
 package io.spbx.util.extern.guava;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -7,6 +8,7 @@ import static io.spbx.util.testing.TestingBasics.arrayOf;
 import static io.spbx.util.testing.TestingBasics.mapOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class GuavaMapsTest {
     @Test
     public void immutableMapOf_simple() {

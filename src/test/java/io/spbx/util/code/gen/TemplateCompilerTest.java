@@ -8,6 +8,7 @@ import io.spbx.util.code.gen.CompiledTemplate.LiteralBlock;
 import io.spbx.util.code.gen.Directive.Predefined;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.code.gen.DirectiveBuilder.commentBlock;
 import static io.spbx.util.testing.TestingBasics.listOf;
 
+@Tag("fast")
 public class TemplateCompilerTest {
     @Test
     public void simple_empty() {

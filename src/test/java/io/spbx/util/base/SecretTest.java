@@ -1,11 +1,13 @@
 package io.spbx.util.base;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Tag("fast")
 public class SecretTest {
     @Test
     public void simple_ascii() {

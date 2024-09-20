@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  * <p>
  * Once the instance is sealed, it is final and can't be changed, i.e. becomes immutable.
  * The instance can be sealed with the initial default value.
- * Both initial and sealed value can be <code>null</code>.
+ * Both initial and sealed value can be {@code null}.
  * <p>
  * {@link Sealed} is technically not a lazy, because it's always initialized, but shares some properties, i.e.
  * "real" initialization is not immediate and must happen exactly once.
@@ -26,7 +26,7 @@ public interface Sealed<T> extends Supplier<T> {
     boolean isSealed();
 
     /**
-     * Seals this instance with <code>value</code> if it's not already, otherwise fails
+     * Seals this instance with {@code value} if it's not already, otherwise fails
      * (even if it stores the same value).
      * Calling this method twice is guaranteed to throw.
      */
@@ -73,7 +73,7 @@ public interface Sealed<T> extends Supplier<T> {
     }
 
     /**
-     * Seals this instance with <code>value</code> if it's not already, otherwise fails
+     * Seals this instance with {@code value} if it's not already, otherwise fails
      * (unless it stores the same value).
      * Calling this method twice with different arguments is guaranteed to throw.
      */

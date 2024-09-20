@@ -3,6 +3,7 @@ package io.spbx.util.extern.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Consumer;
@@ -11,6 +12,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.TestingBytes.asByteBuf;
 import static io.spbx.util.testing.TestingBytes.assertBytes;
 
+@Tag("fast")
 public class BasicByteBufsTest {
     public static final byte DASH = (byte) '-';
     public static final byte UNDER = (byte) '_';

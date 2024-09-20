@@ -14,14 +14,14 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.Consumer;
 
 /**
- * A base class for the <code>byte</code> array buffer.
+ * A base class for the {@code byte} array buffer.
  * <p>
  * {@link BaseByteBuf} supports python-style negative indexing, e.g. {@code buf.at(-2)} is equivalent to
  * {@code buf.at(buf.length()-2)}.
  */
 @NegativeIndexingSupported
-@Generated(value = "Base$Type$Buf.java", date = "2024-09-04T12:43:13.800430400Z")
-public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf implements Serializable {
+@Generated(value = "Base$Type$Buf.java", date = "2024-09-18T16:02:05.411025283Z")
+public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf implements Comparable<B>, Serializable {
     protected final byte[] bytes;
     protected /* final */ int start;
     protected /* final */ int end;
@@ -445,7 +445,17 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return (index >= 0) ? index : length();
     }
 
+    // Returns the length of the common prefix
+    public int commonPrefix(byte[] array) {
+        int index = Arrays.mismatch(bytes, start, end, array, 0, array.length);
+        return (index >= 0) ? index : length();
+    }
+
     public boolean isPrefixOf(@NotNull B array) {
+        return commonPrefix(array) == length();
+    }
+
+    public boolean isPrefixOf(byte[] array) {
         return commonPrefix(array) == length();
     }
 
@@ -461,7 +471,21 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return i - 1;
     }
 
+    // Returns the length of the common suffix
+    public int commonSuffix(byte[] array) {
+        int i = 1;
+        int limit = Math.min(length(), array.length);
+        while (i <= limit && bytes[end - i] == array[array.length - i]) {
+            i++;
+        }
+        return i - 1;
+    }
+
     public boolean isSuffixOf(@NotNull B array) {
+        return commonSuffix(array) == length();
+    }
+
+    public boolean isSuffixOf(byte[] array) {
         return commonSuffix(array) == length();
     }
 
@@ -493,6 +517,17 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
 
     public @NotNull B removeSuffix(byte[] prefix) {
         return endsWith(prefix) ? _wrap(bytes, start, end - prefix.length) : _this();
+    }
+
+    /* Comparison */
+
+    @Override
+    public int compareTo(@NotNull B that) {
+        return Arrays.compare(bytes, start, end, that.bytes, that.start, that.end);
+    }
+
+    public int compareTo(@NotNull byte[] array) {
+        return Arrays.compare(bytes, start, end, array, 0, array.length);
     }
 
     /* Equality check */

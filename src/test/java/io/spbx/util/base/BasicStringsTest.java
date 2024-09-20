@@ -1,9 +1,11 @@
 package io.spbx.util.base;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Tag("fast")
 public class BasicStringsTest {
     @Test
     public void removePrefix_simple() {

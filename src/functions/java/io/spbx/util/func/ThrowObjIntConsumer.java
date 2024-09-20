@@ -1,7 +1,7 @@
 package io.spbx.util.func;
 
 /**
- * Represents an operation that accepts two input arguments one of which is an <code>int</code>
+ * Represents an operation that accepts two input arguments one of which is an {@code int}
  * and returns no result potentially throws a {@link Throwable}.
  * <p>
  * The {@code ThrowBiConsumer} interface is similar to
@@ -14,12 +14,12 @@ package io.spbx.util.func;
  * @see java.util.function.BiConsumer
  */
 @FunctionalInterface
-public interface ThrowBiIntConsumer<U, E extends Throwable> {
+public interface ThrowObjIntConsumer<U, E extends Throwable> {
     /**
      * Performs this operation on the given arguments.
      *
-     * @param i the first input argument
-     * @param u the second input argument
+     * @param left the first input argument
+     * @param right the second input argument
      */
-    void accept(int i, U u) throws E;
+    void accept(U left, int right) throws E;
 }

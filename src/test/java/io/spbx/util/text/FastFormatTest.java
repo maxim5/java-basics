@@ -2,10 +2,12 @@ package io.spbx.util.text;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Tag("fast")
 public class FastFormatTest {
     public static final Object NULL = null;
 

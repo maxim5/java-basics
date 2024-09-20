@@ -9,15 +9,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * A wrapper for a value which is intended to be added to the builder.
+ * A wrapper for a value (any nullability) which is intended to be added to the builder.
  * So instead of
- *
- * <pre>builder.add(runFunction(params));</pre>
- *
+ * {@snippet lang="java" : builder.add(runFunction(params)); }
  * one could write
- *
- * <pre>runFunction(params).addTo(builder);</pre>
- *
+ * {@snippet lang="java" : runFunction(params).addTo(builder); }
  * which is slightly easier to read.
  */
 public record Addable<T>(T value) implements Supplier<T> {

@@ -2,10 +2,12 @@ package io.spbx.util.base;
 
 import io.spbx.util.base.DataSize.Unit;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Tag("fast")
 public class DataSizeTest {
     /** {@link DataSize#parseInt} */
 

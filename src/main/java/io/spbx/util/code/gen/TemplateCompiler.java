@@ -5,7 +5,7 @@ import io.spbx.util.code.gen.CompiledTemplate.CompiledDirective;
 import io.spbx.util.code.gen.CompiledTemplate.DirectiveBlock;
 import io.spbx.util.code.gen.CompiledTemplate.Node;
 import io.spbx.util.collect.ListBuilder;
-import io.spbx.util.func.Chains;
+import io.spbx.util.func.Predicates;
 import io.spbx.util.func.ScopeFunctions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +29,7 @@ class TemplateCompiler {
                 }
                 return streamOf(
                     Node.literalOf(line.substring(0, pos.start()))
-                        .nullifyIf(Chains.Predicates.and(Node::isEmpty, !pos.directive().isTreatedInline())),
+                        .nullifyIf(Predicates.and(Node::isEmpty, !pos.directive().isTreatedInline())),
                     Node.directiveOf(pos.directive()),
                     Node.literalOf(line.substring(pos.end()))
                         .nullifyIf(Node::isEmpty)

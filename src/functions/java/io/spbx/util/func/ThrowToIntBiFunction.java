@@ -18,9 +18,9 @@ public interface ThrowToIntBiFunction<T, U, E extends Throwable> {
     /**
      * Applies this function to the given arguments.
      *
-     * @param t the first function argument
-     * @param u the second function argument
+     * @param left the first function argument
+     * @param right the second function argument
      * @return the function result
      */
-    int applyAsInt(T t, U u) throws E;
+    int applyAsInt(T left, U right) throws E;
 }

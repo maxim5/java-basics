@@ -1,11 +1,13 @@
 package io.spbx.util.code.jvm;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.code.jvm.JavaNameValidator.isValidJavaIdentifier;
 import static io.spbx.util.code.jvm.JavaNameValidator.isValidJavaIdentifiersSeparatedByDots;
 
+@Tag("fast")
 public class JavaNameValidatorTest {
     @Test
     public void variableNamesCanBeginWithLetters() {

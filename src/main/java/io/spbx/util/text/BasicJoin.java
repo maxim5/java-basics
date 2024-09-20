@@ -7,7 +7,7 @@ import io.spbx.util.base.BasicStrings;
 import io.spbx.util.base.Pair;
 import io.spbx.util.base.Triple;
 import io.spbx.util.collect.Streamer;
-import io.spbx.util.func.Chains;
+import io.spbx.util.func.Functions;
 import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +53,7 @@ public class BasicJoin {
 
     public static <T extends @Nullable Object> @NotNull BasicJoin of(@NotNull Iterable<T> items,
                                                                      @NotNull Function<T, String> toString) {
-        return new BasicJoin(Streamer.of(items).map(Chains.nonNullify(toString, "")).toGuavaImmutableList());
+        return new BasicJoin(Streamer.of(items).map(Functions.nonNullify(toString, "")).toGuavaImmutableList());
     }
 
     public static @NotNull BasicJoin of(@NotNull Stream<? extends @Nullable Object> items) {

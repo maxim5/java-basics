@@ -3,6 +3,7 @@ package io.spbx.util.collect;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import static io.spbx.util.base.EasyCast.castAny;
 import static io.spbx.util.testing.TestingBasics.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class ListBuilderTest {
     private static final Integer NULL = null;
 

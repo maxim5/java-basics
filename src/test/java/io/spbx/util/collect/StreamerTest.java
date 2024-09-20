@@ -2,6 +2,7 @@ package io.spbx.util.collect;
 
 import io.spbx.util.base.Pair;
 import io.spbx.util.collect.Streamer.IndexedFunction;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -16,6 +17,7 @@ import static io.spbx.util.testing.AssertStreamer.assertStream;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.*;
 
+@Tag("fast")
 public class StreamerTest {
     private static final Integer NULL = null;
 

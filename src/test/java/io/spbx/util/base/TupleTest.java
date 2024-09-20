@@ -1,5 +1,6 @@
 package io.spbx.util.base;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.Stream;
@@ -10,6 +11,7 @@ import static io.spbx.util.testing.TestingBasics.listOf;
 import static io.spbx.util.testing.TestingBasics.streamOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class TupleTest {
     private static final Integer NULL = null;
     

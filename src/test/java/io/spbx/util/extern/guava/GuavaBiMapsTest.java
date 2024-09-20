@@ -2,6 +2,7 @@ package io.spbx.util.extern.guava;
 
 import com.google.common.collect.HashBiMap;
 import io.spbx.util.base.Pair;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.Collector;
@@ -11,6 +12,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.*;
 
+@Tag("fast")
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class GuavaBiMapsTest {
     private static final Integer NULL = null;

@@ -1,11 +1,13 @@
 package io.spbx.util.code.jvm;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.code.jvm.JavaNumberValidator.isValidJavaUnsignedIntegerLiteral;
 import static io.spbx.util.code.jvm.JavaNumberValidator.isValidJavaUnsignedLongLiteral;
 
+@Tag("fast")
 public class JavaNumberValidatorTest {
     @Test
     public void unsigned_integer_simple() {

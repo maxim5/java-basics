@@ -1,6 +1,7 @@
 package io.spbx.util.collect;
 
 import io.spbx.util.testing.AssertFailure;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
@@ -11,6 +12,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.*;
 
+@Tag("fast")
 public class BasicStreamsTest {
     private static final Integer NULL = null;
 

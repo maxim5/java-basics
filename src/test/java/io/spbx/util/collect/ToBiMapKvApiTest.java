@@ -1,5 +1,6 @@
 package io.spbx.util.collect;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -8,6 +9,7 @@ import static io.spbx.util.collect.TestingMapCollectors.*;
 import static io.spbx.util.collect.TestingMapCollectors.Merge.OVERWRITE;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 
+@Tag("fast")
 @SuppressWarnings("Convert2MethodRef")
 public class ToBiMapKvApiTest {
     @ParameterizedTest @EnumSource(InputMapCase.class)

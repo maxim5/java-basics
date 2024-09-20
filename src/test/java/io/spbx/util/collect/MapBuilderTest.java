@@ -3,6 +3,7 @@ package io.spbx.util.collect;
 import com.google.common.truth.MapSubject;
 import io.spbx.util.base.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.*;
 
+@Tag("fast")
 public class MapBuilderTest {
     private static final Integer NULL = null;
 

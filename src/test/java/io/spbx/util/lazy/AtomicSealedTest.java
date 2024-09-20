@@ -2,7 +2,7 @@ package io.spbx.util.lazy;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.CheckReturnValue;
-import io.spbx.util.func.Chains;
+import io.spbx.util.func.Functions;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -105,7 +105,7 @@ public class AtomicSealedTest {
             contains(current);
             seal.sealIfNotYet(null);
             contains(current);
-            seal.finalizeAndSealIfNotYet(Chains.constant(null));
+            seal.finalizeAndSealIfNotYet(Functions.constant(null));
             contains(current);
         }
 
