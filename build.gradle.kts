@@ -92,6 +92,7 @@ dependencies {
     testImplementation("com.carrotsearch:hppc:0.10.0")
     testImplementation("com.palantir.patches.sourceforge:trove3:3.0.3-p9")
     testImplementation("io.netty:netty-all:4.1.110.Final")
+    testImplementation("org.ow2.asm:asm:9.7")
 }
 
 tasks.test {
