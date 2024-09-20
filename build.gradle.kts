@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.spbx"
-version = "0.2.0"
+version = "0.2.1"
 
 tasks.wrapper {
     gradleVersion = "8.10"
@@ -102,6 +102,7 @@ tasks.test {
 tasks.withType<Jar> {
     from(shared.output)
     from(buffers.output)
+    from(functions.output)
     from(main.output)
 
     // See also
