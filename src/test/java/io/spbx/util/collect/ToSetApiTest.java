@@ -3,6 +3,7 @@ package io.spbx.util.collect;
 import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -16,6 +17,7 @@ import static io.spbx.util.testing.AssertCollections.assertThat;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.setOf;
 
+@Tag("fast")
 public class ToSetApiTest {
     @ParameterizedTest @EnumSource(InputSetCase.class)
     public void to_set_api(InputSetCase inputSetCase) {

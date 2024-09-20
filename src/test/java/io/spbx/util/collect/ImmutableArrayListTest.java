@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.errorprone.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.collect.ImmutableArrayList.toImmutableArrayList;
 import static io.spbx.util.testing.TestingBasics.*;
 
+@Tag("fast")
 public class ImmutableArrayListTest {
     @Test
     public void arrayList_of_simple_not_null_items() {

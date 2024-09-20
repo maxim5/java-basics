@@ -1,12 +1,14 @@
 package io.spbx.util.time;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
 import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
 
+@Tag("fast")
 public class MicroTimestampTest {
     @Test
     public void instant_roundtrip() {

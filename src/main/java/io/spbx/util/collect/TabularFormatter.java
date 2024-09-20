@@ -16,21 +16,21 @@ import java.util.stream.Stream;
  * Allows to format 2-dimensional table-like data to string. Allows to customize border delimiters. Examples:
  * <p>
  * Alignment:
- * <pre>
+ * {@snippet lang="TEXT" :
  *   -------
  *   | foo |
  *   -------
  *   | 1   |
  *   -------
- * </pre>
+ * }
  * <p>
  * Multi-lines support:
- * <pre>
+ * {@snippet lang="TEXT" :
  *   -----
  *   | 1 |
  *   | 2 |
  *   -----
- * </pre>
+ * }
  */
 @Immutable
 public record TabularFormatter(@NotNull String cellPrefix,

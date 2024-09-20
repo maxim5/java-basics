@@ -6,11 +6,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
 
-import static io.spbx.util.func.Chains.LongPredicates.TRUE;
-import static io.spbx.util.func.Chains.LongPredicates.chain;
+import static io.spbx.util.func.LongPredicates.TRUE;
+import static io.spbx.util.func.LongPredicates.chain;
 
 /**
- * Represents the log of real-time timestamps (stored as <code>long</code>s).
+ * Represents the log of real-time timestamps (stored as {@code long}s).
  * Real-time means three conditions:
  * <ul>
  *     <li>Timestamps are all positive</li>
@@ -19,7 +19,7 @@ import static io.spbx.util.func.Chains.LongPredicates.chain;
  * </ul>
  * <p>
  * The implementation classes may impose further restrictions, e.g.
- * the timestamps must fit in unsigned 32-bit integer, i.e. be in range <code>[0, 2^32 - 1]</code>.
+ * the timestamps must fit in unsigned 32-bit integer, i.e. be in range {@code [0, 2^32 - 1]}.
  */
 public interface RealTimeLog {
     int size();

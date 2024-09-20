@@ -1,6 +1,7 @@
 package io.spbx.util.collect;
 
 import com.google.common.collect.MoreCollectors;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.base.BasicExceptions.newUnsupportedOperationException;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 
+@Tag("fast")
 public class ToCollectKvApiTest {
     private static final IntEntry NULL_ENTRY = null;
     private static final IntEntry ENTRY1 = new IntEntry(1, 1);

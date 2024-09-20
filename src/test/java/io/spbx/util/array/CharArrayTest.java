@@ -2,7 +2,9 @@ package io.spbx.util.array;
 
 import com.google.common.truth.IterableSubject;
 import io.spbx.util.collect.BasicStreams;
+import io.spbx.util.testing.MockConsumer;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.nio.CharBuffer;
@@ -14,6 +16,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.MoreTruth.assertAlso;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class CharArrayTest {
     private static final char[] NULL = Function.<char[]>identity().apply(null);  // `null` but keeps Intellij quiet
 
@@ -118,7 +121,7 @@ public class CharArrayTest {
     /** {@link CharArray#charAt(int)} **/
 
     @Test
-    public void char_at() {
+    public void charAt_simple() {
         CharArray array = CharArray.of("foobar");
 
         assertThat(array.charAt(0)).isEqualTo('f');
@@ -141,7 +144,7 @@ public class CharArrayTest {
     /** {@link CharArray#at(int)} **/
 
     @Test
-    public void at() {
+    public void at_simple() {
         CharArray array = CharArray.of("foobar");
 
         assertThat(array.at(0)).isEqualTo('f');
@@ -165,7 +168,7 @@ public class CharArrayTest {
     /** {@link CharArray#iterator()} **/
 
     @Test
-    public void iterator() {
+    public void iterator_simple() {
         assertThat(CharArray.of("").iterator().hasNext()).isFalse();
 
         for (CharArray.CharCursor cursor : CharArray.of("foo").toIterable()) {
@@ -568,6 +571,19 @@ public class CharArrayTest {
     }
 
     @Test
+    public void split_by_char_consumer() {
+        try (MockConsumer.Tracker ignored = MockConsumer.trackAllConsumersDone()) {
+            CharArray.of("").split('.', MockConsumer.expecting(CharArray.EMPTY));
+            CharArray.of(".").split('.', MockConsumer.expecting(CharArray.EMPTY, CharArray.EMPTY));
+            CharArray.of("a").split('.', MockConsumer.expecting(CharArray.of("a")));
+            CharArray.of("a.").split('.', MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY));
+            CharArray.of(".b").split('.', MockConsumer.expecting(CharArray.EMPTY, CharArray.of("b")));
+            CharArray.of("a.b").split('.', MockConsumer.expecting(CharArray.of("a"), CharArray.of("b")));
+            CharArray.of("a..b").split('.', MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY, CharArray.of("b")));
+        }
+    }
+
+    @Test
     public void split_by_string() {
         assertSplit(CharArray.of("").split(".")).containsExactly("");
         assertSplit(CharArray.of(".").split(".")).containsExactly("", "");
@@ -584,6 +600,19 @@ public class CharArrayTest {
         assertSplit(CharArray.of(".abcd.").substring(1, -1).split(".")).containsExactly("abcd");
         assertSplit(CharArray.of(".a..d.").substring(1, -1).split(".")).containsExactly("a", "", "d");
         assertSplit(CharArray.of(".ab.cd.").substring(1, -1).split(".")).containsExactly("ab", "cd");
+    }
+
+    @Test
+    public void split_by_string_consumer() {
+        try (MockConsumer.Tracker ignored = MockConsumer.trackAllConsumersDone()) {
+            CharArray.of("").split(".", MockConsumer.expecting(CharArray.EMPTY));
+            CharArray.of(".").split(".", MockConsumer.expecting(CharArray.EMPTY, CharArray.EMPTY));
+            CharArray.of("a").split(".", MockConsumer.expecting(CharArray.of("a")));
+            CharArray.of("a.").split(".", MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY));
+            CharArray.of(".b").split(".", MockConsumer.expecting(CharArray.EMPTY, CharArray.of("b")));
+            CharArray.of("a.b").split(".", MockConsumer.expecting(CharArray.of("a"), CharArray.of("b")));
+            CharArray.of("a..b").split(".", MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY, CharArray.of("b")));
+        }
     }
 
     @Test
@@ -613,6 +642,20 @@ public class CharArrayTest {
     }
 
     @Test
+    public void split_by_native_array_consumer() {
+        try (MockConsumer.Tracker ignored = MockConsumer.trackAllConsumersDone()) {
+            CharArray.of("").split(".".toCharArray(), MockConsumer.expecting(CharArray.EMPTY));
+            CharArray.of(".").split(".".toCharArray(), MockConsumer.expecting(CharArray.EMPTY, CharArray.EMPTY));
+            CharArray.of("a").split(".".toCharArray(), MockConsumer.expecting(CharArray.of("a")));
+            CharArray.of("a.").split(".".toCharArray(), MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY));
+            CharArray.of(".b").split(".".toCharArray(), MockConsumer.expecting(CharArray.EMPTY, CharArray.of("b")));
+            CharArray.of("a.b").split(".".toCharArray(), MockConsumer.expecting(CharArray.of("a"), CharArray.of("b")));
+            CharArray.of("a..b").split(".".toCharArray(),
+                                       MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY, CharArray.of("b")));
+        }
+    }
+
+    @Test
     public void split_by_array() {
         assertSplit(CharArray.of("").split(CharArray.of("---"))).containsExactly("");
         assertSplit(CharArray.of("-").split(CharArray.of("---"))).containsExactly("-");
@@ -623,6 +666,20 @@ public class CharArrayTest {
         assertSplit(CharArray.of("a---b").split(CharArray.of("---"))).containsExactly("a", "b");
         assertSplit(CharArray.of("a---b---").split(CharArray.of("---"))).containsExactly("a", "b", "");
         assertSplit(CharArray.of("a---b---c").split(CharArray.of("---"))).containsExactly("a", "b", "c");
+    }
+
+    @Test
+    public void split_by_array_consumer() {
+        try (MockConsumer.Tracker ignored = MockConsumer.trackAllConsumersDone()) {
+            CharArray.of("").split(CharArray.of('.'), MockConsumer.expecting(CharArray.EMPTY));
+            CharArray.of(".").split(CharArray.of('.'), MockConsumer.expecting(CharArray.EMPTY, CharArray.EMPTY));
+            CharArray.of("a").split(CharArray.of('.'), MockConsumer.expecting(CharArray.of("a")));
+            CharArray.of("a.").split(CharArray.of('.'), MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY));
+            CharArray.of(".b").split(CharArray.of('.'), MockConsumer.expecting(CharArray.EMPTY, CharArray.of("b")));
+            CharArray.of("a.b").split(CharArray.of('.'), MockConsumer.expecting(CharArray.of("a"), CharArray.of("b")));
+            CharArray.of("a..b").split(CharArray.of('.'),
+                                       MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY, CharArray.of("b")));
+        }
     }
 
     @Test
@@ -642,6 +699,20 @@ public class CharArrayTest {
         assertSplit(CharArray.of(".abcd.").substring(1, -1).split(ch -> ch == '.')).containsExactly("abcd");
         assertSplit(CharArray.of(".a..d.").substring(1, -1).split(ch -> ch == '.')).containsExactly("a", "", "d");
         assertSplit(CharArray.of(".ab.cd.").substring(1, -1).split(ch -> ch == '.')).containsExactly("ab", "cd");
+    }
+
+    @Test
+    public void split_by_predicate_consumer() {
+        try (MockConsumer.Tracker ignored = MockConsumer.trackAllConsumersDone()) {
+            CharArray.of("").split(ch -> ch == '.', MockConsumer.expecting(CharArray.EMPTY));
+            CharArray.of(".").split(ch -> ch == '.', MockConsumer.expecting(CharArray.EMPTY, CharArray.EMPTY));
+            CharArray.of("a").split(ch -> ch == '.', MockConsumer.expecting(CharArray.of("a")));
+            CharArray.of("a.").split(ch -> ch == '.', MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY));
+            CharArray.of(".b").split(ch -> ch == '.', MockConsumer.expecting(CharArray.EMPTY, CharArray.of("b")));
+            CharArray.of("a.b").split(ch -> ch == '.', MockConsumer.expecting(CharArray.of("a"), CharArray.of("b")));
+            CharArray.of("a..b").split(ch -> ch == '.',
+                                       MockConsumer.expecting(CharArray.of("a"), CharArray.EMPTY, CharArray.of("b")));
+        }
     }
 
     @Test
@@ -742,13 +813,24 @@ public class CharArrayTest {
     /** {@link CharArray#commonPrefix} **/
 
     @Test
-    public void commonPrefix() {
+    public void commonPrefix_string() {
         assertThat(CharArray.of("foo").commonPrefix("bar")).isEqualTo(0);
         assertThat(CharArray.of("bar").commonPrefix("baz")).isEqualTo(2);
         assertThat(CharArray.of("foo").commonPrefix("foo")).isEqualTo(3);
+    }
 
+    @Test
+    public void commonPrefix_native_array() {
+        assertThat(CharArray.of("foo").commonPrefix("bar".toCharArray())).isEqualTo(0);
+        assertThat(CharArray.of("bar").commonPrefix("baz".toCharArray())).isEqualTo(2);
+        assertThat(CharArray.of("foo").commonPrefix("foo".toCharArray())).isEqualTo(3);
+    }
+
+    @Test
+    public void commonPrefix_array() {
         assertThat(CharArray.of("foo").commonPrefix(CharArray.of("bar"))).isEqualTo(0);
         assertThat(CharArray.of("bar").commonPrefix(CharArray.of("baz"))).isEqualTo(2);
+        assertThat(CharArray.of("foo").commonPrefix(CharArray.of("foo"))).isEqualTo(3);
 
         assertThat(CharArray.of("foo").commonPrefix(CharArray.of("foobar", 3, 6))).isEqualTo(0);
         assertThat(CharArray.of("bar").commonPrefix(CharArray.of("barbaz", 3, 6))).isEqualTo(2);
@@ -757,7 +839,21 @@ public class CharArrayTest {
     }
 
     @Test
-    public void commonPrefix_empty() {
+    public void commonPrefix_empty_string() {
+        assertThat(CharArray.of("").commonPrefix("")).isEqualTo(0);
+        assertThat(CharArray.of("foo").commonPrefix("")).isEqualTo(0);
+        assertThat(CharArray.of("").commonPrefix("foo")).isEqualTo(0);
+    }
+
+    @Test
+    public void commonPrefix_empty_native_array() {
+        assertThat(CharArray.of("").commonPrefix("".toCharArray())).isEqualTo(0);
+        assertThat(CharArray.of("foo").commonPrefix("".toCharArray())).isEqualTo(0);
+        assertThat(CharArray.of("").commonPrefix("foo".toCharArray())).isEqualTo(0);
+    }
+
+    @Test
+    public void commonPrefix_empty_array() {
         assertThat(CharArray.of("").commonPrefix(CharArray.of(""))).isEqualTo(0);
         assertThat(CharArray.of("foo").commonPrefix(CharArray.of(""))).isEqualTo(0);
         assertThat(CharArray.of("").commonPrefix(CharArray.of("foo"))).isEqualTo(0);
@@ -767,7 +863,21 @@ public class CharArrayTest {
     }
 
     @Test
-    public void commonPrefix_same_prefix() {
+    public void commonPrefix_same_prefix_string() {
+        assertThat(CharArray.of("foo").commonPrefix("foo")).isEqualTo(3);
+        assertThat(CharArray.of("foo").commonPrefix("foobar")).isEqualTo(3);
+        assertThat(CharArray.of("foobar").commonPrefix("foo")).isEqualTo(3);
+    }
+
+    @Test
+    public void commonPrefix_same_prefix_native_array() {
+        assertThat(CharArray.of("foo").commonPrefix("foo".toCharArray())).isEqualTo(3);
+        assertThat(CharArray.of("foo").commonPrefix("foobar".toCharArray())).isEqualTo(3);
+        assertThat(CharArray.of("foobar").commonPrefix("foo".toCharArray())).isEqualTo(3);
+    }
+
+    @Test
+    public void commonPrefix_same_prefix_array() {
         assertThat(CharArray.of("foo").commonPrefix(CharArray.of("foo"))).isEqualTo(3);
         assertThat(CharArray.of("foo").commonPrefix(CharArray.of("foobar"))).isEqualTo(3);
         assertThat(CharArray.of("foobar").commonPrefix(CharArray.of("foo"))).isEqualTo(3);
@@ -776,8 +886,36 @@ public class CharArrayTest {
         assertThat(CharArray.of("barfoo", 3, 6).commonPrefix(CharArray.of("foo"))).isEqualTo(3);
     }
 
+    /** {@link CharArray#isPrefixOf} **/
+
     @Test
-    public void isPrefixOf() {
+    public void isPrefixOf_string() {
+        assertThat(CharArray.of("foo").isPrefixOf("bar")).isFalse();
+        assertThat(CharArray.of("foo").isPrefixOf("foobar")).isTrue();
+        assertThat(CharArray.of("foo").isPrefixOf("barfoo")).isFalse();
+        assertThat(CharArray.of("foo").isPrefixOf("foo")).isTrue();
+        assertThat(CharArray.of("foo").isPrefixOf("fo")).isFalse();
+
+        assertThat(CharArray.of("").isPrefixOf("")).isTrue();
+        assertThat(CharArray.of("foo").isPrefixOf("")).isFalse();
+        assertThat(CharArray.of("").isPrefixOf("foo")).isTrue();
+    }
+
+    @Test
+    public void isPrefixOf_native_array() {
+        assertThat(CharArray.of("foo").isPrefixOf("bar".toCharArray())).isFalse();
+        assertThat(CharArray.of("foo").isPrefixOf("foobar".toCharArray())).isTrue();
+        assertThat(CharArray.of("foo").isPrefixOf("barfoo".toCharArray())).isFalse();
+        assertThat(CharArray.of("foo").isPrefixOf("foo".toCharArray())).isTrue();
+        assertThat(CharArray.of("foo").isPrefixOf("fo".toCharArray())).isFalse();
+
+        assertThat(CharArray.of("").isPrefixOf("".toCharArray())).isTrue();
+        assertThat(CharArray.of("foo").isPrefixOf("".toCharArray())).isFalse();
+        assertThat(CharArray.of("").isPrefixOf("foo".toCharArray())).isTrue();
+    }
+
+    @Test
+    public void isPrefixOf_array() {
         assertThat(CharArray.of("foo").isPrefixOf(CharArray.of("bar"))).isFalse();
         assertThat(CharArray.of("foo").isPrefixOf(CharArray.of("foobar"))).isTrue();
         assertThat(CharArray.of("foo").isPrefixOf(CharArray.of("barfoo"))).isFalse();
@@ -792,13 +930,24 @@ public class CharArrayTest {
     /** {@link CharArray#commonSuffix} **/
 
     @Test
-    public void commonSuffix() {
+    public void commonSuffix_string() {
         assertThat(CharArray.of("foo").commonSuffix("bar")).isEqualTo(0);
         assertThat(CharArray.of("foo").commonSuffix("boo")).isEqualTo(2);
         assertThat(CharArray.of("foo").commonSuffix("foo")).isEqualTo(3);
+    }
 
+    @Test
+    public void commonSuffix_native_array() {
+        assertThat(CharArray.of("foo").commonSuffix("bar".toCharArray())).isEqualTo(0);
+        assertThat(CharArray.of("foo").commonSuffix("boo".toCharArray())).isEqualTo(2);
+        assertThat(CharArray.of("foo").commonSuffix("foo".toCharArray())).isEqualTo(3);
+    }
+
+    @Test
+    public void commonSuffix_array() {
         assertThat(CharArray.of("foo").commonSuffix(CharArray.of("bar"))).isEqualTo(0);
         assertThat(CharArray.of("foo").commonSuffix(CharArray.of("boo"))).isEqualTo(2);
+        assertThat(CharArray.of("foo").commonSuffix(CharArray.of("foo"))).isEqualTo(3);
 
         assertThat(CharArray.of("foo").commonSuffix(CharArray.of("foobar", 3, 6))).isEqualTo(0);
         assertThat(CharArray.of("foo").commonSuffix(CharArray.of("fooboo", 3, 6))).isEqualTo(2);
@@ -807,7 +956,21 @@ public class CharArrayTest {
     }
 
     @Test
-    public void commonSuffix_empty() {
+    public void commonSuffix_empty_string() {
+        assertThat(CharArray.of("").commonSuffix("")).isEqualTo(0);
+        assertThat(CharArray.of("foo").commonSuffix("")).isEqualTo(0);
+        assertThat(CharArray.of("").commonSuffix("foo")).isEqualTo(0);
+    }
+
+    @Test
+    public void commonSuffix_empty_native_array() {
+        assertThat(CharArray.of("").commonSuffix("".toCharArray())).isEqualTo(0);
+        assertThat(CharArray.of("foo").commonSuffix("".toCharArray())).isEqualTo(0);
+        assertThat(CharArray.of("").commonSuffix("foo".toCharArray())).isEqualTo(0);
+    }
+
+    @Test
+    public void commonSuffix_empty_array() {
         assertThat(CharArray.of("").commonSuffix(CharArray.of(""))).isEqualTo(0);
         assertThat(CharArray.of("foo").commonSuffix(CharArray.of(""))).isEqualTo(0);
         assertThat(CharArray.of("").commonSuffix(CharArray.of("foo"))).isEqualTo(0);
@@ -817,7 +980,21 @@ public class CharArrayTest {
     }
 
     @Test
-    public void commonSuffix_same_suffix() {
+    public void commonSuffix_same_suffix_string() {
+        assertThat(CharArray.of("foo").commonSuffix("foo")).isEqualTo(3);
+        assertThat(CharArray.of("foo").commonSuffix("barfoo")).isEqualTo(3);
+        assertThat(CharArray.of("barfoo").commonSuffix("foo")).isEqualTo(3);
+    }
+
+    @Test
+    public void commonSuffix_same_suffix_native_array() {
+        assertThat(CharArray.of("foo").commonSuffix("foo".toCharArray())).isEqualTo(3);
+        assertThat(CharArray.of("foo").commonSuffix("barfoo".toCharArray())).isEqualTo(3);
+        assertThat(CharArray.of("barfoo").commonSuffix("foo".toCharArray())).isEqualTo(3);
+    }
+
+    @Test
+    public void commonSuffix_same_suffix_array() {
         assertThat(CharArray.of("foo").commonSuffix(CharArray.of("foo"))).isEqualTo(3);
         assertThat(CharArray.of("foo").commonSuffix(CharArray.of("barfoo"))).isEqualTo(3);
         assertThat(CharArray.of("barfoo").commonSuffix(CharArray.of("foo"))).isEqualTo(3);
@@ -826,8 +1003,36 @@ public class CharArrayTest {
         assertThat(CharArray.of("barfoo", 3, 6).commonSuffix(CharArray.of("foo"))).isEqualTo(3);
     }
 
+    /** {@link CharArray#isSuffixOf} **/
+
     @Test
-    public void isSuffixOf() {
+    public void isSuffixOf_string() {
+        assertThat(CharArray.of("foo").isSuffixOf("bar")).isFalse();
+        assertThat(CharArray.of("foo").isSuffixOf("foobar")).isFalse();
+        assertThat(CharArray.of("foo").isSuffixOf("barfoo")).isTrue();
+        assertThat(CharArray.of("foo").isSuffixOf("foo")).isTrue();
+        assertThat(CharArray.of("foo").isSuffixOf("oo")).isFalse();
+
+        assertThat(CharArray.of("").isSuffixOf("")).isTrue();
+        assertThat(CharArray.of("foo").isSuffixOf("")).isFalse();
+        assertThat(CharArray.of("").isSuffixOf("foo")).isTrue();
+    }
+
+    @Test
+    public void isSuffixOf_native_array() {
+        assertThat(CharArray.of("foo").isSuffixOf("bar".toCharArray())).isFalse();
+        assertThat(CharArray.of("foo").isSuffixOf("foobar".toCharArray())).isFalse();
+        assertThat(CharArray.of("foo").isSuffixOf("barfoo".toCharArray())).isTrue();
+        assertThat(CharArray.of("foo").isSuffixOf("foo".toCharArray())).isTrue();
+        assertThat(CharArray.of("foo").isSuffixOf("oo".toCharArray())).isFalse();
+
+        assertThat(CharArray.of("").isSuffixOf("".toCharArray())).isTrue();
+        assertThat(CharArray.of("foo").isSuffixOf("".toCharArray())).isFalse();
+        assertThat(CharArray.of("").isSuffixOf("foo".toCharArray())).isTrue();
+    }
+
+    @Test
+    public void isSuffixOf_array() {
         assertThat(CharArray.of("foo").isSuffixOf(CharArray.of("bar"))).isFalse();
         assertThat(CharArray.of("foo").isSuffixOf(CharArray.of("foobar"))).isFalse();
         assertThat(CharArray.of("foo").isSuffixOf(CharArray.of("barfoo"))).isTrue();
@@ -842,7 +1047,7 @@ public class CharArrayTest {
     /** {@link CharArray#startsWith} **/
 
     @Test
-    public void startsWith() {
+    public void startsWith_array() {
         CharArray array = CharArray.of("foo");
         assertThat(array.startsWith(CharArray.of(""))).isTrue();
         assertThat(array.startsWith(CharArray.of("f"))).isTrue();
@@ -900,7 +1105,7 @@ public class CharArrayTest {
     /** {@link CharArray#endsWith} **/
 
     @Test
-    public void endsWith() {
+    public void endsWith_array() {
         CharArray array = CharArray.of("foo");
         assertThat(array.endsWith(CharArray.of(""))).isTrue();
         assertThat(array.endsWith(CharArray.of("o"))).isTrue();
@@ -1126,7 +1331,7 @@ public class CharArrayTest {
     /** {@link CharArray#chars()} **/
 
     @Test
-    public void chars() {
+    public void chars_simple() {
         int[] array = CharArray.of("foobar").chars().toArray();
         assertThat(array).isEqualTo(new int[] { 102, 111, 111, 98, 97, 114 });
     }
@@ -1146,7 +1351,7 @@ public class CharArrayTest {
     /** {@link CharArray#codePoints()} **/
 
     @Test
-    public void codepoints() {
+    public void codepoints_simple() {
         int[] array = CharArray.of("foobar").codePoints().toArray();
         assertThat(array).isEqualTo(new int[] { 102, 111, 111, 98, 97, 114 });
     }
@@ -1197,6 +1402,22 @@ public class CharArrayTest {
         assertThat(CharArray.of("").compareTo("foo")).isAtMost(-1);
     }
 
+    @Test
+    public void compareTo_native_array_simple() {
+        assertThat(CharArray.of("foo").compareTo("bar".toCharArray())).isAtLeast(1);
+        assertThat(CharArray.of("foo").compareTo("foo".toCharArray())).isEqualTo(0);
+        assertThat(CharArray.of("bar").compareTo("foo".toCharArray())).isAtMost(-1);
+        assertThat(CharArray.of("foobar").compareTo("foo".toCharArray())).isAtLeast(1);
+        assertThat(CharArray.of("foo").compareTo("foobar".toCharArray())).isAtMost(-1);
+    }
+
+    @Test
+    public void compareTo_native_array_empty() {
+        assertThat(CharArray.of("").compareTo("".toCharArray())).isEqualTo(0);
+        assertThat(CharArray.of("foo").compareTo("".toCharArray())).isAtLeast(1);
+        assertThat(CharArray.of("").compareTo("foo".toCharArray())).isAtMost(-1);
+    }
+
     /** {@link CharArray#contentEquals} **/
 
     @Test
@@ -1220,7 +1441,25 @@ public class CharArrayTest {
         assertThat(CharArray.of("foo").contentEquals("")).isFalse();
         assertThat(CharArray.of("foo").contentEquals("a")).isFalse();
         assertThat(CharArray.of("foo").contentEquals("foo")).isTrue();
+        assertThat(CharArray.of("foo").contentEquals("fooo")).isFalse();
         assertThat(CharArray.of("foo").contentEquals("Foo")).isFalse();
+    }
+
+    @Test
+    public void contentEquals_array() {
+        assertThat(CharArray.of("").contentEquals(CharArray.of(""))).isTrue();
+        assertThat(CharArray.of("").contentEquals(CharArray.of("foo"))).isFalse();
+
+        assertThat(CharArray.of("a").contentEquals(CharArray.of(""))).isFalse();
+        assertThat(CharArray.of("a").contentEquals(CharArray.of("a"))).isTrue();
+        assertThat(CharArray.of("a").contentEquals(CharArray.of("A"))).isFalse();
+        assertThat(CharArray.of("a").contentEquals(CharArray.of("foo"))).isFalse();
+
+        assertThat(CharArray.of("foo").contentEquals(CharArray.of(""))).isFalse();
+        assertThat(CharArray.of("foo").contentEquals(CharArray.of("a"))).isFalse();
+        assertThat(CharArray.of("foo").contentEquals(CharArray.of("foo"))).isTrue();
+        assertThat(CharArray.of("foo").contentEquals(CharArray.of("fooo"))).isFalse();
+        assertThat(CharArray.of("foo").contentEquals(CharArray.of("Foo"))).isFalse();
     }
 
     @Test
@@ -1236,13 +1475,14 @@ public class CharArrayTest {
         assertThat(CharArray.of("foo").contentEquals("".toCharArray())).isFalse();
         assertThat(CharArray.of("foo").contentEquals("a".toCharArray())).isFalse();
         assertThat(CharArray.of("foo").contentEquals("foo".toCharArray())).isTrue();
+        assertThat(CharArray.of("foo").contentEquals("fooo".toCharArray())).isFalse();
         assertThat(CharArray.of("foo").contentEquals("Foo".toCharArray())).isFalse();
     }
 
     /** {@link CharArray#contentEqualsIgnoreCase(CharSequence)} **/
 
     @Test
-    public void contentEqualsIgnoreCase() {
+    public void contentEqualsIgnoreCase_simple() {
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("foo")).isTrue();
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("FOO")).isTrue();
         assertThat(CharArray.of("foo").contentEqualsIgnoreCase("FoO")).isTrue();

@@ -1,6 +1,7 @@
 package io.spbx.util.collect;
 
 import io.spbx.util.base.Pair;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.*;
 import static io.spbx.util.testing.TestingPrimitives.bytes;
 
+@Tag("fast")
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class BasicCollectorsTest {
     private static final Integer NULL = null;

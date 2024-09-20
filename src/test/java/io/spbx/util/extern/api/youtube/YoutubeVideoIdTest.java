@@ -1,11 +1,13 @@
 package io.spbx.util.extern.api.youtube;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.extern.api.youtube.YoutubeVideoId.getVideoIdOrNull;
 import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
 
+@Tag("fast")
 public class YoutubeVideoIdTest {
     @Test
     public void of_id() {

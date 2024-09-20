@@ -1,11 +1,13 @@
 package io.spbx.util.code.gen;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.TestingBasics.mapOf;
 
+@Tag("fast")
 public class AttrsTest {
     @Test
     public void toNamedMap_without_defaults() {

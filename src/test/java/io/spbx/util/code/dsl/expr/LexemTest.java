@@ -1,11 +1,13 @@
 package io.spbx.util.code.dsl.expr;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.code.dsl.expr.SyntaxOptions.ALL_ALLOWED;
 import static io.spbx.util.code.dsl.expr.TestingExpr.toLexem;
 
+@Tag("fast")
 public class LexemTest {
     @Test
     public void is_identifier() {

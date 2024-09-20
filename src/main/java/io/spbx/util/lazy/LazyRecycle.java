@@ -10,14 +10,14 @@ import java.util.function.Consumer;
 public interface LazyRecycle<T> extends LazyInit<T> {
     /**
      * Resets the lazy state.
-     * After the call {@link #isInitialized()} returns <code>false</code>.
+     * After the call {@link #isInitialized()} returns {@code false}.
      * Does nothing if not initialized.
      */
     void recycle();
 
     /**
-     * Resets the lazy state and calls the <code>terminator</code> on the current instance if it's initialized.
-     * After the call {@link #isInitialized()} returns <code>false</code>.
+     * Resets the lazy state and calls the {@code terminator} on the current instance if it's initialized.
+     * After the call {@link #isInitialized()} returns {@code false}.
      * Does nothing if not initialized.
      */
     default void recycle(@NotNull Consumer<T> terminator) {

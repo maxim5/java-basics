@@ -1,6 +1,7 @@
 package io.spbx.util.collect;
 
 import io.spbx.util.base.Pair;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -8,6 +9,7 @@ import static io.spbx.util.collect.BasicMaps.MapPutMethod.overwrite;
 import static io.spbx.util.testing.TestingBasics.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class BasicMapsTest {
     @Test
     public void toMapUnchecked_vararg_simple() {

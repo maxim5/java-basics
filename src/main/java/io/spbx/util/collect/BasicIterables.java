@@ -272,6 +272,16 @@ public class BasicIterables {
     }
 
     @Pure
+    public static @SafeVarargs <E> @NotNull List<E> concatAllToList(@Nullable List<? extends E> @NotNull... lists) {
+        int capacity = BasicStreams.streamOf(lists).mapToInt(BasicIterables::sizeOf).sum();
+        ArrayList<E> result = new ArrayList<>(capacity);
+        for (List<? extends E> list : lists) {
+            result.addAll(emptyIfNull(list));
+        }
+        return result;
+    }
+
+    @Pure
     public static <E> @NotNull List<E> appendToList(@NotNull Iterable<? extends E> first, @Nullable E second) {
         return Stream.concat(BasicStreams.streamOf(first), BasicStreams.single(second)).toList();
     }

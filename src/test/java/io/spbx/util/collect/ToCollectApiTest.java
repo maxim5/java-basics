@@ -4,6 +4,7 @@ import com.google.common.collect.MoreCollectors;
 import io.spbx.util.base.Pair;
 import io.spbx.util.base.Triple;
 import io.spbx.util.base.Tuple;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
@@ -13,6 +14,7 @@ import java.util.Stack;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class ToCollectApiTest {
     private static final Integer NULL = null;
 

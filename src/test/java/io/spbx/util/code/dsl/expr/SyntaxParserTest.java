@@ -1,11 +1,13 @@
 package io.spbx.util.code.dsl.expr;
 
 import io.spbx.util.code.dsl.expr.Sequence.Separator;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.code.dsl.expr.TestingExpr.*;
 
+@Tag("fast")
 public class SyntaxParserTest {
     private static final Identifier $a = identifier("a");
     private static final Identifier $b = identifier("b");

@@ -2,10 +2,12 @@ package io.spbx.util.time;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spbx.util.testing.TestingBasics;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Tag("fast")
 @SuppressWarnings({ "SameParameterValue", "RedundantThrows", "CodeBlock2Expr" })
 public class TimeItTest {
     private static final long WAIT_MILLIS = 5;

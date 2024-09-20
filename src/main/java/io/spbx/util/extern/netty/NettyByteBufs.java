@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
-public class BasicByteBufs {
+public class NettyByteBufs {
     static {
         RuntimeRequirement.verify("io.netty.buffer.ByteBuf");
     }

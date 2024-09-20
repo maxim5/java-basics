@@ -1,10 +1,12 @@
 package io.spbx.util.time;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
 
+@Tag("fast")
 public class EpochYear8Test {
     @Test
     public void default_roundtrip() {

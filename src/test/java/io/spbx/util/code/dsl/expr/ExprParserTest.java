@@ -5,6 +5,7 @@ import com.google.errorprone.annotations.CheckReturnValue;
 import io.spbx.util.code.dsl.expr.Sequence.Separator;
 import io.spbx.util.func.Allowed;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
@@ -13,6 +14,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.code.dsl.expr.TestingExpr.sequence;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class ExprParserTest {
     private static final SyntaxOptions OPTIONS = SyntaxOptions.of()
         .infixes(Allowed.blacklistOf(InfixOp.QUESTION, InfixOp.COLON))

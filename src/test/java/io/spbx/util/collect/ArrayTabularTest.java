@@ -1,11 +1,13 @@
 package io.spbx.util.collect;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.testing.TestingBasics.arrayOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class ArrayTabularTest {
     @Test
     public void of_not_empty_array() {

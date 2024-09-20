@@ -78,24 +78,24 @@ public class Lazy<T> implements Supplier<T> {
     }
 
     /**
-     * Transforms this {@link Lazy} to a new {@link Lazy} via <code>func</code> and returns the derived instance.
+     * Transforms this {@link Lazy} to a new {@link Lazy} via {@code func} and returns the derived instance.
      * Example:
-     * <pre>
-     *     Lazy&lt;Path&gt; root = Lazy.of(this::getRootPath);
-     *     Lazy&lt;Path&gt; dir = root.transform(path -> path.resolve("dir"));
-     * </pre>
+     * {@snippet lang="java" :
+     *     Lazy<Path> root = Lazy.of(this::getRootPath);
+     *     Lazy<Path> dir = root.transform(path -> path.resolve("dir"));
+     * }
      */
     public <R> @NotNull Lazy<R> transform(@NotNull Function<T, R> func) {
         return new Lazy<>(() -> func.apply(Objects.requireNonNullElseGet(ref.get(), this)));
     }
 
     /**
-     * Transforms this {@link Lazy} to a {@link LazyBoolean} via <code>predicate</code> and returns the derived instance.
+     * Transforms this {@link Lazy} to a {@link LazyBoolean} via {@code predicate} and returns the derived instance.
      * Example:
-     * <pre>
-     *     Lazy&lt;Path&gt; root = Lazy.of(this::getRootPath);
+     * {@snippet lang="java" :
+     *     Lazy<Path> root = Lazy.of(this::getRootPath);
      *     LazyBoolean exists = root.transformBool(Files::exists);
-     * </pre>
+     * }
      */
     public @NotNull LazyBoolean transformBool(@NotNull Predicate<T> predicate) {
         return new LazyBoolean(() -> predicate.test(Objects.requireNonNullElseGet(ref.get(), this)));

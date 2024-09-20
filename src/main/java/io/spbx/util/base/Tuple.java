@@ -4,7 +4,7 @@ import com.google.errorprone.annotations.Immutable;
 import io.spbx.util.annotate.NegativeIndexingSupported;
 import io.spbx.util.base.BasicExceptions.IllegalStateExceptions;
 import io.spbx.util.buf.BaseBuf;
-import io.spbx.util.func.Chains;
+import io.spbx.util.func.Functions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -178,7 +178,7 @@ public final class Tuple extends BaseBuf implements Iterable<Object>, Serializab
             () -> new FixedArrayCollector(length),
             FixedArrayCollector::add,
             FixedArrayCollector::combine,
-            Chains.chain(FixedArrayCollector::exactItems, Tuple::of)
+            Functions.chain(FixedArrayCollector::exactItems, Tuple::of)
         ));
     }
 
@@ -188,7 +188,7 @@ public final class Tuple extends BaseBuf implements Iterable<Object>, Serializab
             () -> new FixedArrayCollector(length),
             FixedArrayCollector::add,
             FixedArrayCollector::combine,
-            Chains.chain(FixedArrayCollector::items, Tuple::of)
+            Functions.chain(FixedArrayCollector::items, Tuple::of)
         ));
     }
 

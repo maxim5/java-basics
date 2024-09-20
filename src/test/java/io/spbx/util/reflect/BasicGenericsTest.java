@@ -4,7 +4,9 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.CheckReturnValue;
 import com.google.inject.internal.MoreTypes;
 import io.spbx.util.func.Reversible;
+import io.spbx.util.reflect.BasicMembers.Fields;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -12,8 +14,8 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
-import static java.util.Objects.requireNonNull;
 
+@Tag("fast")
 public class BasicGenericsTest {
     @Test
     public void getGenericTypeArgumentsOfField_optional() {
@@ -71,7 +73,7 @@ public class BasicGenericsTest {
     private record BasicGenericsSubject(@NotNull Class<?> klass) {
         public @NotNull BasicGenericsSubject findsGenericTypeArgumentsForField(@NotNull String name,
                                                                                @NotNull Type... types) {
-            Field field = requireNonNull(BasicMembers.findField(klass, name));
+            Field field = Fields.of(klass).getOrDie(name);
             Type[] typeArguments = BasicGenerics.getGenericTypeArgumentsOfField(field);
             assertThat(typeArguments).asList().containsExactly((Object[]) types).inOrder();
             return this;

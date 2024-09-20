@@ -1,9 +1,11 @@
 package io.spbx.util.array;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Tag("fast")
 public class MutableCharArrayTest {
     @Test
     public void create_empty_string() {

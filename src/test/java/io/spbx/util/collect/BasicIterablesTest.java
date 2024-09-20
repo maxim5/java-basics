@@ -3,6 +3,7 @@ package io.spbx.util.collect;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.spbx.util.base.Maybe;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayDeque;
@@ -28,6 +29,7 @@ import static io.spbx.util.func.ScopeFunctions.alsoApply;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.*;
 
+@Tag("fast")
 public class BasicIterablesTest {
     private static final Integer NULL = null;
 
@@ -365,6 +367,17 @@ public class BasicIterablesTest {
             .containsExactly(1, 2, null, null, 3).inOrder();
         assertThat(BasicIterables.concatToList(listOf(NULL), listOf(null, null), listOf(NULL)))
             .containsExactly(null, null, null, null).inOrder();
+    }
+
+    @Test
+    public void concatAllToList_lists_of_vararg() {
+        assertThat(BasicIterables.concatAllToList()).isEmpty();
+        assertThat(BasicIterables.concatAllToList(listOf())).isEmpty();
+        assertThat(BasicIterables.concatAllToList(listOf(), listOf(), listOf())).isEmpty();
+
+        assertThat(BasicIterables.concatAllToList(listOf(1, 2), listOf(), listOf())).containsExactly(1, 2).inOrder();
+        assertThat(BasicIterables.concatAllToList(listOf(), listOf(1), listOf(2), listOf(3))).containsExactly(1, 2, 3).inOrder();
+        assertThat(BasicIterables.concatAllToList(listOf(1, 2), listOf(), listOf(3), listOf())).containsExactly(1, 2, 3).inOrder();
     }
 
     @Test

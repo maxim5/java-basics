@@ -1,5 +1,6 @@
 package io.spbx.util.base;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -7,6 +8,7 @@ import static io.spbx.util.testing.TestingBasics.listOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@Tag("fast")
 @SuppressWarnings({ "ObviousNullCheck", "ConstantValue" })
 public class BasicNullsTest {
     private static final String NULL = null;

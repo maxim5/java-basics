@@ -3,6 +3,7 @@ package io.spbx.util.collect;
 import com.google.common.collect.Sets;
 import io.spbx.util.collect.ExpirablePool.Status;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import java.util.Set;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class ExpirablePoolTest {
     @Test
     public void take_two() {

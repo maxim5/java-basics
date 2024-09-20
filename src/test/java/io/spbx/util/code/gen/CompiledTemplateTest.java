@@ -3,12 +3,14 @@ package io.spbx.util.code.gen;
 import io.spbx.util.code.gen.CompiledTemplate.CompiledDirective;
 import io.spbx.util.code.gen.Directive.Predefined;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.code.gen.DirectiveBuilder.block;
 import static io.spbx.util.testing.TestingBasics.mapOf;
 
+@Tag("fast")
 public class CompiledTemplateTest {
     @Test
     public void compiled_directive_eval_condition() {

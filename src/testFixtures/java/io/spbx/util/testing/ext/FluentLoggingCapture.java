@@ -5,10 +5,9 @@ import com.google.common.flogger.FluentLogger;
 import com.google.common.flogger.backend.LogData;
 import com.google.common.flogger.backend.LoggerBackend;
 import com.google.common.flogger.backend.TemplateContext;
-import com.google.common.truth.Truth;
 import io.spbx.util.base.Unchecked;
 import io.spbx.util.func.ThrowRunnable;
-import io.spbx.util.reflect.BasicMembers;
+import io.spbx.util.reflect.BasicMembers.Fields;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -120,23 +119,20 @@ public class FluentLoggingCapture implements BeforeEachCallback, AfterEachCallba
     }
 
     private static @NotNull LoggerBackend extractBackend(@NotNull FluentLogger logger) throws IllegalAccessException {
-        Field field = BasicMembers.findField(AbstractLogger.class, "backend");
-        Truth.assertThat(field).isNotNull();
+        Field field = Fields.of(AbstractLogger.class).getOrDie("backend");
         field.setAccessible(true);
         return (LoggerBackend) field.get(logger);
     }
 
     private static void injectBackend(@NotNull FluentLogger logger,
                                       @NotNull LoggerBackend backend) throws IllegalAccessException {
-        Field field = BasicMembers.findField(AbstractLogger.class, "backend");
-        Truth.assertThat(field).isNotNull();
+        Field field = Fields.of(AbstractLogger.class).getOrDie("backend");
         field.setAccessible(true);
         field.set(logger, backend);
     }
 
     private static @NotNull FluentLogger getFluentLogger(@NotNull Class<?> klass) throws IllegalAccessException {
-        Field field = BasicMembers.findField(klass, it -> it.getType().equals(FluentLogger.class));
-        Truth.assertThat(field).isNotNull();
+        Field field = Fields.of(klass).getOrDie(it -> it.getType().equals(FluentLogger.class));
         field.setAccessible(true);
         return (FluentLogger) field.get(null);
     }

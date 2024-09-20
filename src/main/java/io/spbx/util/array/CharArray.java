@@ -5,7 +5,6 @@ import io.spbx.util.buf.BaseCharBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Serializable;
 import java.nio.CharBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -15,7 +14,7 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
- * A String-like wrapper around <code>char[]</code> array, providing efficient slicing, searching,
+ * A String-like wrapper around {@code char[]} array, providing efficient slicing, searching,
  * for-each iteration and other operations.
  * <p>
  * {@link CharArray} supports python-style negative indexing, e.g. {@code array.substring(0, -2)} is equivalent to
@@ -23,14 +22,14 @@ import java.util.stream.IntStream;
  * <p>
  * {@link CharArray} provides immutable API but does not fully guarantee immutability because
  * it doesn't exclusively own the underlying char array. For example, {@link CharArray#wrap(char[])}
- * does not copy the native <code>char[]</code> for performance reasons, hence can be modified concurrently
+ * does not copy the native {@code char[]} for performance reasons, hence can be modified concurrently
  * outside the {@link CharArray} instance.
  * But {@link CharArray} itself treats both the native array and indices as immutable.
  *
  * @see MutableCharArray
  */
 @NegativeIndexingSupported
-public class CharArray extends BaseCharBuf<CharArray> implements CharSequence, Comparable<CharArray>, Serializable {
+public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
     public static final CharArray EMPTY = CharArray.wrap(new char[0]);
 
     protected CharArray(char @NotNull[] chars, int start, int end) {
@@ -331,11 +330,6 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence, C
     }
 
     /* Comparison */
-
-    @Override
-    public int compareTo(@NotNull CharArray that) {
-        return Arrays.compare(chars, start, end, that.chars, that.start, that.end);
-    }
 
     public int compareTo(@NotNull CharSequence str) {
         return CharSequence.compare(this, str);

@@ -1,11 +1,13 @@
 package io.spbx.util.buf;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.buf.BaseCharBuf.*;
 
+@Tag("fast")
 public class BaseCharBufTest {
     @Test
     public void hashCode_simple() {
@@ -33,13 +35,13 @@ public class BaseCharBufTest {
     }
 
     class Str extends BaseCharBuf<Str> {
-        protected Str(char @NotNull [] chars, int start, int end) {
+        protected Str(char @NotNull[] chars, int start, int end) {
             super(chars, start, end);
         }
         @Override protected @NotNull Str _this() {
             return this;
         }
-        @Override protected @NotNull Str _wrap(char @NotNull [] chars, int start, int end) {
+        @Override protected @NotNull Str _wrap(char @NotNull[] chars, int start, int end) {
             return new Str(chars, start, end);
         }
     }

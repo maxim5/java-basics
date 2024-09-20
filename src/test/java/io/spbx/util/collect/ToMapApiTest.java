@@ -2,6 +2,7 @@ package io.spbx.util.collect;
 
 import io.spbx.util.base.Pair;
 import io.spbx.util.collect.TestingMapCollectors.InputMapCase;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -13,6 +14,7 @@ import static io.spbx.util.collect.TestingMapCollectors.DUP_KEY_ERR;
 import static io.spbx.util.collect.TestingMapCollectors.DUP_KEY_ERR_GUAVA;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 
+@Tag("fast")
 public class ToMapApiTest {
     private static final Function<Pair<Integer, Integer>, Integer> first = Pair::first;
     private static final Function<Pair<Integer, Integer>, Integer> second = Pair::second;

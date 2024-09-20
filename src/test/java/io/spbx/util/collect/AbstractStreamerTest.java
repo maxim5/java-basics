@@ -3,6 +3,7 @@ package io.spbx.util.collect;
 import io.spbx.util.testing.MockConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.streamOf;
 import static io.spbx.util.testing.TestingPrimitives.doubles;
 
+@Tag("fast")
 public class AbstractStreamerTest {
     private static final Integer NULL = null;
 

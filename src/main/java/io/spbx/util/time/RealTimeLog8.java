@@ -11,27 +11,28 @@ import static io.spbx.util.base.BasicExceptions.newInternalError;
 /**
  * Stores the {@link RealTimeLog} in 8-bit byte array.
  * <p>
- * Supports only unsigned 32-bit timestamp values, i.e. longs in range <code>[0, 2^32 - 1]</code>.
+ * Supports only unsigned 32-bit timestamp values, i.e. longs in range {@code [0, 2^32 - 1]}.
  * <p>
- * Most efficient when the timestamps are close. For example, if the average difference between consecutive
- * timestamps is <code>timestampFreqAvg</code>, the expected memory footprint of {@link RealTimeLog8} to store
- * <code>100_000</code> timestamps is:
+ * Most efficient when the timestamp values are close to each other.
+ * The client should pick particular params for a given distribution at hand.
+ * For example, if the average difference between consecutive timestamps is {@code timestampFreqAvg},
+ * the expected memory footprint of {@link RealTimeLog8} to store {@code 100_000} timestamps is:
  * <ul>
  *     <li>
- *         <code>timestampFreqAvg <= 100</code> and <code>blockSize = 4</code>:
- *         <code>256 Kb</code> (or <code>2.6</code> bytes per value)
+ *         {@code timestampFreqAvg <= 100} and {@code blockSize == 4}:
+ *         {@code 256 Kb} (or {@code 2.6} bytes per value)
  *     </li>
  *     <li>
- *         <code>timestampFreqAvg <= 45</code> and <code>blockSize = 8</code>:
- *         <code>192 Kb</code> (or <code>2.0</code> bytes per value)
+ *         {@code timestampFreqAvg <= 45} and {@code blockSize == 8}:
+ *         {@code 192 Kb} (or {@code 2.0} bytes per value)
  *     </li>
  *     <li>
- *         <code>timestampFreqAvg <= 20</code> and <code>blockSize = 16</code>:
- *         <code>160 Kb</code> (or <code>1.6</code> bytes per value)
+ *         {@code timestampFreqAvg <= 20} and {@code blockSize == 16}:
+ *         {@code 160 Kb} (or {@code 1.6} bytes per value)
  *     </li>
  *     <li>
- *         <code>timestampFreqAvg <= 10</code> and <code>blockSize = 32</code>:
- *         <code>144 Kb</code> (or <code>1.5</code> bytes per value)
+ *         {@code timestampFreqAvg <= 10} and {@code blockSize == 32}:
+ *         {@code 144 Kb} (or {@code 1.5} bytes per value)
  *     </li>
  * </ul>
  */

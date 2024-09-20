@@ -1,10 +1,12 @@
 package io.spbx.util.base;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("fast")
 public class EasyCastTest {
     @Test
     public void castAny_simple() {

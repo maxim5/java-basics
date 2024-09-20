@@ -1,10 +1,12 @@
 package io.spbx.util.lazy;
 
 import io.spbx.util.testing.MockSupplier;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Tag("fast")
 public class LazyBooleanTest {
     @Test
     public void simple() {

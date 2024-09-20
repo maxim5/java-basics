@@ -1,9 +1,9 @@
 package io.spbx.util.io;
 
 import com.google.errorprone.annotations.MustBeClosed;
-import io.spbx.util.base.DataSize;
 import io.spbx.util.base.BasicHash;
-import io.spbx.util.func.Chains;
+import io.spbx.util.base.DataSize;
+import io.spbx.util.func.Consumers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -150,11 +150,11 @@ public class BasicFiles {
     /* File walk */
 
     public static void walkDirectories(@NotNull Path root, @NotNull Consumer<Path> callback) {
-        walk(root, Chains.chain(Files::isDirectory, callback));
+        walk(root, Consumers.chain(Files::isDirectory, callback));
     }
 
     public static void walkRegularFiles(@NotNull Path root, @NotNull Consumer<Path> callback) {
-        walk(root, Chains.chain(Files::isRegularFile, callback));
+        walk(root, Consumers.chain(Files::isRegularFile, callback));
     }
 
     public static void walk(@NotNull Path root, @NotNull WalkCallback callback) {

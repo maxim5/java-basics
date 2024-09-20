@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.spbx"
-version = "0.1.4"
+version = "0.2.0"
 
 tasks.wrapper {
     gradleVersion = "8.10"
@@ -31,16 +31,20 @@ repositories {
 private val main by sourceSets
 private val shared by sourceSets.creating
 private val buffers by sourceSets.creating
+private val functions by sourceSets.creating
 
 dependencies {
     "buffersCompileOnly"(shared.output)
     "buffersCompileOnly"("org.jetbrains:annotations:24.1.0")
+    "functionsCompileOnly"(shared.output)
+    "functionsCompileOnly"("org.jetbrains:annotations:24.1.0")
     "sharedCompileOnly"("org.jetbrains:annotations:24.1.0")
 }
 
 dependencies {
     implementation(shared.output)
     implementation(buffers.output)
+    implementation(functions.output)
 
     compileOnly("org.jetbrains:annotations:24.1.0")
     compileOnly("com.google.errorprone:error_prone_annotations:2.28.0")
@@ -51,6 +55,7 @@ dependencies {
     compileOnly("com.google.inject:guice:7.0.0")
     compileOnly("com.palantir.patches.sourceforge:trove3:3.0.3-p9")
     compileOnly("io.netty:netty-all:4.1.110.Final")
+    compileOnly("org.ow2.asm:asm:9.7")
 }
 
 dependencies {
@@ -87,6 +92,7 @@ dependencies {
     testImplementation("com.carrotsearch:hppc:0.10.0")
     testImplementation("com.palantir.patches.sourceforge:trove3:3.0.3-p9")
     testImplementation("io.netty:netty-all:4.1.110.Final")
+    testImplementation("org.ow2.asm:asm:9.7")
 }
 
 tasks.test {
