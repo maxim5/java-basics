@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.spbx"
-version = "0.1.4"
+version = "0.2.0"
 
 tasks.wrapper {
     gradleVersion = "8.10"
