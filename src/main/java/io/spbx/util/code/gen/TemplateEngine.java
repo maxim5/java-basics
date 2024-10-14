@@ -1,7 +1,6 @@
 package io.spbx.util.code.gen;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.flogger.FluentLogger;
 import io.spbx.util.base.BasicExceptions.IllegalStateExceptions;
 import io.spbx.util.code.gen.CompiledTemplate.Block;
 import io.spbx.util.code.gen.CompiledTemplate.CompiledDirective;
@@ -12,6 +11,7 @@ import io.spbx.util.collect.BasicMaps;
 import io.spbx.util.collect.Streamer;
 import io.spbx.util.func.Functions;
 import io.spbx.util.io.BasicFiles;
+import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -23,14 +23,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.logging.Level;
 
 import static io.spbx.util.base.BasicExceptions.newIllegalStateException;
 import static io.spbx.util.base.BasicExceptions.newInternalError;
 import static io.spbx.util.code.gen.SkipTemplateException.newSkipTemplateException;
 
 public class TemplateEngine {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
 
     private final Path sourceRoot;
     private final Path destRoot;
@@ -72,7 +71,7 @@ public class TemplateEngine {
             try {
                 return renderToDest(templateId, vars);
             } catch (SkipTemplateException e) {
-                log.at(Level.FINE).log("Skip template %s for vars: %s", templateId.relativePath(), vars);
+                log.debug().log("Skip template %s for vars: %s", templateId.relativePath(), vars);
                 return null;
             }
         }).toArrayList();
@@ -100,8 +99,8 @@ public class TemplateEngine {
     }
 
     private void renderTemplate(@NotNull CompiledTemplate template, @NotNull TemplateId id, @NotNull RenderContext ctx) {
-        log.at(Level.INFO).log("Render template: %s", id);
-        log.at(Level.FINE).log("Vars: %s", ctx.vars());
+        log.info().log("Render template: %s", id);
+        log.debug().log("Vars: %s", ctx.vars());
         template.blocks().forEach(blk -> renderBlock(blk, ctx));
     }
 
@@ -112,11 +111,11 @@ public class TemplateEngine {
     private void renderBlock(@NotNull Block block, @NotNull RenderContext ctx) {
         switch (block) {
             case LiteralBlock literalBlock -> {
-                log.at(Level.FINER).log("Render literal block: %s", literalBlock.literals().size());
+                log.trace().log("Render literal block: %s", literalBlock.literals().size());
                 ctx.builder().appendLines(literalBlock.literals());
             }
             case DirectiveBlock directiveBlock -> {
-                log.at(Level.FINE).log("Render directive block: %s", directiveBlock.directive());
+                log.trace().log("Render directive block: %s", directiveBlock.directive());
                 CompiledDirective directive = directiveBlock.directive();
                 List<Block> innerBlocks = directiveBlock.inner();
                 switch (directive.predefined()) {
@@ -135,7 +134,7 @@ public class TemplateEngine {
                         ctx.builder().removeLast();
                     case IF -> {
                         boolean eval = directive.evalCondition(ctx.vars().vars());
-                        log.at(Level.FINER).log("If condition evaluated=%s from: %s", eval, ctx.vars().vars());
+                        log.trace().log("If condition evaluated=%s from: %s", eval, ctx.vars().vars());
                         if (eval) {
                             renderBlocks(innerBlocks, ctx);
                         } else {
@@ -144,7 +143,7 @@ public class TemplateEngine {
                     }
                     case ELSE -> {
                         boolean eval = directive.evalCondition(ctx.vars().vars());
-                        log.at(Level.FINER).log("Else condition evaluated=%s from: %s", eval, ctx.vars().vars());
+                        log.trace().log("Else condition evaluated=%s from: %s", eval, ctx.vars().vars());
                         if (eval) {
                             ctx.builder().removeLastIfBlank();
                         } else {

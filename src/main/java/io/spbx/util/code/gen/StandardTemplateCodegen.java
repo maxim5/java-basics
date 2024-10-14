@@ -1,8 +1,8 @@
 package io.spbx.util.code.gen;
 
-import com.google.common.flogger.FluentLogger;
 import io.spbx.util.collect.BasicMaps;
 import io.spbx.util.io.BasicFiles;
+import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -10,12 +10,11 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import static io.spbx.util.base.BasicExceptions.notImplemented;
 
 public class StandardTemplateCodegen {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
 
     public static @NotNull Map<String, String> defaults(@NotNull Path template) {
         return Map.of(
@@ -33,7 +32,7 @@ public class StandardTemplateCodegen {
     public static void generateAll(@NotNull Path root,
                                    @NotNull Path dest,
                                    @NotNull List<Map<String, String>> vars) {
-        log.at(Level.INFO).log("Generate all: %s -> %s", root, dest);
+        log.info().log("Generate all: %s -> %s", root, dest);
         TemplateEngine engine = new TemplateEngine(root, dest);
         BasicFiles.walkRegularFiles(root, path -> {
             Map<String, String> defaults = defaults(path);

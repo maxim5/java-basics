@@ -1,6 +1,5 @@
 package io.spbx.util.extern.guice;
 
-import com.google.common.flogger.FluentLogger;
 import com.google.inject.Binder;
 import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
@@ -14,18 +13,23 @@ import com.google.inject.spi.BindingTargetVisitor;
 import com.google.inject.spi.ElementVisitor;
 import com.google.inject.util.Providers;
 import io.spbx.util.collect.BasicMaps;
+import io.spbx.util.logging.Logger;
+import io.spbx.util.rt.RuntimeRequirement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 
 import static io.spbx.util.base.EasyCast.castAny;
 
 public class MoreGuice {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
+
+    static {
+        RuntimeRequirement.verify("com.google.inject.Injector");
+    }
 
     private final Injector injector;
     private final ConcurrentMap<Key<?>, Binding<?>> singletons = BasicMaps.newConcurrentMap();
@@ -90,14 +94,14 @@ public class MoreGuice {
         try {
             if (injector.getExistingBinding(key) != null) {
                 Provider<? extends T> provider = injector.getProvider(key);
-                log.at(Level.FINE).log("Found explicit %s Guice provider: %s", key, provider);
+                log.debug().log("Found explicit %s Guice provider: %s", key, provider);
                 return provider.get();
             }
         } catch (ConfigurationException e) {
-            log.at(Level.FINEST).withCause(e).log("Failed to find provider for %s", key);
+            log.trace().withCause(e).log("Failed to find provider for %s", key);
         }
 
-        log.at(Level.FINE).log("Applying default %s supplier", key);
+        log.debug().log("Applying default %s supplier", key);
         return defaultSupplier.get();
     }
 

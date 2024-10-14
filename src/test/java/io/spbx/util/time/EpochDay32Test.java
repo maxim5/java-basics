@@ -1,12 +1,11 @@
 package io.spbx.util.time;
 
+import io.spbx.util.testing.AssertReverse;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-
-import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
 
 @Tag("fast")
 public class EpochDay32Test {
@@ -25,6 +24,6 @@ public class EpochDay32Test {
     }
 
     private static void assertRoundtrip(@NotNull LocalDate localDate) {
-        assertReversibleRoundtrip(EpochDay32::localDateToEpochDay32, EpochDay32::epochDay32ToLocalDate, localDate);
+        AssertReverse.assertRoundtrip(EpochDay32::localDateToEpochDay32, EpochDay32::epochDay32ToLocalDate, localDate);
     }
 }

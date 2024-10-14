@@ -1,13 +1,12 @@
 package io.spbx.util.props;
 
-import com.google.common.flogger.FluentLogger;
-import io.spbx.util.base.Unchecked;
+import io.spbx.util.io.UncheckedClosable;
+import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -18,13 +17,13 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
 
 import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.base.Unchecked.rethrow;
 
 @ThreadSafe
-public class LiveProperties implements StandardProperties, Closeable {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+public class LiveProperties implements StandardProperties, UncheckedClosable {
+    private static final Logger log = Logger.forEnclosingClass();
     private static final long EVENTS_TOLERANCE_MILLIS = 100;
 
     private final Path config;
@@ -41,11 +40,11 @@ public class LiveProperties implements StandardProperties, Closeable {
             try {
                 registerWatchService(config.getParent());
             } catch (InterruptedException e) {
-                log.at(Level.CONFIG).log("File monitor interrupted. %s", this);
+                log.debug().log("File monitor interrupted. %s", this);
             } catch (IOException e) {
-                Unchecked.rethrow(e);
+                rethrow(e);
             } catch (Throwable e) {
-                Unchecked.rethrow(e);
+                rethrow(e);
             }
         });
         monitorThread.setDaemon(true);
@@ -74,12 +73,12 @@ public class LiveProperties implements StandardProperties, Closeable {
         if (!monitorThread.isAlive()) {
             return;
         }
-        log.at(Level.CONFIG).log("Closing %s ...", this);
+        log.debug().log("Closing %s ...", this);
         try {
             monitorThread.interrupt();
             watchService.close();
         } catch (IOException e) {
-            Unchecked.rethrow(e);
+            rethrow(e);
         }
     }
 
@@ -90,7 +89,7 @@ public class LiveProperties implements StandardProperties, Closeable {
     }
 
     private void registerWatchService(@NotNull Path directory) throws IOException, InterruptedException {
-        log.at(Level.INFO).log("Starting file monitor %s ...", this);
+        log.info().log("Starting file monitor %s ...", this);
 
         directory.register(
             watchService,
@@ -104,14 +103,14 @@ public class LiveProperties implements StandardProperties, Closeable {
                 onEvent(event.kind(), event.context());
             }
             if (!key.reset()) {
-                log.at(Level.INFO).log("Key is invalid: %s", key);
+                log.info().log("Key is invalid: %s", key);
                 return;
             }
         }
     }
 
     private void onEvent(@NotNull WatchEvent.Kind<?> kind, @NotNull Object context) {
-        log.at(Level.FINER).log("WatchEvent.Kind=%s. Context=%s", kind, context);
+        log.debug().log("WatchEvent.Kind=%s. Context=%s", kind, context);
         if (context instanceof Path path && isConfigPath(path) && checkIn()) {
             updatePropertiesMap();
         }
@@ -136,12 +135,12 @@ public class LiveProperties implements StandardProperties, Closeable {
             if (config.toFile().exists()) {
                 Properties properties = readPropertiesMap();
                 reference.set(properties);
-                log.at(Level.CONFIG).log("Properties updated: size=%d", properties.size());
+                log.debug().log("Properties updated: size=%d", properties.size());
             } else {
-                log.at(Level.CONFIG).log("Properties file not found: %s", config);
+                log.debug().log("Properties file not found: %s", config);
             }
         } catch (IOException e) {
-            log.at(Level.WARNING).withCause(e).log("Failed to update properties: %s", e.getMessage());
+            log.warn().withCause(e).log("Failed to update properties: %s", e.getMessage());
         }
     }
 

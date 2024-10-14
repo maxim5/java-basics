@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-import static io.spbx.util.func.ScopeFunctions.alsoRun;
+import static io.spbx.util.func.ScopeFunctions.also;
 
 public class GuavaBiMaps {
     public static <E, K, V> @NotNull Collector<E, ?, HashBiMap<K, V>> toHashBiMap(
@@ -19,7 +19,7 @@ public class GuavaBiMaps {
         return Collector.of(
             HashBiMap::create,
             (bimap, item) -> putMethod.accept(bimap, keyFunc.apply(item), valueFunc.apply(item)),
-            (bimap1, bimap2) -> alsoRun(bimap1, () -> bimap2.forEach((key, val) -> putMethod.accept(bimap1, key, val)))
+            (bimap1, bimap2) -> also(bimap1, () -> bimap2.forEach((key, val) -> putMethod.accept(bimap1, key, val)))
         );
     }
 
@@ -31,7 +31,7 @@ public class GuavaBiMaps {
         static <K, V> @NotNull BiMapPutMethod<K, V> throwing() {
             return (biMap, k, v) -> {
                 V existing = biMap.put(k, v);
-                IllegalArgumentExceptions.assure(existing == null, "key already present: %s", k);
+                IllegalArgumentExceptions.assure(existing == null, "key already present:", k);
             };
         }
     }

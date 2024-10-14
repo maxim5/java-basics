@@ -24,12 +24,6 @@ public abstract class BasicRuntimeException extends RuntimeException {
     }
 
     protected static @NotNull String formatMsg(@NotNull String message, @Nullable Object @NotNull[] args) {
-        if (args.length == 0) {
-            return message;
-        }
-        if (args.length == 1 && !message.contains("%")) {
-            return BasicStrings.ensureSuffix(message, " ") + args[0];
-        }
-        return message.formatted(args);
+        return BasicExceptions.formatMsg(message, args);
     }
 }

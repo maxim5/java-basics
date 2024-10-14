@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.collect.BasicMaps.newMutableMap;
-import static io.spbx.util.func.ScopeFunctions.alsoApply;
+import static io.spbx.util.func.ScopeFunctions.also;
 import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBasics.*;
 
@@ -33,13 +33,13 @@ import static io.spbx.util.testing.TestingBasics.*;
 public class BasicIterablesTest {
     private static final Integer NULL = null;
 
-    /** {@link BasicIterables#asList(Iterable)} */
+    /** {@link BasicIterables#asList(Iterable)} **/
 
     @Test
     public void asList_list_same_instance() {
-        alsoApply(listOf(1, 2), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
-        alsoApply(List.of(1, 2), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
-        alsoApply(new ArrayList<>(), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
+        also(listOf(1, 2), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
+        also(List.of(1, 2), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
+        also(new ArrayList<>(), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
     }
 
     @Test
@@ -59,11 +59,11 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.asList(iterableOf("foo", "bar"))).containsExactly("foo", "bar").inOrder();
     }
 
-    /** {@link BasicIterables#asArrayList(Iterable)} */
+    /** {@link BasicIterables#asArrayList(Iterable)} **/
 
     @Test
     public void asArrayList_list_same_instance() {
-        alsoApply(new ArrayList<>(), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
+        also(new ArrayList<>(), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
     }
 
     @Test
@@ -86,12 +86,12 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.asArrayList(iterableOf("foo", "bar"))).containsExactly("foo", "bar").inOrder();
     }
 
-    /** {@link BasicIterables#asSet(Iterable)} */
+    /** {@link BasicIterables#asSet(Iterable)} **/
 
     @Test
     public void asSet_set_same_instance() {
-        alsoApply(setOf(1, 2), items -> assertThat(BasicIterables.asSet(items)).isSameInstanceAs(items));
-        alsoApply(sortedSetOf(1, 2), items -> assertThat(BasicIterables.asSet(items)).isSameInstanceAs(items));
+        also(setOf(1, 2), items -> assertThat(BasicIterables.asSet(items)).isSameInstanceAs(items));
+        also(sortedSetOf(1, 2), items -> assertThat(BasicIterables.asSet(items)).isSameInstanceAs(items));
     }
 
     @Test
@@ -108,13 +108,13 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.asSet(iterableOf(1, 2))).containsExactly(1, 2).inOrder();
     }
 
-    /** {@link BasicIterables#asCollection(Iterable)} */
+    /** {@link BasicIterables#asCollection(Iterable)} **/
 
     @Test
     public void asCollection_collection_same_instance() {
-        alsoApply(listOf(1, 2), items -> assertThat(BasicIterables.asCollection(items)).isSameInstanceAs(items));
-        alsoApply(setOf(1, 2), items -> assertThat(BasicIterables.asCollection(items)).isSameInstanceAs(items));
-        alsoApply(sortedSetOf(1, 2), items -> assertThat(BasicIterables.asCollection(items)).isSameInstanceAs(items));
+        also(listOf(1, 2), items -> assertThat(BasicIterables.asCollection(items)).isSameInstanceAs(items));
+        also(setOf(1, 2), items -> assertThat(BasicIterables.asCollection(items)).isSameInstanceAs(items));
+        also(sortedSetOf(1, 2), items -> assertThat(BasicIterables.asCollection(items)).isSameInstanceAs(items));
     }
 
     @Test
@@ -124,7 +124,7 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.asCollection(iterableOf(1, 2))).containsExactly(1, 2).inOrder();
     }
 
-    /** {@link BasicIterables#forEachToList(Consumer)} */
+    /** {@link BasicIterables#forEachToList(Consumer)} **/
 
     @Test
     public void forEachToList_simple() {
@@ -138,7 +138,7 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.forEachToList(items::forEach)).isEqualTo(items);
     }
 
-    /** {@link BasicIterables#forEachZipped(Object[], Object[], BiConsumer)} */
+    /** {@link BasicIterables#forEachZipped(Object[], Object[], BiConsumer)} **/
 
     @Test
     public void forEachZipped_arrays_simple() {
@@ -162,7 +162,7 @@ public class BasicIterablesTest {
         assertFailure(() -> BasicIterables.forEachZipped(arrayOf(1, 2), arrayOf(1), (a, b) -> {})).throwsAssertion();
     }
 
-    /** {@link BasicIterables#forEachZipped(Iterable, Iterable, BiConsumer)} */
+    /** {@link BasicIterables#forEachZipped(Iterable, Iterable, BiConsumer)} **/
 
     @Test
     public void forEachZipped_iterables_simple() {
@@ -186,7 +186,7 @@ public class BasicIterablesTest {
         assertFailure(() -> BasicIterables.forEachZipped(iterableOf(1, 2), iterableOf(1), (a, b) -> {})).throwsAssertion();
     }
 
-    /** {@link BasicIterables#sizeOf}  */
+    /** {@link BasicIterables#sizeOf}  **/
 
     @Test
     public void sizeOf_list() {
@@ -209,7 +209,7 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.sizeOf(iterableOf(1, 2), -1)).isEqualTo(-1);
     }
 
-    /** {@link BasicIterables#isEmpty}  */
+    /** {@link BasicIterables#isEmpty}  **/
 
     @Test
     public void isEmpty_list() {
@@ -232,7 +232,7 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.isEmpty(ArrayIterable.of(1, 2))).isFalse();
     }
 
-    /** {@link BasicIterables#estimateSize} */
+    /** {@link BasicIterables#estimateSize} **/
 
     @Test
     public void estimateSize_collection() {
@@ -262,7 +262,7 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.estimateSize(spliteratorOfUnknownSize(1, 2), -1)).isEqualTo(-1);
     }
 
-    /** {@link BasicIterables#emptyIfNull}  */
+    /** {@link BasicIterables#emptyIfNull}  **/
 
     @Test
     public void emptyIfNull_list() {
@@ -293,7 +293,7 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.emptyIfNull(ArrayIterable.of(1))).containsExactly(1);
     }
 
-    /** {@link BasicIterables#nullIfEmpty}  */
+    /** {@link BasicIterables#nullIfEmpty}  **/
 
     @Test
     public void nullIfEmpty_list() {
@@ -323,7 +323,7 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.nullIfEmpty(ArrayIterable.of(1))).containsExactly(1);
     }
 
-    /** {@link BasicIterables#replaceListElements(List, Collection)} */
+    /** {@link BasicIterables#replaceListElements(List, Collection)} **/
 
     @Test
     public void replaceListElements_simple() {
@@ -332,7 +332,7 @@ public class BasicIterablesTest {
         assertThat(list).containsExactly(3, 2, 1).inOrder();
     }
 
-    /** {@link BasicIterables#distinctInPlace(List)} */
+    /** {@link BasicIterables#distinctInPlace(List)} **/
 
     @Test
     public void distinctInPlace_unchanged() {
@@ -348,7 +348,7 @@ public class BasicIterablesTest {
         assertThat(list).containsExactly(1, 2).inOrder();
     }
 
-    /** {@link BasicIterables#concatToList} */
+    /** {@link BasicIterables#concatToList} **/
 
     @Test
     public void concatToList_lists_of_two() {
@@ -418,7 +418,7 @@ public class BasicIterablesTest {
             .containsExactly(null, null, null, null).inOrder();
     }
 
-    /** {@link BasicIterables#appendToList(Iterable, Object)} */
+    /** {@link BasicIterables#appendToList(Iterable, Object)} **/
 
     @Test
     public void appendToList_simple() {
@@ -427,7 +427,7 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.appendToList(listOf(null, null), null)).containsExactly(null, null, null).inOrder();
     }
 
-    /** {@link BasicIterables#isImmutable(Collection)} */
+    /** {@link BasicIterables#isImmutable(Collection)} **/
 
     @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     @Test

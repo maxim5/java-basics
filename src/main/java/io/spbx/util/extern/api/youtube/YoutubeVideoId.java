@@ -1,8 +1,7 @@
 package io.spbx.util.extern.api.youtube;
 
 import com.google.common.primitives.Longs;
-import io.spbx.util.func.Reversible;
-import io.spbx.util.func.Reversibles;
+import io.spbx.util.func.LongReversible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,8 +12,14 @@ import java.util.regex.Pattern;
 import static java.util.Objects.requireNonNull;
 
 public record YoutubeVideoId(@NotNull String id) {
-    public static final Reversible<String, Long> CONVERTER =
-        Reversibles.fromNotNullFunctions(YoutubeVideoId::decodeToLong, YoutubeVideoId::encodeToString);
+    public static final LongReversible<String> CONVERTER = new LongReversible<>() {
+        @Override public long forwardToLong(@NotNull String s) {
+            return decodeToLong(s);
+        }
+        @Override public @NotNull String backward(long i) {
+            return encodeToString(i);
+        }
+    };
 
     // Inspired by
     // https://stackoverflow.com/questions/3717115/regular-expression-for-youtube-links

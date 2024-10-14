@@ -1,19 +1,18 @@
 package io.spbx.util.code.gen;
 
-import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
+import io.spbx.util.logging.Logger;
 import io.spbx.util.text.BasicJoin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import static io.spbx.util.base.BasicNulls.firstNonNullIfExist;
 
 @Immutable
 class JavaMarking implements Marking {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
     public static final JavaMarking JAVA_MARK = new JavaMarking();
 
     @Override
@@ -59,7 +58,7 @@ class JavaMarking implements Marking {
         int j = input.lastIndexOf("~*/");
         if (i == -1 || j == -1) {
             if (i >= 0 || j >= 0 || input.contains("*~/")) {
-                log.at(Level.WARNING).log("Possible typo. Did you mean /*~ ... ~*/: `%s`", input);
+                log.warn().log("Possible typo. Did you mean /*~ ... ~*/: `%s`", input);
             }
             return null;
         }
@@ -85,7 +84,7 @@ class JavaMarking implements Marking {
         int j = input.lastIndexOf("=*/");
         if (i == -1 || j == -1) {
             if (i >= 0 || j >= 0 || input.contains("*=/")) {
-                log.at(Level.WARNING).log("Possible typo. Did you mean /*= ... =*/: `%s`", input);
+                log.warn().log("Possible typo. Did you mean /*= ... =*/: `%s`", input);
             }
             return null;
         }

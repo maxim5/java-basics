@@ -7,26 +7,26 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static io.spbx.util.func.ScopeFunctions.alsoRun;
+import static io.spbx.util.func.ScopeFunctions.also;
 
 @Immutable
 public record SyntaxParser(@NotNull SyntaxOptions options) {
     public @NotNull Expr parseSequence(@NotNull CharSequence input) {
         ExprLexer lexer = ExprLexer.from(input);
         ExprParser parser = new ExprParser(options, lexer);
-        return alsoRun(parser.parseSequence(), () -> assertLexerAtTheEnd(lexer));
+        return also(parser.parseSequence(), () -> assertLexerAtTheEnd(lexer));
     }
 
     public @NotNull Expr parseTerm(@NotNull CharSequence input) {
         ExprLexer lexer = ExprLexer.from(input);
         ExprParser parser = new ExprParser(options, lexer);
-        return alsoRun(parser.parseTerm(), () -> assertLexerAtTheEnd(lexer));
+        return also(parser.parseTerm(), () -> assertLexerAtTheEnd(lexer));
     }
 
     public @NotNull Expr parseExpression(@NotNull CharSequence input) {
         ExprLexer lexer = ExprLexer.from(input);
         ExprParser parser = new ExprParser(options, lexer);
-        return alsoRun(parser.parseOperation(), () -> assertLexerAtTheEnd(lexer));
+        return also(parser.parseOperation(), () -> assertLexerAtTheEnd(lexer));
     }
 
     public @NotNull List<Expr> parseTermsList(@NotNull CharSequence input) {
@@ -52,6 +52,6 @@ public record SyntaxParser(@NotNull SyntaxOptions options) {
 
     private static void assertLexerAtTheEnd(@NotNull ExprLexer lexer) {
         Lexem lexem = lexer.peekNextNonWhitespace();
-        IllegalStateExceptions.assure(lexem.isTerminal(), "Unresolved expression: %s", lexem);
+        IllegalStateExceptions.assure(lexem.isTerminal(), "Unresolved expression:", lexem);
     }
 }

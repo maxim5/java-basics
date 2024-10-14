@@ -33,7 +33,7 @@ public class CalledOnce<T, E extends Throwable> implements Consumer<T>, ThrowCon
             .withMessage("Called more than once. First: %s, then: %s", value.get(), item)
             .isTrue();
         boolean set = called.compareAndSet(false, true);
-        InternalErrors.assure(set, "Fhe flag is already set: %s", this);
+        InternalErrors.assure(set, "The flag is already set:", this);
     }
 
     public @NotNull T getValue() {

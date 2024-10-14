@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
 import java.security.MessageDigest;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -147,14 +148,24 @@ public class BasicFiles {
         runRethrow(() -> Files.delete(path));
     }
 
+    public static void deleteIfExists(@NotNull Path path) {
+        runRethrow(() -> Files.deleteIfExists(path));
+    }
+
+    public static void deleteDirectory(@NotNull Path path) {
+        try (Stream<Path> walk = walk(path)) {
+            walk.sorted(Comparator.reverseOrder()).forEach(BasicFiles::delete);
+        }
+    }
+
     /* File walk */
 
     public static void walkDirectories(@NotNull Path root, @NotNull Consumer<Path> callback) {
-        walk(root, Consumers.chain(Files::isDirectory, callback));
+        walk(root, Consumers.conditional(Files::isDirectory, callback));
     }
 
     public static void walkRegularFiles(@NotNull Path root, @NotNull Consumer<Path> callback) {
-        walk(root, Consumers.chain(Files::isRegularFile, callback));
+        walk(root, Consumers.conditional(Files::isRegularFile, callback));
     }
 
     public static void walk(@NotNull Path root, @NotNull WalkCallback callback) {

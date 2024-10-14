@@ -76,7 +76,7 @@ public class Int128Test {
 
     private static final List<BigInteger> BIG_INTEGERS = concatToList(EDGE_CASE_BIG_INTEGERS, LARGE_PRIME_NUMBERS);
 
-    /** Constants */
+    /** Constants **/
 
     @Test
     public void const_zero_trivial() {
@@ -146,7 +146,7 @@ public class Int128Test {
         assertThat(Int128.MIN_VALUE.compareTo(Int128.MAX_VALUE)).isEqualTo(-1);
     }
 
-    /** {@link Int128#fromBits}}, {@link Int128#from}, {@link Int128#fromHex} */
+    /** {@link Int128#fromBits}}, {@link Int128#from}, {@link Int128#fromHex} **/
 
     @Test
     public void construction_from_bits_long_trivial() {
@@ -219,7 +219,7 @@ public class Int128Test {
         }
     }
 
-    /** Internal Consistency */
+    /** Internal Consistency **/
 
     @ParameterizedTest
     @MethodSource
@@ -245,7 +245,7 @@ public class Int128Test {
         }
     }
 
-    /** {@link Int128#compareTo} */
+    /** {@link Int128#compareTo} **/
 
     private static final BiOpTester<Integer, Integer> COMPARE_TO = test(Int128::compareTo, BigInteger::compareTo);
 
@@ -254,7 +254,7 @@ public class Int128Test {
         COMPARE_TO.assertMatchAll(BIG_INTEGERS);
     }
 
-    /** {@link Int128#increment()} */
+    /** {@link Int128#increment()} **/
 
     private static final UnOpTester<Int128, BigInteger> INCREMENT = test(Int128::increment, b -> b.add($1));
 
@@ -269,7 +269,7 @@ public class Int128Test {
         INCREMENT.assertMatchAll(BIG_INTEGERS);
     }
 
-    /** {@link Int128#decrement()} */
+    /** {@link Int128#decrement()} **/
 
     private static final UnOpTester<Int128, BigInteger> DECREMENT = test(Int128::decrement, b -> b.subtract($1));
 
@@ -284,7 +284,7 @@ public class Int128Test {
         DECREMENT.assertMatchAll(BIG_INTEGERS);
     }
 
-    /** {@link Int128#add(Int128)}, {@link Int128#add(long)} */
+    /** {@link Int128#add(Int128)}, {@link Int128#add(long)} **/
 
     private static final BiOpTester<Int128, BigInteger> ADD = test(Int128::add, BigInteger::add);
     private static final LongOpTester<Int128, BigInteger> ADD_LONG = testLong(Int128::add, (a, l) -> a.add($(l)));
@@ -299,7 +299,7 @@ public class Int128Test {
         ADD_LONG.assertMatchAll(BIG_INTEGERS, EDGE_CASE_LONGS);
     }
 
-    /** {@link Int128#subtract(Int128)}, {@link Int128#subtract(long)} */
+    /** {@link Int128#subtract(Int128)}, {@link Int128#subtract(long)} **/
 
     private static final BiOpTester<Int128, BigInteger> SUBTRACT = test(Int128::subtract, BigInteger::subtract);
     private static final LongOpTester<Int128, BigInteger> SUBTRACT_LONG = testLong(Int128::subtract, (a, l) -> a.subtract($(l)));
@@ -314,7 +314,7 @@ public class Int128Test {
         SUBTRACT_LONG.assertMatchAll(BIG_INTEGERS, EDGE_CASE_LONGS);
     }
 
-    /** {@link Int128#is64Bit()} */
+    /** {@link Int128#is64Bit()} **/
 
     private static final UnOpTester<Boolean, Boolean> IS_64_BIT = test(Int128::is64Bit, RANGE_INT64::contains);
     private static final List<Int128> FIT_INTO_LONG =
@@ -342,7 +342,7 @@ public class Int128Test {
         IS_64_BIT.assertMatchAll(BIG_INTEGERS);
     }
 
-    /** {@link Int128#multiply(Int128)} */
+    /** {@link Int128#multiply(Int128)} **/
 
     private static final BiOpTester<Int128, BigInteger> MULTIPLY = test(Int128::multiply, BigInteger::multiply);
     private static final LongOpTester<Int128, BigInteger> MULTIPLY_LONG = testLong(Int128::multiply, (a, l) -> a.multiply($(l)));
@@ -386,7 +386,7 @@ public class Int128Test {
         MULTIPLY_LONG.assertMatchAll(BIG_INTEGERS, EDGE_CASE_LONGS);
     }
 
-    /** {@link Int128#divide(Int128)} */
+    /** {@link Int128#divide(Int128)} **/
 
     private static final BiOpTester<Int128, BigInteger> DIVIDE = test(
         (a, b) -> {
@@ -435,7 +435,7 @@ public class Int128Test {
         DIVIDE.assertMatchAll(BIG_INTEGERS);
     }
 
-    /** {@link Int128#negate()}, {@link Int128#and}, {@link Int128#andNot}, {@link Int128#or}, {@link Int128#xor} */
+    /** {@link Int128#negate()}, {@link Int128#and}, {@link Int128#andNot}, {@link Int128#or}, {@link Int128#xor} **/
 
     private static final UnOpTester<Int128, BigInteger> NEGATE = test(Int128::negate, BigInteger::negate);
     private static final UnOpTester<Int128, BigInteger> NOT = test(Int128::not, BigInteger::not);
@@ -482,7 +482,7 @@ public class Int128Test {
         XOR.assertMatchAll(BIG_INTEGERS);
     }
 
-    /** {@link Int128#shiftLeft(int)}, {@link Int128#shiftRight(int)}, {@link Int128#shiftRightUnsigned(int)} */
+    /** {@link Int128#shiftLeft(int)}, {@link Int128#shiftRight(int)}, {@link Int128#shiftRightUnsigned(int)} **/
 
     private static final IntOpTester<Int128, BigInteger> SHIFT_LEFT = testInt(Int128::shiftLeft, BigInteger::shiftLeft);
     private static final IntOpTester<Int128, BigInteger> SHIFT_RIGHT = testInt(Int128::shiftRight, BigInteger::shiftRight);
@@ -556,7 +556,7 @@ public class Int128Test {
         SHIFT_RIGHT_UNSIGNED.assertMatchAll(BIG_INTEGERS, POSITIONS);
     }
 
-    /** {@link Int128#bitAt}, {@link Int128#setBitAt}, {@link Int128#clearBitAt}, {@link Int128#flipBitAt} */
+    /** {@link Int128#bitAt}, {@link Int128#setBitAt}, {@link Int128#clearBitAt}, {@link Int128#flipBitAt} **/
 
     private static final IntOpTester<Integer, Integer>
         BIT_AT = testInt(Int128::bitAt, (a, n) -> castToInt(a.testBit(n)));
@@ -628,7 +628,7 @@ public class Int128Test {
         }
     }
 
-    /** {@link Int128#numberOfLeadingZeros()}, {@link Int128#numberOfTrailingZeros()}, {@link Int128#bitCount()} */
+    /** {@link Int128#numberOfLeadingZeros()}, {@link Int128#numberOfTrailingZeros()}, {@link Int128#bitCount()} **/
 
     private static final UnOpTester<Integer, Integer> LEADING_ZEROS = test(
         Int128::numberOfLeadingZeros,
@@ -696,7 +696,7 @@ public class Int128Test {
         BIT_COUNT.assertMatchAll(BIG_INTEGERS);
     }
 
-    /** {@link Int128#fastZeroOrValue}, {@link Int128#fastZeroOrMinusOne}, {@link Int128#fastZeroOrOne} */
+    /** {@link Int128#fastZeroOrValue}, {@link Int128#fastZeroOrMinusOne}, {@link Int128#fastZeroOrOne} **/
 
     @Test
     public void fastZeroOrValue_ultimate() {
@@ -733,7 +733,7 @@ public class Int128Test {
         return test == 0 ? 0 : 1;
     }
 
-    /** {@link Int128#toBigInteger(double)} */
+    /** {@link Int128#toBigInteger(double)} **/
 
     @Test
     public void toBigInteger_positive() {
@@ -771,7 +771,7 @@ public class Int128Test {
         assertThat(Int128.toBigInteger(-9223372036854775808.0)).isEqualTo($2_63.negate());
     }
 
-    /** Assertion utils */
+    /** Assertion utils **/
 
     @CheckReturnValue
     private @NotNull Int128Subject assertThatInt128(@NotNull Int128 actual) {
@@ -1052,7 +1052,7 @@ public class Int128Test {
         return $(highBits).shiftLeft(64).add(UnsignedLong.fromLongBits(lowBits).bigIntegerValue());
     }
 
-    /** Testers */
+    /** Testers **/
 
     private static <X, Y> @NotNull UnOpTester<X, Y> test(@NotNull Function<Int128, X> op,
                                                          @NotNull Function<BigInteger, Y> $op) {

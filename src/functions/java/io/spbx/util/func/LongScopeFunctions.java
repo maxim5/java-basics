@@ -13,23 +13,77 @@ import java.util.function.ToLongFunction;
  * @link <a href="https://kotlinlang.org/docs/scope-functions.html">Kotlin Scope Functions</a>
  * @see ScopeFunctions
  */
-@Generated(value = "$Type$ScopeFunctions.java", date = "2024-09-20T11:07:11.307434954Z")
+@Generated(value = "$Type$ScopeFunctions.java", date = "2024-10-14T13:46:36.074178035Z")
 public class LongScopeFunctions {
-    public static long alsoApply(long instance, @NotNull LongConsumer action) {
+    /**
+     * Pipes the input {@code instance} argument through and calls the specified {@link LongConsumer} {@code action}.
+     * <p>
+     * Convenient for one-liners:
+     * {@snippet lang = "java":
+     *     return also(count(), val -> log.info().log("count=%d", count));
+     * }
+     */
+    public static long also(long instance, @NotNull LongConsumer action) {
         action.accept(instance);
         return instance;
     }
 
-    public static long alsoRun(long instance, @NotNull Runnable action) {
+    /**
+     * Pipes the input {@code instance} argument through and calls the specified {@link Runnable} {@code action}.
+     * <p>
+     * Convenient for one-liners:
+     * {@snippet lang = "java":
+     *     return also(count(), () -> log.info().log("Completed"));
+     * }
+     */
+    public static long also(long instance, @NotNull Runnable action) {
         action.run();
         return instance;
     }
 
+    /**
+     * Applies the specified {@link ToLongFunction} {@code action} to the input {@code instance} and returns the result.
+     * <p>
+     * The input is nullable.
+     * <p>
+     * Convenient for one-liners:
+     * {@snippet lang = "java":
+     *     return with(toList(), list -> list.isEmpty() ? -1 : list.size());
+     * }
+     */
     public static <T> long with(T instance, @NotNull ToLongFunction<T> action) {
         return action.applyAsLong(instance);
     }
 
+    /**
+     * Applies the specified {@link LongFunction} {@code action} to the input {@code instance} and returns the result.
+     * <p>
+     * The result is nullable.
+     * <p>
+     * Convenient for one-liners:
+     * {@snippet lang = "java":
+     *     return with(toList().size(), size -> size == 0 ? -1 : size);
+     * }
+     */
     public static <R> R with(long instance, @NotNull LongFunction<R> action) {
         return action.apply(instance);
+    }
+
+    /**
+     * Applies the specified {@link ToLongFunction} {@code action} to the input {@code instance} and returns the result
+     * but only if the {@code instance} is non-null. Returns {@code 0} otherwise.
+     * <p>
+     * The input is nullable.
+     * <p>
+     * Convenient for one-liners:
+     * {@snippet lang = "java":
+     *     return map(toListOrNull(), list -> list.isEmpty() ? -1 : list.size());
+     * }
+     */
+    public static <T> long map(T instance, @NotNull ToLongFunction<T> action) {
+        if (instance != null) {
+            return action.applyAsLong(instance);
+        }
+        return 0;
     }
 }

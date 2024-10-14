@@ -1,6 +1,6 @@
 package io.spbx.util.time;
 
-import io.spbx.util.func.Reversible;
+import io.spbx.util.func.IntReversible;
 import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,11 +36,11 @@ public class SecondsTimestamp {
         return Instant.ofEpochSecond(epochSeconds);
     }
 
-    public static final Reversible<Instant, Integer> REVERSIBLE = new Reversible<>() {
-        @Override public @NotNull Integer forward(@NotNull Instant instant) {
+    public static final IntReversible<Instant> REVERSIBLE = new IntReversible<>() {
+        @Override public int forwardToInt(@NotNull Instant instant) {
             return instantToSeconds32(instant);
         }
-        @Override public @NotNull Instant backward(@NotNull Integer timestamp) {
+        @Override public @NotNull Instant backward(int timestamp) {
             return seconds32ToInstant(timestamp);
         }
     };

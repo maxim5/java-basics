@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.extern.api.youtube.YoutubeVideoId.getVideoIdOrNull;
-import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
+import static io.spbx.util.testing.AssertReverse.assertRoundtrip;
 
 @Tag("fast")
 public class YoutubeVideoIdTest {
@@ -17,12 +17,12 @@ public class YoutubeVideoIdTest {
 
     @Test
     public void id_converter_roundtrip() {
-        assertReversibleRoundtrip(YoutubeVideoId.CONVERTER, "8OQIW_K9MMc");
-        assertReversibleRoundtrip(YoutubeVideoId.CONVERTER, "iwGFalTRHDA");
-        assertReversibleRoundtrip(YoutubeVideoId.CONVERTER, "0zM3nApSvMg");
+        assertRoundtrip(YoutubeVideoId.CONVERTER, "8OQIW_K9MMc");
+        assertRoundtrip(YoutubeVideoId.CONVERTER, "iwGFalTRHDA");
+        assertRoundtrip(YoutubeVideoId.CONVERTER, "0zM3nApSvMg");
         // https://stackoverflow.com/questions/29941270/why-do-base64-decode-produce-same-byte-array-for-different-strings
-        assertReversibleRoundtrip(YoutubeVideoId.CONVERTER, "----------8");
-        assertReversibleRoundtrip(YoutubeVideoId.CONVERTER, "__________8");
+        assertRoundtrip(YoutubeVideoId.CONVERTER, "----------8");
+        assertRoundtrip(YoutubeVideoId.CONVERTER, "__________8");
     }
 
     @Test

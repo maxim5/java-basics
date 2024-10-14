@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static io.spbx.util.base.EasyCast.castAny;
-import static io.spbx.util.func.ScopeFunctions.alsoApply;
+import static io.spbx.util.func.ScopeFunctions.also;
 
 public class BasicMaps {
     /* Standard `Map` factory methods */
@@ -34,25 +34,25 @@ public class BasicMaps {
     }
 
     public static <K, V> @NotNull HashMap<K, V> mutableMapOf(@Nullable K key, @Nullable V val) {
-        return alsoApply(newMutableMap(), map -> map.put(key, val));
+        return also(newMutableMap(), map -> map.put(key, val));
     }
 
     public static <K, V> @NotNull HashMap<K, V> mutableMapOf(@Nullable K key1, @Nullable V val1,
                                                              @Nullable K key2, @Nullable V val2) {
-        return alsoApply(newMutableMap(), map -> putAll(map, key1, val1, key2, val2));
+        return also(newMutableMap(), map -> putAll(map, key1, val1, key2, val2));
     }
 
     public static <K, V> @NotNull HashMap<K, V> mutableMapOf(@Nullable K key1, @Nullable V val1,
                                                              @Nullable K key2, @Nullable V val2,
                                                              @Nullable K key3, @Nullable V val3) {
-        return alsoApply(newMutableMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3));
+        return also(newMutableMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3));
     }
 
     public static <K, V> @NotNull HashMap<K, V> mutableMapOf(@Nullable K key1, @Nullable V val1,
                                                              @Nullable K key2, @Nullable V val2,
                                                              @Nullable K key3, @Nullable V val3,
                                                              @Nullable K key4, @Nullable V val4) {
-        return alsoApply(newMutableMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
+        return also(newMutableMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
     }
 
     public static <K, V> @NotNull LinkedHashMap<K, V> newOrderedMap() {
@@ -68,25 +68,25 @@ public class BasicMaps {
     }
 
     public static <K, V> @NotNull LinkedHashMap<K, V> orderedMapOf(@Nullable K key, @Nullable V val) {
-        return alsoApply(newOrderedMap(), map -> map.put(key, val));
+        return also(newOrderedMap(), map -> map.put(key, val));
     }
 
     public static <K, V> @NotNull LinkedHashMap<K, V> orderedMapOf(@Nullable K key1, @Nullable V val1,
                                                                    @Nullable K key2, @Nullable V val2) {
-        return alsoApply(newOrderedMap(), map -> putAll(map, key1, val1, key2, val2));
+        return also(newOrderedMap(), map -> putAll(map, key1, val1, key2, val2));
     }
 
     public static <K, V> @NotNull LinkedHashMap<K, V> orderedMapOf(@Nullable K key1, @Nullable V val1,
                                                                    @Nullable K key2, @Nullable V val2,
                                                                    @Nullable K key3, @Nullable V val3) {
-        return alsoApply(newOrderedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3));
+        return also(newOrderedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3));
     }
 
     public static <K, V> @NotNull LinkedHashMap<K, V> orderedMapOf(@Nullable K key1, @Nullable V val1,
                                                                    @Nullable K key2, @Nullable V val2,
                                                                    @Nullable K key3, @Nullable V val3,
                                                                    @Nullable K key4, @Nullable V val4) {
-        return alsoApply(newOrderedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
+        return also(newOrderedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
     }
 
     public static <K, V> @NotNull ConcurrentHashMap<K, V> newConcurrentMap() {
@@ -102,25 +102,25 @@ public class BasicMaps {
     }
 
     public static <K, V> @NotNull ConcurrentHashMap<K, V> concurrentMapOf(@NotNull K key, @NotNull V val) {
-        return alsoApply(newConcurrentMap(), map -> map.put(key, val));
+        return also(newConcurrentMap(), map -> map.put(key, val));
     }
 
     public static <K, V> @NotNull ConcurrentHashMap<K, V> concurrentMapOf(@NotNull K key1, @NotNull V val1,
                                                                           @NotNull K key2, @NotNull V val2) {
-        return alsoApply(newConcurrentMap(), map -> putAll(map, key1, val1, key2, val2));
+        return also(newConcurrentMap(), map -> putAll(map, key1, val1, key2, val2));
     }
 
     public static <K, V> @NotNull ConcurrentHashMap<K, V> concurrentMapOf(@NotNull K key1, @NotNull V val1,
                                                                           @NotNull K key2, @NotNull V val2,
                                                                           @NotNull K key3, @NotNull V val3) {
-        return alsoApply(newConcurrentMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3));
+        return also(newConcurrentMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3));
     }
 
     public static <K, V> @NotNull ConcurrentHashMap<K, V> concurrentMapOf(@NotNull K key1, @NotNull V val1,
                                                                           @NotNull K key2, @NotNull V val2,
                                                                           @NotNull K key3, @NotNull V val3,
                                                                           @NotNull K key4, @NotNull V val4) {
-        return alsoApply(newConcurrentMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
+        return also(newConcurrentMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
     }
 
     public static <K extends Comparable<K>, V> @NotNull TreeMap<K, V> newSortedMap() {
@@ -132,25 +132,25 @@ public class BasicMaps {
     }
 
     public static <K extends Comparable<K>, V> @NotNull TreeMap<K, V> sortedMapOf(@NotNull K key, @NotNull V val) {
-        return alsoApply(newSortedMap(), map -> map.put(key, val));
+        return also(newSortedMap(), map -> map.put(key, val));
     }
 
     public static <K extends Comparable<K>, V> @NotNull TreeMap<K, V> sortedMapOf(@NotNull K key1, @NotNull V val1,
                                                                                   @NotNull K key2, @NotNull V val2) {
-        return alsoApply(newSortedMap(), map -> putAll(map, key1, val1, key2, val2));
+        return also(newSortedMap(), map -> putAll(map, key1, val1, key2, val2));
     }
 
     public static <K extends Comparable<K>, V> @NotNull TreeMap<K, V> sortedMapOf(@NotNull K key1, @NotNull V val1,
                                                                                   @NotNull K key2, @NotNull V val2,
                                                                                   @NotNull K key3, @NotNull V val3) {
-        return alsoApply(newSortedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3));
+        return also(newSortedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3));
     }
 
     public static <K extends Comparable<K>, V> @NotNull TreeMap<K, V> sortedMapOf(@NotNull K key1, @NotNull V val1,
                                                                                   @NotNull K key2, @NotNull V val2,
                                                                                   @NotNull K key3, @NotNull V val3,
                                                                                   @NotNull K key4, @NotNull V val4) {
-        return alsoApply(newSortedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
+        return also(newSortedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
     }
 
     /* Conversions to `Map` */

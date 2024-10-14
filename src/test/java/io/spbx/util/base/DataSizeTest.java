@@ -9,7 +9,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 @Tag("fast")
 public class DataSizeTest {
-    /** {@link DataSize#parseInt} */
+    /** {@link DataSize#parseInt} **/
 
     @Test
     public void parse_int_simple() {
@@ -115,7 +115,7 @@ public class DataSizeTest {
         assertDataSize(DataSize.parse("-9223372036854775808")).isEqualToExactly(DataSize.ofBytes(Long.MIN_VALUE));
     }
 
-    /** {@link DataSize#parseFloat} */
+    /** {@link DataSize#parseFloat} **/
 
     @Test
     public void parse_float_simple() {
@@ -260,7 +260,7 @@ public class DataSizeTest {
         assertDataSize(DataSize.parse("-1e+3Kb")).isEqualToExactly(DataSize.ofBytes((long) (DataSize.KB * -1e+3)));
     }
 
-    /** {@link DataSize#toString()} */
+    /** {@link DataSize#toString()} **/
 
     @Test
     public void toString_bytes() {
@@ -418,7 +418,7 @@ public class DataSizeTest {
         assertThat(DataSize.ofKilobytes(-1).toString(Unit.Megabyte)).isEqualTo("-0.001Mb");
     }
 
-    /** {@link DataSize#toString(Unit)} */
+    /** {@link DataSize#toString(Unit)} **/
 
     @Test
     public void toString_force_unit() {

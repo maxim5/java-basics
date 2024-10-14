@@ -21,7 +21,7 @@ import static io.spbx.util.testing.TestingPrimitives.bytes;
 public class BasicCollectorsTest {
     private static final Integer NULL = null;
 
-    /** {@link BasicCollectors#toMap } */
+    /** {@link BasicCollectors#toMap } **/
 
     @Test
     public void toMap_default() {
@@ -95,7 +95,7 @@ public class BasicCollectorsTest {
         assertThat(parallelOf(NULL, NULL, NULL).collect(collector)).containsExactly(null, null);
     }
 
-    /** {@link BasicCollectors#toOnlyNonNullOrEmpty()} */
+    /** {@link BasicCollectors#toOnlyNonNullOrEmpty()} **/
 
     @Test
     public void toOnlyNonNullOrEmpty_simple() {
@@ -145,7 +145,7 @@ public class BasicCollectorsTest {
         assertThat(parallelOf(null, null, 1, 2, null).collect(BasicCollectors.toOnlyNonNullOrEmpty())).isEmpty();
     }
 
-    /** {@link BasicCollectors#allEqual } */
+    /** {@link BasicCollectors#allEqual } **/
 
     @Test
     public void allEqual() {
@@ -167,7 +167,7 @@ public class BasicCollectorsTest {
         assertThat(BasicCollectors.allEqual(parallelOf(1, 1, 2))).isFalse();
     }
 
-    /** {@link BasicCollectors#toByteArray()} */
+    /** {@link BasicCollectors#toByteArray()} **/
 
     @Test
     public void toByteArray_simple() {

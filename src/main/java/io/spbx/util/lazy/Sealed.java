@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Represents the value which is might have a default value upon initialization, but may be later sealed with
+ * Represents the instance which might have a default value upon initialization, but may later be sealed with
  * the final value.
  * <p>
  * Once the instance is sealed, it is final and can't be changed, i.e. becomes immutable.

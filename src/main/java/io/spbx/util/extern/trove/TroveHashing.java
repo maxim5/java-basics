@@ -2,6 +2,7 @@ package io.spbx.util.extern.trove;
 
 import gnu.trove.strategy.HashingStrategy;
 import io.spbx.util.base.BasicStrings;
+import io.spbx.util.rt.RuntimeRequirement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,10 @@ import java.util.Objects;
  * @link <a href="https://github.com/palantir/trove">Trove Fork by Palantir</a>
  */
 public class TroveHashing {
+    static {
+        RuntimeRequirement.verify("gnu.trove.strategy.HashingStrategy");
+    }
+
     public static class DefaultEquivalence<T> implements HashingStrategy<T> {
         public static <T> @NotNull HashingStrategy<T> instance() {
             return new DefaultEquivalence<>();

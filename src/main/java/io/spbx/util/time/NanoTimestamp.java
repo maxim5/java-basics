@@ -1,6 +1,6 @@
 package io.spbx.util.time;
 
-import io.spbx.util.func.Reversible;
+import io.spbx.util.func.LongReversible;
 import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,11 +40,11 @@ public class NanoTimestamp {
         return Instant.ofEpochSecond(epochSeconds, nanos);
     }
 
-    public static final Reversible<Instant, Long> REVERSIBLE = new Reversible<>() {
-        @Override public @NotNull Long forward(@NotNull Instant instant) {
+    public static final LongReversible<Instant> REVERSIBLE = new LongReversible<>() {
+        @Override public long forwardToLong(@NotNull Instant instant) {
             return instantToNanos64(instant);
         }
-        @Override public @NotNull Instant backward(@NotNull Long timestamp) {
+        @Override public @NotNull Instant backward(long timestamp) {
             return nanos64ToInstant(timestamp);
         }
     };

@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.TreeSet;
+import java.util.function.BooleanSupplier;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -169,6 +170,16 @@ public class TestingBasics {
         } catch (InterruptedException ignore) {
             return false;
         }
+    }
+
+    @CanIgnoreReturnValue
+    public static boolean waitFor(@NotNull BooleanSupplier condition, long busyMillis, long maxMillis) {
+        long total = 0;
+        while (!condition.getAsBoolean() && total < maxMillis) {
+            waitFor(busyMillis);
+            total += busyMillis;
+        }
+        return total < maxMillis;
     }
 
     public static class ArrayIterator<T> implements Iterator<T> {
