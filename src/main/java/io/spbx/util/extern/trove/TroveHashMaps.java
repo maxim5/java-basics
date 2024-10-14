@@ -4,12 +4,17 @@ import gnu.trove.map.hash.TCustomHashMap;
 import gnu.trove.strategy.HashingStrategy;
 import io.spbx.util.base.BasicStrings;
 import io.spbx.util.collect.StringContentMap;
+import io.spbx.util.rt.RuntimeRequirement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public class TroveHashMaps {
+    static {
+        RuntimeRequirement.verify("gnu.trove.map.hash.TCustomHashMap");
+    }
+
     public static class StringHashMap<V> extends TCustomHashMap<String, V> implements Map<String, V> {
         public StringHashMap() {
             this(MapOptions.of());

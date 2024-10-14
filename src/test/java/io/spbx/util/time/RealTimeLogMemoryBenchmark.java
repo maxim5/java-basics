@@ -4,15 +4,14 @@ import io.spbx.util.base.DataSize;
 import io.spbx.util.base.Tuple;
 import io.spbx.util.collect.BasicIterables;
 import io.spbx.util.collect.RowListTabular;
+import io.spbx.util.testing.MoreRandomArrays;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.ToIntFunction;
 
 import static io.spbx.util.collect.TabularFormatter.BORDERLESS_FORMATTER;
-import static io.spbx.util.testing.TestingBasics.intStreamOf;
 import static io.spbx.util.testing.TestingBasics.longStreamOf;
-import static io.spbx.util.testing.TestingPrimitives.randomIncreasingLongs;
 
 public class RealTimeLogMemoryBenchmark {
     public static void main(String[] args) {
@@ -39,15 +38,15 @@ public class RealTimeLogMemoryBenchmark {
 
     private <RTL extends RealTimeLog> double avgMemorySizeOf(@NotNull RtlProvider<RTL> provider, int num, long bound) {
         int size = 100_000;
-        int[] seeds = { 0, 10, 20, 30, 40 };
-        return intStreamOf(seeds).map(
+        long[] seeds = { 0, 10, 20, 30, 40 };
+        return longStreamOf(seeds).map(
             seed -> memorySizeOf(provider.create(num), seed, size, bound, provider::size)
         ).average().orElse(0);
     }
 
-    private <RTL extends RealTimeLog> int memorySizeOf(@NotNull RTL realTimeLog, int seed, int size, long bound,
+    private <RTL extends RealTimeLog> int memorySizeOf(@NotNull RTL realTimeLog, long seed, int size, long bound,
                                                        @NotNull ToIntFunction<RTL> sizer) {
-        long[] array = randomIncreasingLongs(size, bound, seed);
+        long[] array = MoreRandomArrays.of(seed).nextIncreasingLongs(size, bound);
         longStreamOf(array).forEach(realTimeLog::append);
         return sizer.applyAsInt(realTimeLog);
     }

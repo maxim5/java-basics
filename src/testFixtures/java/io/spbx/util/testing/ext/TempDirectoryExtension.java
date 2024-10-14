@@ -1,8 +1,8 @@
 package io.spbx.util.testing.ext;
 
-import com.google.common.flogger.FluentLogger;
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
+import io.spbx.util.logging.Logger;
 import io.spbx.util.text.BasicJoin;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -15,10 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class TempDirectoryExtension implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
 
     private final boolean cleanUp;
     private final boolean onlySuccessful;
@@ -61,7 +60,7 @@ public class TempDirectoryExtension implements BeforeAllCallback, BeforeEachCall
             "%s.%s_%s.".formatted(className, testName, BasicJoin.of(arguments).join("_"));
 
         currentTempDir = Files.createTempDirectory(format);
-        log.at(Level.INFO).log("Temp storage path for this test: %s", currentTempDir);
+        log.info().log("Temp storage path for this test: %s", currentTempDir);
     }
 
     @Override
@@ -69,23 +68,23 @@ public class TempDirectoryExtension implements BeforeAllCallback, BeforeEachCall
         cleanUp(currentTempDir, context.getExecutionException().isEmpty());
     }
 
-    public @NotNull Path getCurrentTempDir() {
+    public @NotNull Path currentTempDir() {
         return currentTempDir;
     }
 
     private void cleanUp(@NotNull Path path, boolean isSuccess) {
         if (cleanUp && (!onlySuccessful || isSuccess)) {
             pathsToClean.add(path);
-            log.at(Level.FINE).log("Adding path to clean-up: %s", path);
+            log.debug().log("Adding path to clean-up: %s", path);
         }
     }
 
     private static void deleteAll(@NotNull Path path) {
-        log.at(Level.FINE).log("Cleaning-up temp path %s", path);
+        log.debug().log("Cleaning-up temp path %s", path);
         try {
             MoreFiles.deleteRecursively(path, RecursiveDeleteOption.ALLOW_INSECURE);
         } catch (Exception e) {
-            log.at(Level.INFO).withCause(e).log("Clean-up did not complete successfully");
+            log.info().withCause(e).log("Clean-up did not complete successfully");
         }
     }
 

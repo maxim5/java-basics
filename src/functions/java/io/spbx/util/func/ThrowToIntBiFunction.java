@@ -1,5 +1,7 @@
 package io.spbx.util.func;
 
+import javax.annotation.processing.Generated;
+
 /**
  * Represents a function that accepts two arguments and produces an int-valued
  * result and potentially throws a {@link Throwable}.
@@ -14,6 +16,7 @@ package io.spbx.util.func;
  * @param <E> the type of Throwable thrown
  */
 @FunctionalInterface
+@Generated(value = "ThrowTo$Type$BiFunction.java", date = "2024-10-14T13:46:36.089240449Z")
 public interface ThrowToIntBiFunction<T, U, E extends Throwable> {
     /**
      * Applies this function to the given arguments.

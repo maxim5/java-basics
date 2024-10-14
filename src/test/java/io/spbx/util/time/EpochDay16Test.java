@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
+import static io.spbx.util.testing.AssertReverse.assertRoundtrip;
 
 @Tag("fast")
 public class EpochDay16Test {
@@ -53,7 +53,7 @@ public class EpochDay16Test {
 
     private record EpochDay16Subject(@NotNull EpochDay16 value) {
         private void roundtrip(@NotNull LocalDate localDate) {
-            assertReversibleRoundtrip(value::localDateToEpochDay16, value::epochDay16ToLocalDate, localDate);
+            assertRoundtrip(value::localDateToEpochDay16, value::epochDay16ToLocalDate, localDate);
         }
     }
 }

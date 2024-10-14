@@ -5,6 +5,7 @@ import io.spbx.util.classpath.BasicClasspath;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -12,9 +13,14 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static io.spbx.util.base.EasyCast.castAny;
+import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.func.ScopeFunctions.also;
+import static io.spbx.util.func.ScopeFunctions.let;
+import static io.spbx.util.func.ScopeFunctions.map;
 import static java.util.Objects.requireNonNull;
 
 public class BasicMembers {
@@ -46,6 +52,10 @@ public class BasicMembers {
 
     public static boolean hasName(@NotNull Member member, @NotNull String name) {
         return member.getName().equals(name);
+    }
+
+    public static <AO extends AccessibleObject> @NotNull AO makeAccessible(@NotNull AO ao) {
+        return also(ao, () -> ao.setAccessible(true));
     }
 
     /** Methods **/
@@ -122,6 +132,25 @@ public class BasicMembers {
         }
     }
 
+    public record FieldValue(@Nullable Field field) {
+        public static @NotNull FieldValue of(@Nullable Field field) {
+            return new FieldValue(field);
+        }
+
+        public @Nullable Object get(@Nullable Object instance) {
+            return runRethrow(() -> map(field, field -> makeAccessible(field).get(instance)));
+        }
+
+        public @NotNull Object getOrDie(@Nullable Object instance) {
+            assert field != null : "Field must not be null";
+            return requireNonNull(this.get(instance), "Field value is null");
+        }
+
+        public void set(@Nullable Object instance, @Nullable Object value) {
+            runRethrow(() -> let(field, field -> makeAccessible(field).set(instance, value)));
+        }
+    }
+
     public static boolean hasType(@NotNull Field field, @NotNull Class<?> type) {
         return type.isAssignableFrom(field.getType());
     }
@@ -174,16 +203,32 @@ public class BasicMembers {
             return getOrDie(Scope.DECLARED, name);
         }
 
+        default @NotNull T getOrDie(@NotNull String name, @NotNull Supplier<String> error) {
+            return getOrDie(Scope.DECLARED, name, error);
+        }
+
         default @NotNull T getOrDie(@NotNull Predicate<T> predicate) {
             return getOrDie(Scope.DECLARED, predicate);
+        }
+
+        default @NotNull T getOrDie(@NotNull Predicate<T> predicate, @NotNull Supplier<String> error) {
+            return getOrDie(Scope.DECLARED, predicate, error);
         }
 
         default @NotNull T getOrDie(@NotNull Scope scope, @NotNull String name) {
             return getOrDie(scope, method -> hasName(method, name));
         }
 
+        default @NotNull T getOrDie(@NotNull Scope scope, @NotNull String name, @NotNull Supplier<String> error) {
+            return getOrDie(scope, method -> hasName(method, name), error);
+        }
+
         default @NotNull T getOrDie(@NotNull Scope scope, @NotNull Predicate<T> predicate) {
             return requireNonNull(find(scope, predicate));
+        }
+
+        default @NotNull T getOrDie(@NotNull Scope scope, @NotNull Predicate<T> predicate, @NotNull Supplier<String> error) {
+            return requireNonNull(find(scope, predicate), error);
         }
 
         default boolean has(@NotNull String name) {

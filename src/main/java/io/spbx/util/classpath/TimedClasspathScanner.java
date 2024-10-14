@@ -1,18 +1,17 @@
 package io.spbx.util.classpath;
 
-import com.google.common.flogger.FluentLogger;
+import io.spbx.util.logging.Logger;
 import io.spbx.util.time.TimeIt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
 /**
  * A {@link ClasspathScanner} adapter which times and logs time consumed for each operation.
  */
 public class TimedClasspathScanner implements ClasspathScanner {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
 
     private final ClasspathScanner delegate;
     private final String name;
@@ -36,7 +35,7 @@ public class TimedClasspathScanner implements ClasspathScanner {
 
         TimeIt
             .timeIt(() -> delegate.scan(classNamePredicate, classPredicate, consumer.andThen(counter)))
-            .onDone(millis -> log.at(Level.INFO).log("Found %d %s classes in %d ms", counter.count, name, millis));
+            .onDone(millis -> log.info().log("Found %d %s classes in %d ms", counter.count, name, millis));
     }
 
     @Override
@@ -44,7 +43,7 @@ public class TimedClasspathScanner implements ClasspathScanner {
                                             @NotNull ClassPredicate classPredicate) {
         return TimeIt
             .timeIt(() -> delegate.scanToSet(classNamePredicate, classPredicate))
-            .onDone((set, millis) -> log.at(Level.INFO).log("Found %d %s classes in %d ms", set.size(), name, millis));
+            .onDone((set, millis) -> log.info().log("Found %d %s classes in %d ms", set.size(), name, millis));
     }
 
     @Override

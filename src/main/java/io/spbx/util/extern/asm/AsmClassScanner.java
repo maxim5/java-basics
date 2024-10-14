@@ -17,12 +17,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import static io.spbx.util.base.BasicExceptions.IllegalStateExceptions.assureNonNull;
 import static io.spbx.util.base.Unchecked.Suppliers.runQuietlyOrNull;
 import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
 import static io.spbx.util.collect.BasicIterables.newMutableList;
 import static io.spbx.util.func.IntPredicates.equalTo;
 import static io.spbx.util.func.Predicates.equalTo;
-import static java.util.Objects.requireNonNull;
 
 public class AsmClassScanner {
     static {
@@ -59,7 +59,7 @@ public class AsmClassScanner {
 
     public static @NotNull AsmClassScanner of(@NotNull ClassLoader loader, @NotNull String className) {
         try (InputStream input = loader.getResourceAsStream(toResourceName(className))) {
-            return new AsmClassScanner(new ClassReader(requireNonNull(input, () -> "Class not found: " + className)));
+            return new AsmClassScanner(new ClassReader(assureNonNull(input, "Class not found:", className)));
         } catch (IOException e) {
             return Unchecked.rethrow(e);
         }

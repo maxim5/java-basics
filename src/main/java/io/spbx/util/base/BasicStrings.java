@@ -10,75 +10,103 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class BasicStrings {
-    @Pure
-    public static @NotNull String removePrefix(@NotNull String big, @NotNull String small) {
+    /* Prefix and suffix */
+
+    @Pure public static boolean startsWith(@NotNull String big, char small) {
+        return !big.isEmpty() && big.charAt(0) == small;
+    }
+
+    @Pure public static boolean endsWith(@NotNull String big, char small) {
+        return !big.isEmpty() && big.charAt(big.length() - 1) == small;
+    }
+
+    @Pure public static @NotNull String removePrefix(@NotNull String big, @NotNull String small) {
         if (big.startsWith(small)) {
             return big.substring(small.length());
         }
         return big;
     }
 
-    @Pure
-    public static @NotNull String removeSuffix(@NotNull String big, @NotNull String small) {
+    @Pure public static @NotNull String removePrefix(@NotNull String big, char small) {
+        if (startsWith(big, small)) {
+            return big.substring(1);
+        }
+        return big;
+    }
+
+    @Pure public static @NotNull String removeSuffix(@NotNull String big, @NotNull String small) {
         if (big.endsWith(small)) {
             return big.substring(0, big.length() - small.length());
         }
         return big;
     }
 
-    @Pure
-    public static @NotNull String ensurePrefix(@NotNull String big, @NotNull String small) {
+    @Pure public static @NotNull String removeSuffix(@NotNull String big, char small) {
+        if (endsWith(big, small)) {
+            return big.substring(0, big.length() - 1);
+        }
+        return big;
+    }
+
+    @Pure public static @NotNull String ensurePrefix(@NotNull String big, @NotNull String small) {
         if (big.startsWith(small)) {
             return big;
         }
         return small + big;
     }
 
-    @Pure
-    public static @NotNull String ensureSuffix(@NotNull String big, @NotNull String small) {
+    @Pure public static @NotNull String ensurePrefix(@NotNull String big, char small) {
+        if (startsWith(big, small)) {
+            return big;
+        }
+        return small + big;
+    }
+
+    @Pure public static @NotNull String ensureSuffix(@NotNull String big, @NotNull String small) {
         if (big.endsWith(small)) {
             return big;
         }
         return big + small;
     }
 
-    @Pure
-    public static @NotNull String nonNull(@Nullable String str) {
+    @Pure public static @NotNull String ensureSuffix(@NotNull String big, char small) {
+        if (endsWith(big, small)) {
+            return big;
+        }
+        return big + small;
+    }
+
+    /* Null or empty */
+
+    @Pure public static @NotNull String nonNull(@Nullable String str) {
         return str == null ? "" : str;
     }
 
-    @Pure
-    public static @NotNull CharArray nonNull(@Nullable CharArray str) {
+    @Pure public static @NotNull CharArray nonNull(@Nullable CharArray str) {
         return str == null ? CharArray.EMPTY : str;
     }
 
-    @Pure
-    public static @NotNull CharSequence nonNull(@Nullable CharSequence str) {
+    @Pure public static @NotNull CharSequence nonNull(@Nullable CharSequence str) {
         return str == null ? "" : str;
     }
 
-    @Pure
-    public static @NotNull String toStringOrEmpty(@Nullable Object obj) {
+    @Pure public static @NotNull String toStringOrEmpty(@Nullable Object obj) {
         return obj == null ? "" : obj.toString();
     }
 
-    @Pure
-    public static <T> @NotNull String toStringOrEmpty(@Nullable T obj, @NotNull Function<T, String> toString) {
+    @Pure public static <T> @NotNull String toStringOrEmpty(@Nullable T obj, @NotNull Function<T, String> toString) {
         return obj == null ? "" : toString.apply(obj);
     }
 
-    @Pure
-    public static boolean isEmpty(@Nullable CharSequence str) {
+    @Pure public static boolean isEmpty(@Nullable CharSequence str) {
         return str == null || str.isEmpty();
     }
 
-    @Pure
-    public static boolean isNotEmpty(@Nullable CharSequence str) {
+    @Pure public static boolean isNotEmpty(@Nullable CharSequence str) {
         return !isEmpty(str);
     }
 
-    @Pure
-    public static @NotNull String firstNotEmpty(@Nullable String first, @Nullable String second) {
+    @Pure public static @NotNull String firstNotEmpty(@Nullable String first, @Nullable String second) {
         if (isEmpty(first)) {
             assert !isEmpty(second) : "Both input strings are null or empty";
             return second;
@@ -86,19 +114,19 @@ public class BasicStrings {
         return first;
     }
 
-    @Pure
-    public static @NotNull Optional<String> ofNonEmpty(@Nullable String str) {
+    @Pure public static @NotNull Optional<String> ofNonEmpty(@Nullable String str) {
         return isEmpty(str) ? Optional.empty() : Optional.of(str);
     }
 
-    @Pure
-    public static @Nullable CharSequence intern(@Nullable CharSequence sequence) {
+    /* Char sequence */
+
+    @Pure public static @Nullable CharSequence intern(@Nullable CharSequence sequence) {
         return sequence instanceof String str ? str.intern() : sequence;
     }
 
     /* Equals */
 
-    public static boolean contentEquals(@NotNull CharSequence seq1, @NotNull CharSequence seq2) {
+    @Pure public static boolean contentEquals(@NotNull CharSequence seq1, @NotNull CharSequence seq2) {
         if (seq1 instanceof String str)
             return str.contentEquals(seq2);
         if (seq2 instanceof String str)
@@ -115,7 +143,7 @@ public class BasicStrings {
         return true;
     }
 
-    public static boolean contentEqualsIgnoreCase(@NotNull CharSequence str1, @NotNull CharSequence str2) {
+    @Pure public static boolean contentEqualsIgnoreCase(@NotNull CharSequence str1, @NotNull CharSequence str2) {
         if (str1 == str2)
             return true;
         if (str1.length() != str2.length())
@@ -129,11 +157,11 @@ public class BasicStrings {
 
     /* Hash code */
 
-    public static int hashCode(@NotNull CharSequence str) {
+    @Pure public static int hashCode(@NotNull CharSequence str) {
         return BaseCharBuf.hashCode(str, str.length(), CharSequence::charAt);
     }
 
-    public static int hashCodeIgnoreCase(@NotNull CharSequence str) {
+    @Pure public static int hashCodeIgnoreCase(@NotNull CharSequence str) {
         return BaseCharBuf.hashCode(str, str.length(), (seq, index) -> Character.toLowerCase(seq.charAt(index)));
     }
 }

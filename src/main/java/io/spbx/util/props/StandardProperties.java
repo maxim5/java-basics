@@ -139,6 +139,10 @@ public interface StandardProperties extends PropertyMap {
         return System::getProperty;
     }
 
+    static @NotNull StandardProperties env() {
+        return System::getenv;
+    }
+
     @Override default @NotNull StandardProperties chainedWith(@NotNull PropertyMap backup) {
         return key -> firstNonNullIfExist(this.getOrNull(key), () -> backup.getOrNull(key));
     }

@@ -1,6 +1,6 @@
 package io.spbx.util.time;
 
-import io.spbx.util.func.Reversible;
+import io.spbx.util.func.LongReversible;
 import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,11 +31,11 @@ public class MicroTimestamp {
         return Instant.ofEpochSecond(epochSeconds, micros * 1000);
     }
 
-    public static final Reversible<Instant, Long> REVERSIBLE = new Reversible<>() {
-        @Override public @NotNull Long forward(@NotNull Instant instant) {
+    public static final LongReversible<Instant> REVERSIBLE = new LongReversible<>() {
+        @Override public long forwardToLong(@NotNull Instant instant) {
             return instantToMicros64(instant);
         }
-        @Override public @NotNull Instant backward(@NotNull Long timestamp) {
+        @Override public @NotNull Instant backward(long timestamp) {
             return micros64ToInstant(timestamp);
         }
     };

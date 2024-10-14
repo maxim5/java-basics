@@ -1,9 +1,9 @@
 package io.spbx.util.base;
 
-import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spbx.util.base.BasicExceptions.IllegalArgumentExceptions;
 import io.spbx.util.func.ThrowRunnable;
+import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -53,7 +53,7 @@ public abstract class Lifetime {
     protected abstract void attach(@NotNull Lifetime.Definition child);
 
     public static class Definition extends Lifetime {
-        private static final FluentLogger log = FluentLogger.forEnclosingClass();
+        private static final Logger log = Logger.forEnclosingClass();
 
         private final ArrayDeque<Object> resources = new ArrayDeque<>();
         private final AtomicReference<Status> status = new AtomicReference<>(Status.Alive);
@@ -65,7 +65,7 @@ public abstract class Lifetime {
 
         @Override
         public void onTerminate(@NotNull Closeable closeable) {
-            log.atFiner().log("Adding closeable for terminate: %s...", closeable);
+            log.debug().log("Adding closeable for terminate: %s...", closeable);
             tryToAdd(closeable);
         }
 
@@ -86,7 +86,7 @@ public abstract class Lifetime {
                 return true;
             } else {
                 if (status.get() == Status.Terminating) {
-                    log.atSevere().log("Lifetime is already terminating");
+                    log.error().log("Lifetime is already terminating");
                 }
                 return false;
             }
@@ -105,19 +105,19 @@ public abstract class Lifetime {
             if (status.get() == Status.Alive) {
                 resources.addLast(resource);
             } else {
-                log.atWarning().log("Failed to add a resource due to status=%s: %s", status.get(), resource);
+                log.warn().log("Failed to add a resource due to status=%s: %s", status.get(), resource);
             }
         }
 
         private void deconstruct() {
             while (!resources.isEmpty()) {
                 Object resource = resources.pollLast();  // in reverse order: lowest on the stack added first
-                log.atInfo().log("Terminating %s...", resource);
+                log.info().log("Terminating %s...", resource);
                 try {
                     deconstruct(resource);
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
-                    log.atWarning().withCause(throwable).log("Runnable failed: %s", throwable.getMessage());
+                    log.warn().withCause(throwable).log("Runnable failed: %s", throwable.getMessage());
                 }
             }
         }
@@ -131,7 +131,7 @@ public abstract class Lifetime {
             } else if (resource instanceof Definition definition) {
                 definition.terminate();
             } else {
-                log.atSevere().log("Failed to terminal unexpected resource: %s", resource);
+                log.error().log("Failed to terminal unexpected resource: %s", resource);
             }
         }
 

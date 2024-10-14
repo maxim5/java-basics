@@ -1,17 +1,17 @@
 package io.spbx.util.testing.ext;
 
 import com.google.common.flogger.AbstractLogger;
-import com.google.common.flogger.FluentLogger;
 import com.google.common.flogger.backend.LogData;
 import com.google.common.flogger.backend.LoggerBackend;
 import com.google.common.flogger.backend.TemplateContext;
-import io.spbx.util.base.Unchecked;
 import io.spbx.util.func.ThrowRunnable;
+import io.spbx.util.reflect.BasicMembers.FieldValue;
 import io.spbx.util.reflect.BasicMembers.Fields;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.google.common.truth.Truth.assertThat;
-import static java.util.Objects.requireNonNull;
+import static io.spbx.util.base.BasicExceptions.InternalErrors.assureNonNull;
+import static io.spbx.util.reflect.BasicMembers.hasType;
 
 public class FluentLoggingCapture implements BeforeEachCallback, AfterEachCallback {
     // Expose `String` levels so that the tests do not depend on Log4j directly.
@@ -36,23 +37,28 @@ public class FluentLoggingCapture implements BeforeEachCallback, AfterEachCallba
     public static final String FATAL = Level.FATAL.name();
     public static final String OFF   = Level.OFF.name();
 
-    private final FluentLogger logger;
+    protected final AbstractLogger<?> logger;
     private LoggerBackend backend;
     private List<LogData> logRecords;
 
-    public FluentLoggingCapture(@NotNull Class<?> klass) {
-        logger = Unchecked.Suppliers.runRethrow(() -> getFluentLogger(klass));
+    protected FluentLoggingCapture(@NotNull AbstractLogger<?> logger) {
+        this.logger = logger;
+    }
+
+    public static @NotNull FluentLoggingCapture of(@NotNull Class<?> klass) {
+        AbstractLogger<?> logger = getFlogger(klass);
+        return new FluentLoggingCapture(logger);
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
         backend = extractBackend(logger);
         injectBackend(logger, buildMock(backend));
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-        injectBackend(logger, requireNonNull(backend));
+    public void afterEach(ExtensionContext context) {
+        injectBackend(logger, assureNonNull(backend));
     }
 
     public <E extends Throwable> void withCustomLog4jLevel(@NotNull String newLevel,
@@ -81,7 +87,7 @@ public class FluentLoggingCapture implements BeforeEachCallback, AfterEachCallba
     }
 
     public @NotNull List<LogData> logRecords() {
-        return requireNonNull(logRecords);
+        return assureNonNull(logRecords);
     }
 
     public @NotNull List<LogData> logRecordsContaining(@NotNull String substr) {
@@ -118,22 +124,22 @@ public class FluentLoggingCapture implements BeforeEachCallback, AfterEachCallba
         return mock;
     }
 
-    private static @NotNull LoggerBackend extractBackend(@NotNull FluentLogger logger) throws IllegalAccessException {
+    private static @NotNull LoggerBackend extractBackend(@NotNull AbstractLogger<?> logger) {
         Field field = Fields.of(AbstractLogger.class).getOrDie("backend");
-        field.setAccessible(true);
-        return (LoggerBackend) field.get(logger);
+        return (LoggerBackend) FieldValue.of(field).getOrDie(logger);
     }
 
-    private static void injectBackend(@NotNull FluentLogger logger,
-                                      @NotNull LoggerBackend backend) throws IllegalAccessException {
+    private static void injectBackend(@NotNull AbstractLogger<?> logger, @NotNull LoggerBackend backend) {
         Field field = Fields.of(AbstractLogger.class).getOrDie("backend");
-        field.setAccessible(true);
-        field.set(logger, backend);
+        FieldValue.of(field).set(logger, backend);
     }
 
-    private static @NotNull FluentLogger getFluentLogger(@NotNull Class<?> klass) throws IllegalAccessException {
-        Field field = Fields.of(klass).getOrDie(it -> it.getType().equals(FluentLogger.class));
-        field.setAccessible(true);
-        return (FluentLogger) field.get(null);
+    private static <T> @NotNull AbstractLogger<?> getFlogger(@NotNull Class<T> klass) {
+        return assureNonNull(getFloggerOrNull(klass, null), "No Flogger found in `%s`", klass);
+    }
+
+    protected static <T> @Nullable AbstractLogger<?> getFloggerOrNull(@NotNull Class<T> klass, @Nullable T instance) {
+        Field field = Fields.of(klass).find(it -> hasType(it, AbstractLogger.class));
+        return (AbstractLogger<?>) FieldValue.of(field).get(instance);
     }
 }

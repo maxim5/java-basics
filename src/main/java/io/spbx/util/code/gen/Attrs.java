@@ -58,7 +58,7 @@ record Attrs(@NotNull List<Expr> exprs) {
                         }
                     }
                     case EQ2, NEQ, AND, AND2, OR, OR2 -> {}
-                    default -> InternalErrors.fail("Unexpected infix op: " + op);
+                    default -> InternalErrors.fail("Unexpected infix op:", op);
                 }
                 return null;
             }
@@ -117,35 +117,35 @@ record Attrs(@NotNull List<Expr> exprs) {
                     case AND2 -> toBoolean(left) && toBoolean(right);
                     case OR -> toBoolean(left) | toBoolean(right);
                     case OR2 -> toBoolean(left) || toBoolean(right);
-                    default -> InternalErrors.fail("Unexpected infix op: " + op);
+                    default -> InternalErrors.fail("Unexpected infix op:", op);
                 };
             }
 
             @Override public @NotNull Boolean eval(@Nullable Object start, @NotNull List<Pair<InfixOp, @Nullable Object>> rest) {
                 List<InfixOp> ops = rest.stream().map(Pair::first).distinct().toList();
-                IllegalStateExceptions.assure(ops.size() == 1, "Unsupported syntax. Multi-expression must use the same op: %s", ops);
+                IllegalStateExceptions.assure(ops.size() == 1, "Unsupported syntax. Multi-expression must use the same op:", ops);
                 Stream<Object> values = Stream.concat(Stream.of(start), rest.stream().map(Pair::second));
                 return switch (ops.getFirst()) {
                     case EQ, EQ2 -> values.map(StringContentMap::toCharSequence).distinct().count() == 1;
                     case AND, AND2 -> values.map(Attrs::toBoolean).reduce((a, b) -> a && b).orElseThrow();
                     case OR, OR2 -> values.map(Attrs::toBoolean).reduce((a, b) -> a || b).orElseThrow();
-                    default -> IllegalStateExceptions.fail("Unsupported syntax. This op is not allowed: " + ops.getFirst());
+                    default -> IllegalStateExceptions.fail("Unsupported syntax. This op is not allowed:", ops.getFirst());
                 };
             }
 
             @Override public @NotNull Boolean eval(@NotNull PrefixOp op, @Nullable Object val) {
                 return switch (op) {
                     case NOT -> !toBoolean(val);
-                    default -> InternalErrors.fail("Unexpected prefix op: " + op);
+                    default -> InternalErrors.fail("Unexpected prefix op:", op);
                 };
             }
 
             @Override public @NotNull CharSequence eval(@Nullable Object val, @NotNull PostfixOp op) {
-                return InternalErrors.fail("Unexpected postfix op: " + op);
+                return InternalErrors.fail("Unexpected postfix op:", op);
             }
 
             @Override public @NotNull CharSequence eval(@NotNull List<@Nullable Object> terms, @NotNull Sequence.Separator sep) {
-                return InternalErrors.fail("Unexpected separator: " + sep);
+                return InternalErrors.fail("Unexpected separator:", sep);
             }
 
             @Override public @NotNull CharSequence eval(@NotNull Numeric numeric) {
@@ -165,7 +165,7 @@ record Attrs(@NotNull List<Expr> exprs) {
     }
 
     private static @NotNull Boolean forceBoolean(@NotNull Object object) {
-        InternalErrors.assure(object instanceof Boolean, "Must be a boolean: %s", object);
+        InternalErrors.assure(object instanceof Boolean, "Must be a boolean:", object);
         return (Boolean) object;
     }
 }

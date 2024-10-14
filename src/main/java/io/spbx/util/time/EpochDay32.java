@@ -1,6 +1,6 @@
 package io.spbx.util.time;
 
-import io.spbx.util.func.Reversible;
+import io.spbx.util.func.IntReversible;
 import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,11 +22,11 @@ public class EpochDay32 {
         return LocalDate.ofEpochDay(epochDay);
     }
 
-    public static final Reversible<LocalDate, Integer> REVERSIBLE = new Reversible<>() {
-        @Override public @NotNull Integer forward(@NotNull LocalDate date) {
+    public static final IntReversible<LocalDate> REVERSIBLE = new IntReversible<>() {
+        @Override public int forwardToInt(@NotNull LocalDate date) {
             return localDateToEpochDay32(date);
         }
-        @Override public @NotNull LocalDate backward(@NotNull Integer epochDay) {
+        @Override public @NotNull LocalDate backward(int epochDay) {
             return epochDay32ToLocalDate(epochDay);
         }
     };

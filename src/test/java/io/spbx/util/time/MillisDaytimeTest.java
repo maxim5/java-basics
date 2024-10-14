@@ -1,12 +1,11 @@
 package io.spbx.util.time;
 
+import io.spbx.util.testing.AssertReverse;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
-
-import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
 
 @Tag("fast")
 public class MillisDaytimeTest {
@@ -24,8 +23,8 @@ public class MillisDaytimeTest {
     }
 
     private static void assertRoundtrip(@NotNull LocalTime localTime) {
-        assertReversibleRoundtrip(MillisDaytime::localTimeToMillis32,
-                                  MillisDaytime::millis32ToLocalTime,
-                                  localTime);
+        AssertReverse.assertRoundtrip(MillisDaytime::localTimeToMillis32,
+                                      MillisDaytime::millis32ToLocalTime,
+                                      localTime);
     }
 }

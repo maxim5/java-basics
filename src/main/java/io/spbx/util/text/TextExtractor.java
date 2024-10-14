@@ -2,7 +2,6 @@ package io.spbx.util.text;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
 import io.spbx.util.array.CharArray;
 import io.spbx.util.array.MutableCharArray;
@@ -12,6 +11,7 @@ import io.spbx.util.lazy.LazyRecycle;
 import io.spbx.util.lazy.Sealed;
 import io.spbx.util.lazy.SealedGroup;
 import io.spbx.util.lazy.SealedListGroup;
+import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -33,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 
 @Immutable
 public class TextExtractor {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
 
     private final ImmutableList<Action> actions;
     private final Sanitizer sanitizer;
@@ -187,8 +186,8 @@ public class TextExtractor {
                         action.applyTo("%s:%s".formatted(action.name(), iteration), array, callback);
                     }
                     if (array.start() == start && array.end() == end) {
-                        log.at(Level.FINE).log("Actions are stuck at the same positions (%s, %s) after %s iterations",
-                                               start, end, iteration);
+                        log.debug().log("Actions are stuck at the same positions (%s, %s) after %s iterations",
+                                        start, end, iteration);
                         return;
                     }
                 }
@@ -281,10 +280,10 @@ public class TextExtractor {
         void applyFallback(@NotNull Supplier<String> message) {
             switch (fallback.get()) {
                 case IGNORE -> {}
-                case LOG_FINE -> log.at(Level.FINE).log(message.get());
-                case LOG_INFO -> log.at(Level.INFO).log(message.get());
-                case LOG_WARN -> log.at(Level.WARNING).log(message.get());
-                case LOG_SEVERE -> log.at(Level.SEVERE).log(message.get());
+                case LOG_DEBUG -> log.debug().log(message.get());
+                case LOG_INFO -> log.info().log(message.get());
+                case LOG_WARN -> log.warn().log(message.get());
+                case LOG_ERROR -> log.error().log(message.get());
                 case THROW -> throw newIllegalStateException("Extraction failed: " + message.get());
             }
         }
@@ -453,8 +452,7 @@ public class TextExtractor {
             return castAny(this);
         }
 
-        @Override
-        protected void sealIfNotYet() {
+        @Override protected void sealIfNotYet() {
             this.converters.finalizeAndSealIfNotYet(ImmutableMap::copyOf);
             super.sealIfNotYet();
         }
@@ -525,10 +523,10 @@ public class TextExtractor {
 
     public enum Fallback {
         IGNORE,
-        LOG_FINE,
+        LOG_DEBUG,
         LOG_INFO,
         LOG_WARN,
-        LOG_SEVERE,
+        LOG_ERROR,
         THROW,
     }
 
@@ -649,8 +647,7 @@ public class TextExtractor {
             return map;
         }
 
-        @Override
-        public String toString() {
+        @Override public String toString() {
             return map.toString();
         }
     }

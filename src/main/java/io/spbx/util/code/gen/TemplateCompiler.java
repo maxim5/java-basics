@@ -133,7 +133,7 @@ class TemplateCompiler {
         }
 
         private @NotNull ListBuilder<Block> finalizeLiterals() {
-            return ScopeFunctions.alsoRun(blocks, () -> {
+            return ScopeFunctions.also(blocks, () -> {
                 if (!literals.isEmpty()) {
                     blocks.add(CompiledTemplate.LiteralBlock.of(literals));
                     literals.clear();

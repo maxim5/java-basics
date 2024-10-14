@@ -1,15 +1,22 @@
 package io.spbx.util.collect;
 
 import io.spbx.util.base.Unchecked;
+import io.spbx.util.func.ThrowConsumer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
+import static io.spbx.util.base.BasicExceptions.newUnsupportedOperationException;
 import static io.spbx.util.base.Unchecked.Runnables;
 import static io.spbx.util.base.Unchecked.Suppliers;
 
 /**
  * Same as {@link Iterator} but allows to throw check exceptions during iteration.
  * Also adapts to {@link Iterator} API but converting checked exceptions into unchecked.
+ *
+ * @param <T> the type of elements returned by the iterator
+ * @see Iterator
+ * @see ThrowIterable
  */
 public interface ThrowIterator<T, E extends Throwable> extends Iterator<T> {
     boolean hasNextThrow() throws E;
@@ -17,7 +24,7 @@ public interface ThrowIterator<T, E extends Throwable> extends Iterator<T> {
     T nextThrow() throws E;
 
     default void removeThrow() throws E {
-        throw new UnsupportedOperationException("ThrowIterator.removeThrow()");
+        throw newUnsupportedOperationException("removeThrow() not supported for", this);
     }
 
     default boolean hasNext() {
@@ -34,5 +41,11 @@ public interface ThrowIterator<T, E extends Throwable> extends Iterator<T> {
 
     default void remove() {
         Runnables.runRethrow(this::removeThrow);
+    }
+
+    default void forEachRemaining(@NotNull ThrowConsumer<? super T, E> action) throws E {
+        while (hasNextThrow()) {
+            action.accept(nextThrow());
+        }
     }
 }

@@ -201,7 +201,7 @@ public final class DataSize implements Comparable<DataSize> {
     static @NotNull Unit findUnit(@NotNull String suffix, @NotNull Unit def) {
         return suffix.isEmpty() ?
             def :
-            IllegalArgumentExceptions.assureNonNull(Unit.UNITS.get(suffix.toLowerCase()), "Suffix not found: %s", suffix);
+            IllegalArgumentExceptions.assureNonNull(Unit.UNITS.get(suffix.toLowerCase()), "Suffix not found:", suffix);
     }
 
     // From https://en.wikipedia.org/wiki/Byte#Multiple-byte_units
@@ -244,7 +244,7 @@ public final class DataSize implements Comparable<DataSize> {
         }
 
         public long toBytes() {
-            return scale <= 60 ? 1L << scale : IllegalStateExceptions.fail("The value is too large for long: " + this);
+            return scale <= 60 ? 1L << scale : IllegalStateExceptions.fail("The value is too large for long:", this);
         }
 
         public double toDoubleBytes() {

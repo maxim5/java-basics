@@ -1,14 +1,12 @@
 package io.spbx.util.code.dsl.expr;
 
-import com.google.common.flogger.FluentLogger;
 import io.spbx.util.array.CharArray;
 import io.spbx.util.base.BasicExceptions.IllegalStateExceptions;
 import io.spbx.util.base.Pair;
 import io.spbx.util.collect.ListBuilder;
+import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
-
-import java.util.logging.Level;
 
 import static io.spbx.util.base.BasicExceptions.IllegalStateExceptions.assure;
 import static io.spbx.util.base.BasicExceptions.IllegalStateExceptions.assureNonNull;
@@ -16,7 +14,7 @@ import static io.spbx.util.base.BasicExceptions.newIllegalStateException;
 import static io.spbx.util.base.BasicExceptions.newInternalError;
 
 public class ExprParser {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
     private final SyntaxOptions options;
     private final ExprLexer lexer;
 
@@ -31,7 +29,7 @@ public class ExprParser {
     }
 
     public @NotNull Expr parseSequence() {
-        log.at(Level.FINER).log("parseSequence: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
+        log.debug().log("parseSequence: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
         Sequence.Separator separator;
 
         Expr first = parseOperand();
@@ -54,7 +52,7 @@ public class ExprParser {
     }
 
     public @NotNull Expr parseTerm() {
-        log.at(Level.FINER).log("parseTerm: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
+        log.debug().log("parseTerm: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
 
         Lexem next = lexer.skipIfWhitespace().peekNext();
         return next.classify(options, new Lexem.Callback() {
@@ -74,35 +72,35 @@ public class ExprParser {
                 result = parseOperation();
             }
             @Override public void onInfixOp(@NotNull InfixOp infixOp) {
-                throw newIllegalStateException("Expected a term, but got an infix op: " + infixOp);
+                throw newIllegalStateException("Expected a term, but got an infix op:", infixOp);
             }
             @Override public void onPostfixOp(@NotNull PostfixOp postfixOp) {
-                throw newIllegalStateException("Expected a term, but got a postfix op: " + postfixOp);
+                throw newIllegalStateException("Expected a term, but got a postfix op:", postfixOp);
             }
             @Override public void onQuotes(@NotNull Quotes quotes) {
                 result = parseLiteral();
             }
             @Override public void onBrackets(@NotNull Brackets brackets, boolean isOpen) {
-                assure(isOpen, "Unexpected closing bracket: " + brackets);
+                assure(isOpen, "Unexpected closing bracket:", brackets);
                 result = parseExprInBrackets();
             }
             @Override public void onSeparator(@NotNull Sequence.Separator separator) {
-                throw newIllegalStateException("Expected a term, but got: " + separator);
+                throw newIllegalStateException("Expected a term, but got:", separator);
             }
             @Override public void onTerminal() {
                 throw newIllegalStateException("Expected a term, but terminated");
             }
             @Override public void onOther(@NotNull CharArray value) {
-                throw newIllegalStateException("Expected a term, but got: " + value);
+                throw newIllegalStateException("Expected a term, but got:", value);
             }
         }).result;
     }
 
     @NotNull Expr parseLiteral() {
-        log.at(Level.FINER).log("parseLiteral: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
+        log.debug().log("parseLiteral: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
 
         Lexem lexem = lexer.nextNonWhitespace();
-        Quotes open = assureNonNull(lexem.toQuotes(options), "Expected literal, but got: " + lexem);
+        Quotes open = assureNonNull(lexem.toQuotes(options), "Expected literal, but got:", lexem);
 
         CharArray literal = CharArray.EMPTY;
         while (true) {
@@ -118,17 +116,17 @@ public class ExprParser {
     }
 
     @NotNull Expr parseExprInBrackets() {
-        log.at(Level.FINER).log("parseExprInBrackets: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
+        log.debug().log("parseExprInBrackets: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
 
         Lexem lexem = lexer.nextNonWhitespace();
-        Brackets open = assureNonNull(lexem.toBrackets(options), "Expected brackets, but got: " + lexem);
-        assure(Brackets.isOpen(lexem.value()), "Expected open bracket, but got: " + lexem);
+        Brackets open = assureNonNull(lexem.toBrackets(options), "Expected brackets, but got:", lexem);
+        assure(Brackets.isOpen(lexem.value()), "Expected open bracket, but got:", lexem);
 
         Expr operation = parseOperation();
 
         lexem = lexer.nextNonWhitespace();
-        Brackets close = assureNonNull(lexem.toBrackets(options), "Expected brackets, but got: " + lexem);
-        assure(Brackets.isClose(lexem.value()), "Expected closing bracket, but got: " + lexem);
+        Brackets close = assureNonNull(lexem.toBrackets(options), "Expected brackets, but got:", lexem);
+        assure(Brackets.isClose(lexem.value()), "Expected closing bracket, but got:", lexem);
 
         lexer.skipIfWhitespace();
         assure(open.matches(close), "Brackets mismatch: %s and %s", open, close);
@@ -136,7 +134,7 @@ public class ExprParser {
     }
 
     public @NotNull Expr parseOperation() {
-        log.at(Level.FINER).log("parseOperation: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
+        log.debug().log("parseOperation: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
         InfixOp infixOp;
         Sequence.Separator separator;
 
@@ -174,7 +172,7 @@ public class ExprParser {
     }
 
     @NotNull Expr parseOperand() {
-        log.at(Level.FINER).log("parseOperand: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
+        log.debug().log("parseOperand: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
         PrefixOp prefixOp;
         PostfixOp postfixOp;
 
@@ -191,7 +189,7 @@ public class ExprParser {
     }
 
     @NotNull Sequence parseSequenceFromFirst(@NotNull Expr first, @NotNull Sequence.Separator separator) {
-        log.at(Level.FINER).log("parseSequenceFromFirst: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
+        log.debug().log("parseSequenceFromFirst: last=%s next=%s", lexer.peekLast(), lexer.peekNext());
         boolean isWhitespace = separator.isWhitespace();
         Sequence.Separator sep;
 

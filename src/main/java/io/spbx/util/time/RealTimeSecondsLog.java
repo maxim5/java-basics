@@ -1,24 +1,22 @@
 package io.spbx.util.time;
 
+import io.spbx.util.collect.IntSize;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
 import static io.spbx.util.time.SecondsTimestamp.instantToSeconds32;
 
-public class RealTimeSecondsLog {
+public class RealTimeSecondsLog implements IntSize {
     private final RealTimeLog realTimeLog;
 
     public RealTimeSecondsLog(@NotNull RealTimeLog realTimeLog) {
         this.realTimeLog = realTimeLog;
     }
 
+    @Override
     public int size() {
         return realTimeLog.size();
-    }
-
-    public boolean isEmpty() {
-        return realTimeLog.isEmpty();
     }
 
     public void append(@NotNull Instant instant) {

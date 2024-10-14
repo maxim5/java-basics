@@ -13,10 +13,10 @@ import java.util.function.Function;
  * <p>
  * Different implementations may
  * <ul>
- *     <li>do not allow null values and throw</li>
- *     <li>allow nullable values both ways and exclusively map null to null</li>
+ *     <li>do not allow {@code null} values and throw</li>
+ *     <li>allow nullable values both ways and exclusively map {@code null} to {@code null}</li>
  *     <li>allow nullable values only in {@code U} or only in {@code V} space</li>
- *     <li>mix and match nulls and non-nulls in some other way</li>
+ *     <li>mix and match {@code null} and non-nulls in some other way</li>
  * </ul>
  *
  * @param <U> argument type
@@ -33,7 +33,7 @@ public interface NullAwareFunction<U, V> extends Function<U, V> {
     @NotNull V applyNotNull(@NotNull U u);
 
     /**
-     * Applies a null-allowable version of this function. By default, exclusively maps null to null.
+     * Applies a null-allowable version of this function. By default, exclusively maps {@code null} to {@code null}.
      *
      * @param u the (nullable) function argument
      * @return the (nullable) function result
@@ -45,7 +45,7 @@ public interface NullAwareFunction<U, V> extends Function<U, V> {
 
     /**
      * Converts a simple non-null {@link Function} into a {@link NullAwareFunction}.
-     * A wrapped function would be safely accept nullable inputs and pass them through.
+     * A wrapped function safely accepts nullable inputs and passes them through.
      * Note that this means the output of {@link #apply(Object)} is becoming nullable too.
      *
      * @param function the non-null function to wrap

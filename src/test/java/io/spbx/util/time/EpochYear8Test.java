@@ -1,10 +1,9 @@
 package io.spbx.util.time;
 
+import io.spbx.util.testing.AssertReverse;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
 
 @Tag("fast")
 public class EpochYear8Test {
@@ -54,7 +53,7 @@ public class EpochYear8Test {
 
     private record EpochYear8Subject(@NotNull EpochYear8 value) {
         private void roundtrip(int humanYear) {
-            assertReversibleRoundtrip(value::humanYearToEpochYear8, value::epochYear8ToHumanYear, humanYear);
+            AssertReverse.assertRoundtrip(value::humanYearToEpochYear8, value::epochYear8ToHumanYear, humanYear);
         }
     }
 }

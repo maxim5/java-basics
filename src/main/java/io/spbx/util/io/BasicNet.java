@@ -79,12 +79,12 @@ public class BasicNet {
 
     public static @NotNull Inet4Address parseIp4Address(@NotNull String addr) throws UncheckedIOException {
         InetAddress inet = parseInetAddress(addr);
-        return inet instanceof Inet4Address inet4 ? inet4 : IllegalArgumentExceptions.fail("Invalid IPv4 address: %s", addr);
+        return inet instanceof Inet4Address inet4 ? inet4 : IllegalArgumentExceptions.fail("Invalid IPv4 address:", addr);
     }
 
     public static @NotNull Inet6Address parseIp6Address(@NotNull String addr) throws UncheckedIOException {
         InetAddress inet = parseInetAddress(addr);
-        return inet instanceof Inet6Address inet6 ? inet6 : IllegalArgumentExceptions.fail("Invalid IPv6 address: %s", addr);
+        return inet instanceof Inet6Address inet6 ? inet6 : IllegalArgumentExceptions.fail("Invalid IPv6 address:", addr);
     }
 
     public static @NotNull InetAddress ipAddressFromBytes(byte @NotNull[] addr) throws UncheckedIOException {
@@ -96,12 +96,12 @@ public class BasicNet {
     }
 
     public static @NotNull Inet4Address ip4AddressFromBytes(byte @NotNull[] addr) throws UncheckedIOException {
-        assert addr.length == IP4_BYTES : IllegalArgumentExceptions.fail("Invalid IPv4 address: %s", Arrays.toString(addr));
+        assert addr.length == IP4_BYTES : IllegalArgumentExceptions.fail("Invalid IPv4 address:", Arrays.toString(addr));
         return castAny(ipAddressFromBytes(addr));
     }
 
     public static @NotNull Inet6Address ip6AddressFromBytes(byte @NotNull[] addr) throws UncheckedIOException {
-        assert addr.length == IP6_BYTES : IllegalArgumentExceptions.fail("Invalid IPv6 address: %s", Arrays.toString(addr));
+        assert addr.length == IP6_BYTES : IllegalArgumentExceptions.fail("Invalid IPv6 address:", Arrays.toString(addr));
         return castAny(ipAddressFromBytes(addr));
     }
 }

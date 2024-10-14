@@ -1,12 +1,11 @@
 package io.spbx.util.time;
 
+import io.spbx.util.testing.AssertReverse;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-
-import static io.spbx.util.testing.AssertBasics.assertReversibleRoundtrip;
 
 @Tag("fast")
 public class NanoTimestampTest {
@@ -25,8 +24,8 @@ public class NanoTimestampTest {
     }
 
     private static void assertRoundtrip(@NotNull Instant instant) {
-        assertReversibleRoundtrip(NanoTimestamp::instantToNanos64,
-                                  NanoTimestamp::nanos64ToInstant,
-                                  instant);
+        AssertReverse.assertRoundtrip(NanoTimestamp::instantToNanos64,
+                                      NanoTimestamp::nanos64ToInstant,
+                                      instant);
     }
 }

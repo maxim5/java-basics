@@ -1,9 +1,9 @@
 package io.spbx.util.collect;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.flogger.FluentLogger;
 import io.spbx.util.base.BasicExceptions.IllegalStateExceptions;
 import io.spbx.util.base.BasicNulls;
+import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -15,11 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.logging.Level;
 
 @ThreadSafe
 public class ExpirablePool<T> {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
 
     private final Map<T, ObjectData> working;
     private final Map<T, ObjectData> expired;
@@ -73,7 +72,7 @@ public class ExpirablePool<T> {
     }
 
     public synchronized @NotNull T nextAvailable() {
-        IllegalStateExceptions.assure(hasWorking(), "No more working objects in the pool: " + this);
+        IllegalStateExceptions.assure(hasWorking(), "No more working objects in the pool:", this);
         try {
             while (rotation.hasNext()) {
                 Map.Entry<T, ObjectData> entry = rotation.next();
@@ -82,7 +81,7 @@ public class ExpirablePool<T> {
                     return entry.getKey();
                 }
             }
-            IllegalStateExceptions.assure(hasAvailable(), "All working objects in the pool are taken: " + this);
+            IllegalStateExceptions.assure(hasAvailable(), "All working objects in the pool are taken:", this);
         } catch (NoSuchElementException | ConcurrentModificationException ignore) {}
         rotation = working.entrySet().iterator();
         return nextAvailable();
@@ -107,7 +106,7 @@ public class ExpirablePool<T> {
     public synchronized void returnBack(@NotNull T object, @NotNull Status status, @NotNull ExpirationInfo info) {
         ObjectData data = working.get(object);
         if (data == null) {
-            log.at(Level.WARNING).log("Object expired concurrently: %s", object);
+            log.warn().log("Object expired concurrently: %s", object);
             return;
         }
 

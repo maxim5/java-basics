@@ -154,6 +154,10 @@ public interface PropertyMap {
         return System::getProperty;
     }
 
+    static @NotNull PropertyMap env() {
+        return System::getenv;
+    }
+
     default @NotNull PropertyMap chainedWith(@NotNull PropertyMap backup) {
         return key -> firstNonNullIfExist(this.getOrNull(key), () -> backup.getOrNull(key));
     }

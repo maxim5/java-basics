@@ -43,18 +43,15 @@ public interface Reversible<U, V> extends NullAwareFunction<U, V> {
      */
     default @NotNull Reversible<V, U> reverse() {
         return new Reversible<>() {
-            @Override
-            public @NotNull U forward(@NotNull V v) {
+            @Override public @NotNull U forward(@NotNull V v) {
                 return Reversible.this.backward(v);
             }
 
-            @Override
-            public @NotNull V backward(@NotNull U u) {
+            @Override public @NotNull V backward(@NotNull U u) {
                 return Reversible.this.forward(u);
             }
 
-            @Override
-            public @NotNull Reversible<U, V> reverse() {
+            @Override public @NotNull Reversible<U, V> reverse() {
                 return Reversible.this;
             }
         };
@@ -80,13 +77,11 @@ public interface Reversible<U, V> extends NullAwareFunction<U, V> {
         return v != null ? backward(v) : null;
     }
 
-    @Override
-    default @NotNull V applyNotNull(@NotNull U u) {
+    @Override default @NotNull V applyNotNull(@NotNull U u) {
         return forward(u);
     }
 
-    @Override
-    default @Nullable V apply(@Nullable U u) {
+    @Override default @Nullable V apply(@Nullable U u) {
         return forwardNullable(u);
     }
 }

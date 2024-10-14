@@ -1,5 +1,7 @@
 package io.spbx.util.func;
 
+import javax.annotation.processing.Generated;
+
 /**
  * Represents a supplier of {@code long}-valued results, potentially throwing a {@link Throwable}.
  * <p>
@@ -15,6 +17,7 @@ package io.spbx.util.func;
  * @see java.util.function.LongSupplier
  */
 @FunctionalInterface
+@Generated(value = "Throw$Type$Supplier.java", date = "2024-10-14T13:46:36.081046536Z")
 public interface ThrowLongSupplier<E extends Throwable> {
     /**
      * Gets a result, potentially throwing an exception.

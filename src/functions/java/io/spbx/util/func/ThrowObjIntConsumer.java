@@ -1,5 +1,7 @@
 package io.spbx.util.func;
 
+import javax.annotation.processing.Generated;
+
 /**
  * Represents an operation that accepts two input arguments one of which is an {@code int}
  * and returns no result potentially throws a {@link Throwable}.
@@ -14,6 +16,7 @@ package io.spbx.util.func;
  * @see java.util.function.BiConsumer
  */
 @FunctionalInterface
+@Generated(value = "ThrowObj$Type$Consumer.java", date = "2024-10-14T13:46:36.084459747Z")
 public interface ThrowObjIntConsumer<U, E extends Throwable> {
     /**
      * Performs this operation on the given arguments.

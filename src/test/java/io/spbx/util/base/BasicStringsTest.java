@@ -8,7 +8,27 @@ import static com.google.common.truth.Truth.assertThat;
 @Tag("fast")
 public class BasicStringsTest {
     @Test
-    public void removePrefix_simple() {
+    public void startsWith_char() {
+        assertThat(BasicStrings.startsWith("", ' ')).isFalse();
+        assertThat(BasicStrings.startsWith("_", ' ')).isFalse();
+        assertThat(BasicStrings.startsWith("_ ", ' ')).isFalse();
+        assertThat(BasicStrings.startsWith(" ", ' ')).isTrue();
+        assertThat(BasicStrings.startsWith("  ", ' ')).isTrue();
+        assertThat(BasicStrings.startsWith(" _", ' ')).isTrue();
+    }
+
+    @Test
+    public void endsWith_char() {
+        assertThat(BasicStrings.endsWith("", ' ')).isFalse();
+        assertThat(BasicStrings.endsWith("_", ' ')).isFalse();
+        assertThat(BasicStrings.endsWith(" _", ' ')).isFalse();
+        assertThat(BasicStrings.endsWith(" ", ' ')).isTrue();
+        assertThat(BasicStrings.endsWith("  ", ' ')).isTrue();
+        assertThat(BasicStrings.endsWith("_ ", ' ')).isTrue();
+    }
+
+    @Test
+    public void removePrefix_string() {
         assertThat(BasicStrings.removePrefix("", "")).isEqualTo("");
         assertThat(BasicStrings.removePrefix("", "foo")).isEqualTo("");
 
@@ -20,7 +40,20 @@ public class BasicStringsTest {
     }
 
     @Test
-    public void removeSuffix_simple() {
+    public void removePrefix_char() {
+        assertThat(BasicStrings.removePrefix("", ' ')).isEqualTo("");
+        assertThat(BasicStrings.removePrefix(" ", ' ')).isEqualTo("");
+        assertThat(BasicStrings.removePrefix("  ", ' ')).isEqualTo(" ");
+        assertThat(BasicStrings.removePrefix("a", ' ')).isEqualTo("a");
+        assertThat(BasicStrings.removePrefix("a ", ' ')).isEqualTo("a ");
+        assertThat(BasicStrings.removePrefix(" a", ' ')).isEqualTo("a");
+        assertThat(BasicStrings.removePrefix("", 'a')).isEqualTo("");
+        assertThat(BasicStrings.removePrefix("a", 'a')).isEqualTo("");
+        assertThat(BasicStrings.removePrefix("aa", 'a')).isEqualTo("a");
+    }
+
+    @Test
+    public void removeSuffix_string() {
         assertThat(BasicStrings.removeSuffix("", "")).isEqualTo("");
         assertThat(BasicStrings.removeSuffix("", "foo")).isEqualTo("");
 
@@ -32,7 +65,20 @@ public class BasicStringsTest {
     }
 
     @Test
-    public void ensurePrefix_simple() {
+    public void removeSuffix_char() {
+        assertThat(BasicStrings.removeSuffix("", ' ')).isEqualTo("");
+        assertThat(BasicStrings.removeSuffix(" ", ' ')).isEqualTo("");
+        assertThat(BasicStrings.removeSuffix("  ", ' ')).isEqualTo(" ");
+        assertThat(BasicStrings.removeSuffix("a", ' ')).isEqualTo("a");
+        assertThat(BasicStrings.removeSuffix("a ", ' ')).isEqualTo("a");
+        assertThat(BasicStrings.removeSuffix(" a", ' ')).isEqualTo(" a");
+        assertThat(BasicStrings.removeSuffix("", 'a')).isEqualTo("");
+        assertThat(BasicStrings.removeSuffix("a", 'a')).isEqualTo("");
+        assertThat(BasicStrings.removeSuffix("aa", 'a')).isEqualTo("a");
+    }
+
+    @Test
+    public void ensurePrefix_string() {
         assertThat(BasicStrings.ensurePrefix("", "")).isEqualTo("");
         assertThat(BasicStrings.ensurePrefix("", "foo")).isEqualTo("foo");
 
@@ -44,7 +90,18 @@ public class BasicStringsTest {
     }
     
     @Test
-    public void ensureSuffix_simple() {
+    public void ensurePrefix_char() {
+        assertThat(BasicStrings.ensurePrefix("", ' ')).isEqualTo(" ");
+        assertThat(BasicStrings.ensurePrefix(" ", ' ')).isEqualTo(" ");
+        assertThat(BasicStrings.ensurePrefix("  ", ' ')).isEqualTo("  ");
+        assertThat(BasicStrings.ensurePrefix("a", ' ')).isEqualTo(" a");
+        assertThat(BasicStrings.ensurePrefix(" a", ' ')).isEqualTo(" a");
+        assertThat(BasicStrings.ensurePrefix("  a", ' ')).isEqualTo("  a");
+        assertThat(BasicStrings.ensurePrefix("a ", ' ')).isEqualTo(" a ");
+    }
+
+    @Test
+    public void ensureSuffix_string() {
         assertThat(BasicStrings.ensureSuffix("", "")).isEqualTo("");
         assertThat(BasicStrings.ensureSuffix("", "foo")).isEqualTo("foo");
 
@@ -54,6 +111,17 @@ public class BasicStringsTest {
 
         assertThat(BasicStrings.ensureSuffix("foobar", "fox")).isEqualTo("foobarfox");
         assertThat(BasicStrings.ensureSuffix("foobar", "Foo")).isEqualTo("foobarFoo");
+    }
+
+    @Test
+    public void ensureSuffix_char() {
+        assertThat(BasicStrings.ensureSuffix("", ' ')).isEqualTo(" ");
+        assertThat(BasicStrings.ensureSuffix(" ", ' ')).isEqualTo(" ");
+        assertThat(BasicStrings.ensureSuffix("  ", ' ')).isEqualTo("  ");
+        assertThat(BasicStrings.ensureSuffix("a", ' ')).isEqualTo("a ");
+        assertThat(BasicStrings.ensureSuffix("a ", ' ')).isEqualTo("a ");
+        assertThat(BasicStrings.ensureSuffix("a  ", ' ')).isEqualTo("a  ");
+        assertThat(BasicStrings.ensureSuffix(" a ", ' ')).isEqualTo(" a ");
     }
 
     @Test

@@ -1,5 +1,6 @@
 package io.spbx.util.collect;
 
+import io.spbx.util.func.ThrowUnaryOperator;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.ElementType;
@@ -36,15 +37,19 @@ class ToApiCommon {
         String comments() default "";
     }
 
-    static <E> @NotNull Function<Stream<E>, Stream<E>> assertNonNull(@NotNull String name) {
+    @FunctionalInterface
+    interface StreamOperator<E> extends ThrowUnaryOperator<Stream<E>, RuntimeException> {
+    }
+
+    static <E> @NotNull StreamOperator<E> assertNonNull(@NotNull String name) {
         return stream -> stream.peek(it -> {
             assert it != null : "The stream contains nulls. `%s` is not supported".formatted(name);
         });
     }
 
-    static <E> @NotNull Function<Stream<E>, Stream<E>> assertNonNull(@NotNull String name,
-                                                                     @NotNull Function<? super E, ?> key,
-                                                                     @NotNull Function<? super E, ?> val) {
+    static <E> @NotNull StreamOperator<E> assertNonNull(@NotNull String name,
+                                                        @NotNull Function<? super E, ?> key,
+                                                        @NotNull Function<? super E, ?> val) {
         return stream -> stream.peek(it -> {
             assert it != null : "The stream contains nulls. `%s` is not supported".formatted(name);
             assert key.apply(it) != null : "The stream contains null keys: `%s`. `%s` is not supported".formatted(it, name);
@@ -52,7 +57,7 @@ class ToApiCommon {
         });
     }
 
-    static <E extends Entry<?, ?>> @NotNull Function<Stream<E>, Stream<E>> assertKvNonNull(@NotNull String name) {
+    static <E extends Entry<?, ?>> @NotNull StreamOperator<E> assertKvNonNull(@NotNull String name) {
         return stream -> stream.peek(e -> {
             assert e != null : "The key-value stream contains null entries. `%s` is not supported".formatted(name);
             assert e.getKey() != null : "The key-value stream contains null keys: `%s`. `%s` is not supported".formatted(e, name);

@@ -1,6 +1,6 @@
 package io.spbx.util.time;
 
-import io.spbx.util.func.Reversible;
+import io.spbx.util.func.IntReversible;
 import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,11 +31,11 @@ public class MillisDaytime {
         return LocalTime.ofNanoOfDay(nanoOfDay);
     }
 
-    public static final Reversible<LocalTime, Integer> REVERSIBLE = new Reversible<>() {
-        @Override public @NotNull Integer forward(@NotNull LocalTime localTime) {
+    public static final IntReversible<LocalTime> REVERSIBLE = new IntReversible<>() {
+        @Override public int forwardToInt(@NotNull LocalTime localTime) {
             return localTimeToMillis32(localTime);
         }
-        @Override public @NotNull LocalTime backward(@NotNull Integer millis) {
+        @Override public @NotNull LocalTime backward(int millis) {
             return millis32ToLocalTime(millis);
         }
     };

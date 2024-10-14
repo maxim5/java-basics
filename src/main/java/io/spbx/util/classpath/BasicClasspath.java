@@ -1,13 +1,11 @@
 package io.spbx.util.classpath;
 
-import com.google.common.flogger.FluentLogger;
+import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.logging.Level;
-
 public class BasicClasspath {
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final Logger log = Logger.forEnclosingClass();
 
     public static @Nullable Class<?> classForNameOrNull(@NotNull String name) {
         try {
@@ -15,7 +13,7 @@ public class BasicClasspath {
         } catch (ClassNotFoundException ignore) {
             return null;
         } catch (Throwable throwable) {
-            log.at(Level.WARNING).withCause(throwable).log("Class loading failed for name: `%s`", name);
+            log.warn().withCause(throwable).log("Class loading failed for name: `%s`", name);
             return null;
         }
     }

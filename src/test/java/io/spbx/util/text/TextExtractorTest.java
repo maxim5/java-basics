@@ -6,7 +6,7 @@ import io.spbx.util.array.MutableCharArray;
 import io.spbx.util.base.BasicParsing;
 import io.spbx.util.collect.Streamer;
 import io.spbx.util.testing.MockConsumer;
-import io.spbx.util.testing.ext.FluentLoggingCapture;
+import io.spbx.util.testing.ext.LoggingCapture;
 import io.spbx.util.text.TextExtractor.Extracted;
 import io.spbx.util.text.TextExtractor.ExtractedMap;
 import io.spbx.util.text.TextExtractor.Fallback;
@@ -28,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("slow")
 public class TextExtractorTest {
-    @RegisterExtension static final FluentLoggingCapture LOGGING = new FluentLoggingCapture(TextExtractor.class);
+    @RegisterExtension private static final LoggingCapture LOGGING = LoggingCapture.of(TextExtractor.class);
 
-    /** {@link TextExtractor#extract} */
+    /** {@link TextExtractor#extract} **/
     
     @Test
     public void extract_simple_spaces() {
@@ -115,7 +115,7 @@ public class TextExtractorTest {
         assertExtractedMap(extractor.extract("aaaaaaaaaaaaa")).toCaptured().containsExactly("aaa", "", "aa", "");
     }
 
-    /** {@link TextExtractor#skipTo(CharSequence)} */
+    /** {@link TextExtractor#skipTo(CharSequence)} **/
 
     @Test
     public void skip_to_simple() {
@@ -155,7 +155,7 @@ public class TextExtractorTest {
         assertExtractedMap(map).toCaptured().containsExactly("[a]", "<body> A Body</body>");
     }
 
-    /** {@link TextExtractor#skipTo(Pattern)} */
+    /** {@link TextExtractor#skipTo(Pattern)} **/
 
     @Test
     public void skip_to_pattern() {
@@ -195,7 +195,7 @@ public class TextExtractorTest {
         assertExtractedMap(map).toCaptured().containsExactly("[a]", "<body> A Body</body>");
     }
 
-    /** {@link TextExtractor#skipBackwardTo} */
+    /** {@link TextExtractor#skipBackwardTo} **/
 
     @Test
     public void skip_backward_to_simple() {
@@ -235,7 +235,7 @@ public class TextExtractorTest {
         assertExtractedMap(map).toCaptured().containsExactly("[a]", "<body> A Body</body>");
     }
 
-    /** {@link TextExtractor#narrowDownTo(CharSequence, CharSequence)} */
+    /** {@link TextExtractor#narrowDownTo(CharSequence, CharSequence)} **/
 
     @Test
     public void narrow_down_to_simple() {
@@ -315,7 +315,7 @@ public class TextExtractorTest {
         );
     }
 
-    /** {@link TextExtractor#narrowDownTo(Pattern)} */
+    /** {@link TextExtractor#narrowDownTo(Pattern)} **/
 
     @Test
     public void narrow_down_to_pattern() {
@@ -363,7 +363,7 @@ public class TextExtractorTest {
         assertExtractedMap(map).toCaptured().containsExactly("[a]", "<body id='id'>TheBody");
     }
 
-    /** {@link TextExtractor#captureBetween} */
+    /** {@link TextExtractor#captureBetween} **/
 
     @Test
     public void capture_between() {
@@ -445,7 +445,7 @@ public class TextExtractorTest {
         assertExtractedMap(map).toCaptured().containsExactly("<span>", "Span", "[1]", "</span>Y</body>");
     }
 
-    /** {@link TextExtractor#capturePattern} */
+    /** {@link TextExtractor#capturePattern} **/
 
     @Test
     public void capture_pattern() {
@@ -479,7 +479,7 @@ public class TextExtractorTest {
         assertExtractedMap(map).toConverted().containsExactly("regex:0", null, "regex:1", 123, "[1]", null);
     }
 
-    /** {@link TextExtractor.Capture#convertVia} */
+    /** {@link TextExtractor.Capture#convertVia} **/
 
     @Test
     public void capture_between_with_converter() {
@@ -495,7 +495,7 @@ public class TextExtractorTest {
         assertThrows(AssertionError.class, () -> TextExtractor.captureBetween("", "").convertVia(s -> 0).convertVia(s -> 1));
     }
 
-    /** {@link TextExtractor.Capture#onCapture} */
+    /** {@link TextExtractor.Capture#onCapture} **/
 
     @Test
     public void capture_between_on_capture() {
@@ -513,7 +513,7 @@ public class TextExtractorTest {
         assertThrows(AssertionError.class, () -> TextExtractor.captureBetween("", "").onCapture(x -> {}).onCapture(x -> {}));
     }
 
-    /** {@link TextExtractor#repeat} */
+    /** {@link TextExtractor#repeat} **/
 
     @Test
     public void repeat_one_action() {
@@ -576,7 +576,7 @@ public class TextExtractorTest {
         assertExtractedMap(extractor.extract("[i](j)[k]")).toCaptured().containsExactly("A:0", "i");
     }
 
-    /** {@link TextExtractor.Action#named(String)} */
+    /** {@link TextExtractor.Action#named(String)} **/
 
     @Test
     public void named_simple() {
@@ -592,7 +592,7 @@ public class TextExtractorTest {
         assertThrows(AssertionError.class, () -> TextExtractor.captureBetween("", "").named("foo").named("bar"));
     }
 
-    /** {@link TextExtractor.Action#orElse(Fallback)} */
+    /** {@link TextExtractor.Action#orElse(Fallback)} **/
 
     @Test
     public void fallback_ignore() {
@@ -608,7 +608,7 @@ public class TextExtractorTest {
     @Test
     public void fallback_log_fine() {
         TextExtractor extractor = TextExtractor.of(
-            TextExtractor.skipTo("a").orElse(Fallback.LOG_FINE)
+            TextExtractor.skipTo("a").orElse(Fallback.LOG_DEBUG)
         );
         LOGGING.withCustomLog4jLevel(TRACE, () -> {
             extractor.extract("");
@@ -642,7 +642,7 @@ public class TextExtractorTest {
     @Test
     public void fallback_log_severe() {
         TextExtractor extractor = TextExtractor.of(
-            TextExtractor.skipTo("a").orElse(Fallback.LOG_SEVERE)
+            TextExtractor.skipTo("a").orElse(Fallback.LOG_ERROR)
         );
         LOGGING.withCustomLog4jLevel(ERROR, () -> {
             extractor.extract("");
@@ -663,7 +663,7 @@ public class TextExtractorTest {
         assertThrows(AssertionError.class, () -> TextExtractor.skipTo("").orElseIgnore().orElseThrow());
     }
 
-    /** {@link TextExtractor#with(Sanitizer)} */
+    /** {@link TextExtractor#with(Sanitizer)} **/
 
     @Test
     public void sanitizer_trim_spaces() {
@@ -683,7 +683,7 @@ public class TextExtractorTest {
         assertExtractedMap(map).toCaptured().containsExactly("[a]", "  <body>TheBody</body> \n");
     }
 
-    /* Testing Helpers */
+    /* Testing Helpers **/
 
     private static @NotNull TextExtractor.MatchCapture captureCurrent(@NotNull String name) {
         return new MatchCapture(name) {
