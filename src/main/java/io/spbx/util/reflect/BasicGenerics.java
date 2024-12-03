@@ -1,6 +1,9 @@
 package io.spbx.util.reflect;
 
 import com.google.common.reflect.TypeToken;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,6 +12,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class BasicGenerics {
     public static boolean isWildcardType(@NotNull Type type) {
         return type instanceof WildcardType;

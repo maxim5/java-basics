@@ -1,6 +1,6 @@
 package io.spbx.util.code.gen;
 
-import io.spbx.util.collect.BasicMaps;
+import io.spbx.util.collect.map.BasicMaps;
 import io.spbx.util.io.BasicFiles;
 import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import static io.spbx.util.base.BasicExceptions.notImplemented;
+import static io.spbx.util.base.error.BasicExceptions.notImplemented;
 
 public class StandardTemplateCodegen {
     private static final Logger log = Logger.forEnclosingClass();

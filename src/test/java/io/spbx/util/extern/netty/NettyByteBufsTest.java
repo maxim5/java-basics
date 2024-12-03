@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Consumer;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spbx.util.base.str.BasicParsing.DECIMAL;
+import static io.spbx.util.testing.AssertFailure.assertFailure;
 import static io.spbx.util.testing.TestingBytes.asByteBuf;
 import static io.spbx.util.testing.TestingBytes.assertBytes;
 
@@ -73,6 +75,49 @@ public class NettyByteBufsTest {
     }
 
     @Test
+    public void parseInt_simple() {
+        assertThat(NettyByteBufs.parseInt(asByteBuf("0"))).isEqualTo(0);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("123"))).isEqualTo(123);
+
+        assertThat(NettyByteBufs.parseInt(asByteBuf("1"), DECIMAL)).isEqualTo(1);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("9"), DECIMAL)).isEqualTo(9);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("123"), DECIMAL)).isEqualTo(123);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("12345678"), DECIMAL)).isEqualTo(12345678);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("0"), DECIMAL)).isEqualTo(0);
+
+        assertFailure(() -> NettyByteBufs.parseInt(asByteBuf(""), DECIMAL)).throwsNumberFormatException();
+        assertFailure(() -> NettyByteBufs.parseInt(asByteBuf("foo"), DECIMAL)).throwsNumberFormatException();
+        assertFailure(() -> NettyByteBufs.parseInt(asByteBuf("1+2"), DECIMAL)).throwsNumberFormatException();
+    }
+
+    @Test
+    public void parseInt_plus_or_minus() {
+        assertThat(NettyByteBufs.parseInt(asByteBuf("+0"), DECIMAL)).isEqualTo(0);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("+00"), DECIMAL)).isEqualTo(0);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("-0"), DECIMAL)).isEqualTo(0);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("-00"), DECIMAL)).isEqualTo(0);
+
+        assertThat(NettyByteBufs.parseInt(asByteBuf("+1"), DECIMAL)).isEqualTo(1);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("+100"), DECIMAL)).isEqualTo(100);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("-1"), DECIMAL)).isEqualTo(-1);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("-100"), DECIMAL)).isEqualTo(-100);
+    }
+
+    @Test
+    public void parseInt_edge_cases() {
+        assertThat(NettyByteBufs.parseInt(asByteBuf("2147483647"), DECIMAL)).isEqualTo(Integer.MAX_VALUE);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("-2147483648"), DECIMAL)).isEqualTo(Integer.MIN_VALUE);
+
+        assertThat(NettyByteBufs.parseInt(asByteBuf("2147483646"), DECIMAL)).isEqualTo(Integer.MAX_VALUE - 1);
+        assertThat(NettyByteBufs.parseInt(asByteBuf("-2147483647"), DECIMAL)).isEqualTo(Integer.MIN_VALUE + 1);
+
+        assertFailure(() -> NettyByteBufs.parseInt(asByteBuf("2147483648"), DECIMAL)).throwsNumberFormatException();
+        assertFailure(() -> NettyByteBufs.parseInt(asByteBuf("-2147483649"), DECIMAL)).throwsNumberFormatException();
+        assertFailure(() -> NettyByteBufs.parseInt(asByteBuf("9223372036854775807"), DECIMAL)).throwsNumberFormatException();
+        assertFailure(() -> NettyByteBufs.parseInt(asByteBuf("-9223372036854775808"), DECIMAL)).throwsNumberFormatException();
+    }
+
+    @Test
     public void parseIntSafe_simple() {
         assertThat(NettyByteBufs.parseIntSafe(asByteBuf("1"), 0)).isEqualTo(1);
         assertThat(NettyByteBufs.parseIntSafe(asByteBuf("9"), 0)).isEqualTo(9);
@@ -110,6 +155,47 @@ public class NettyByteBufsTest {
         assertThat(NettyByteBufs.parseIntSafe(asByteBuf("-2147483649"), 0)).isEqualTo(0);
         assertThat(NettyByteBufs.parseIntSafe(asByteBuf("9223372036854775807"), 0)).isEqualTo(0);
         assertThat(NettyByteBufs.parseIntSafe(asByteBuf("-9223372036854775808"), 0)).isEqualTo(0);
+    }
+
+    @Test
+    public void parseLong_simple() {
+        assertThat(NettyByteBufs.parseLong(asByteBuf("0"))).isEqualTo(0);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("123"))).isEqualTo(123);
+
+        assertThat(NettyByteBufs.parseLong(asByteBuf("1"), DECIMAL)).isEqualTo(1);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("9"), DECIMAL)).isEqualTo(9);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("123"), DECIMAL)).isEqualTo(123);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("12345678"), DECIMAL)).isEqualTo(12345678);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("0"), DECIMAL)).isEqualTo(0);
+
+        assertFailure(() -> NettyByteBufs.parseLong(asByteBuf(""), DECIMAL)).throwsNumberFormatException();
+        assertFailure(() -> NettyByteBufs.parseLong(asByteBuf("foo"), DECIMAL)).throwsNumberFormatException();
+        assertFailure(() -> NettyByteBufs.parseLong(asByteBuf("1+2"), DECIMAL)).throwsNumberFormatException();
+    }
+
+    @Test
+    public void parseLong_plus_or_minus() {
+        assertThat(NettyByteBufs.parseLong(asByteBuf("+0"), DECIMAL)).isEqualTo(0);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("+00"), DECIMAL)).isEqualTo(0);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("-0"), DECIMAL)).isEqualTo(0);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("-00"), DECIMAL)).isEqualTo(0);
+
+        assertThat(NettyByteBufs.parseLong(asByteBuf("+1"), DECIMAL)).isEqualTo(1);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("+100"), DECIMAL)).isEqualTo(100);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("-1"), DECIMAL)).isEqualTo(-1);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("-100"), DECIMAL)).isEqualTo(-100);
+    }
+
+    @Test
+    public void parseLong_edge_cases() {
+        assertThat(NettyByteBufs.parseLong(asByteBuf("9223372036854775807"), DECIMAL)).isEqualTo(Long.MAX_VALUE);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("-9223372036854775808"), DECIMAL)).isEqualTo(Long.MIN_VALUE);
+
+        assertThat(NettyByteBufs.parseLong(asByteBuf("9223372036854775806"), DECIMAL)).isEqualTo(Long.MAX_VALUE - 1);
+        assertThat(NettyByteBufs.parseLong(asByteBuf("-9223372036854775807"), DECIMAL)).isEqualTo(Long.MIN_VALUE + 1);
+
+        assertFailure(() -> NettyByteBufs.parseLong(asByteBuf("9223372036854775808"), DECIMAL)).throwsNumberFormatException();
+        assertFailure(() -> NettyByteBufs.parseLong(asByteBuf("-9223372036854775809"), DECIMAL)).throwsNumberFormatException();
     }
 
     @Test

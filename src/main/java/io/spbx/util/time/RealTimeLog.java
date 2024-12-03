@@ -1,9 +1,9 @@
 package io.spbx.util.time;
 
 import com.carrotsearch.hppc.LongArrayList;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spbx.util.collect.IntSize;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.collect.container.IntSize;
 import io.spbx.util.func.LongPredicates;
 import org.jetbrains.annotations.NotNull;
 

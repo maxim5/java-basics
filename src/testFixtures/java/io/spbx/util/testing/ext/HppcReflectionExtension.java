@@ -1,7 +1,7 @@
 package io.spbx.util.testing.ext;
 
 import com.carrotsearch.hppc.HashContainers;
-import io.spbx.util.base.Unchecked;
+import io.spbx.util.base.error.Unchecked;
 import io.spbx.util.reflect.BasicMembers.Fields;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.BeforeEachCallback;

@@ -1,6 +1,6 @@
 package io.spbx.util.testing.ext;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -18,6 +18,7 @@ public class CloseAllExtension implements AfterEachCallback, AfterAllCallback {
         for (AutoCloseable closeable : closeablesPerTest) {
             closeable.close();
         }
+        closeablesPerTest.clear();      // Should clear in case of parameterized tests (not to run twice)
     }
 
     @Override
@@ -25,6 +26,7 @@ public class CloseAllExtension implements AfterEachCallback, AfterAllCallback {
         for (AutoCloseable closeable : closeablesPerClass) {
             closeable.close();
         }
+        closeablesPerClass.clear();     // Should clear in case of parameterized tests (not to run twice)
     }
 
     @CanIgnoreReturnValue

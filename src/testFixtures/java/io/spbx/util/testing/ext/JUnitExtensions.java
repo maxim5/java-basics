@@ -9,7 +9,7 @@ import org.junit.platform.commons.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 
-import static io.spbx.util.base.EasyCast.castAny;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 
 public class JUnitExtensions {
     // A workaround while arguments aren't passed through the public API

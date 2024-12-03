@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.spbx"
-version = "0.3.0"
+version = "0.4.0"
 
 tasks.wrapper {
     gradleVersion = "8.10"
@@ -28,24 +28,13 @@ repositories {
     mavenCentral()
 }
 
-private val main by sourceSets
-private val shared by sourceSets.creating
-private val buffers by sourceSets.creating
-private val functions by sourceSets.creating
-
-dependencies {
-    "buffersCompileOnly"(shared.output)
-    "buffersCompileOnly"("org.jetbrains:annotations:24.1.0")
-    "functionsCompileOnly"(shared.output)
-    "functionsCompileOnly"("org.jetbrains:annotations:24.1.0")
-    "sharedCompileOnly"("org.jetbrains:annotations:24.1.0")
+private val main = sourceSets.getByName("main") {
+    java.srcDirs("src/main/java")
+    java.srcDirs("src/gen-univar/java")
+    java.srcDirs("src/gen-bivar/java")
 }
 
 dependencies {
-    implementation(shared.output)
-    implementation(buffers.output)
-    implementation(functions.output)
-
     compileOnly("org.jetbrains:annotations:24.1.0")
     compileOnly("com.google.errorprone:error_prone_annotations:2.28.0")
     implementation("com.google.guava:guava:33.2.0-jre")
@@ -100,9 +89,6 @@ tasks.test {
 }
 
 tasks.withType<Jar> {
-    from(shared.output)
-    from(buffers.output)
-    from(functions.output)
     from(main.output)
 
     // See also

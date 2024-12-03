@@ -1,7 +1,7 @@
 package io.spbx.util.testing;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spbx.util.base.Unchecked;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.error.Unchecked;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

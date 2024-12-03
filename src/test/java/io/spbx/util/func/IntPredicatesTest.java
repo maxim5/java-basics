@@ -1,6 +1,6 @@
 package io.spbx.util.func;
 
-import io.spbx.util.testing.MockConsumer;
+import io.spbx.util.testing.func.MockConsumer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -14,9 +14,47 @@ import java.util.function.ToIntFunction;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spbx.util.func.TestingFunctions.isPositive;
 import static io.spbx.util.func.TestingFunctions.negate;
+import static io.spbx.util.testing.AssertBasics.assertIntPredicate;
 
 @Tag("fast")
 public class IntPredicatesTest {
+    /** {@link IntPredicates#and}, {@link IntPredicates#or} **/
+
+    @Test
+    public void and_simple() {
+        assertIntPredicate(IntPredicates.and(i -> i > 0, i -> i < 5)).isTrueFor(1, 2, 3, 4).isFalseFor(0, 5, 6);
+        assertIntPredicate(IntPredicates.and(i -> i > 0, true)).isTrueFor(1, 2, 3, 4, 5).isFalseFor(0, -1, -2);
+        assertIntPredicate(IntPredicates.and(false, i -> i > 0)).isFalseFor(-2, -1, 0, 1, 2);
+        assertIntPredicate(IntPredicates.and(i -> i > 0, i -> i % 3 == 0, i -> i < 10))
+            .isTrueFor(3, 6)
+            .isFalseFor(-3, -1, 0, 1, 2, 4, 5, 7, 8, 10, 12);
+
+        assertIntPredicate(IntPredicates.and(null, null)).isTrueFor(0, 1, 2, 3);
+        assertIntPredicate(IntPredicates.and(null, i -> i < 5)).isTrueFor(0, 1, 2, 3, 4).isFalseFor(5, 6);
+        assertIntPredicate(IntPredicates.and(i -> i < 5, null)).isTrueFor(0, 1, 2, 3, 4).isFalseFor(5, 6);
+        assertIntPredicate(IntPredicates.and(i -> i > 0, i -> i % 3 == 0, null))
+            .isTrueFor(3, 6, 9, 12)
+            .isFalseFor(-3, -1, 0, 1, 2, 4, 5, 7, 8, 10);
+    }
+
+    @Test
+    public void or_simple() {
+        assertIntPredicate(IntPredicates.or(i -> i < 2, i -> i > 5)).isTrueFor(0, 1, 6, 7).isFalseFor(2, 3, 4, 5);
+        assertIntPredicate(IntPredicates.or(i -> i < 2, true)).isTrueFor(-2, -1, 0, 1, 2);
+        assertIntPredicate(IntPredicates.or(false, i -> i > 0)).isTrueFor(1, 2).isFalseFor(-1, 0);
+        assertIntPredicate(IntPredicates.or(i -> i % 2 == 0, i -> i % 3 == 0, i -> i % 5 == 0))
+            .isTrueFor(0, 2, 3, 5, 6, 8, 9, 10)
+            .isFalseFor(1, 11, 13, 17);
+
+        assertIntPredicate(IntPredicates.or(null, null)).isTrueFor(0, 1, 2, 3);
+        assertIntPredicate(IntPredicates.or(null, i -> i < 5)).isTrueFor(0, 1, 2, 3, 4).isFalseFor(5, 6);
+        assertIntPredicate(IntPredicates.or(i -> i < 5, null)).isTrueFor(0, 1, 2, 3, 4).isFalseFor(5, 6);
+        assertIntPredicate(IntPredicates.or(i -> i > 0, i -> i % 3 == 0, null))
+            .isTrueFor(-3, 0, 3, 6, 9, 12)
+            .isFalseFor(-5, -2, -1);
+    }
+
+
     /** {@link IntPredicates#peek(IntConsumer, IntPredicate)} **/
 
     @Test

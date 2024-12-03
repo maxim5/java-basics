@@ -1,7 +1,7 @@
 package io.spbx.util.code.dsl.expr;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CheckReturnValue;
 import io.spbx.util.code.dsl.expr.Sequence.Separator;
 import io.spbx.util.func.Allowed;
 import org.jetbrains.annotations.NotNull;

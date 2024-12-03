@@ -1,5 +1,6 @@
 package io.spbx.util.func;
 
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -14,6 +15,7 @@ import java.util.function.Predicate;
  * @see IntScopeFunctions
  * @see LongScopeFunctions
  */
+@Stateless
 public class BoolScopeFunctions {
     /**
      * Pipes the input {@code instance} argument through and calls the specified {@link Consumer} {@code action}.

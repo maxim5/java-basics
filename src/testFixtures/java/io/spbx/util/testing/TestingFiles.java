@@ -2,11 +2,17 @@ package io.spbx.util.testing;
 
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
+@Stateless
+@Pure
+@CheckReturnValue
 @SuppressWarnings("resource")
 public class TestingFiles {
     public static @NotNull FileSystem newFileSystem(@NotNull Os os) {

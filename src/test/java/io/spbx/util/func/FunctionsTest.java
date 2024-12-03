@@ -1,12 +1,11 @@
 package io.spbx.util.func;
 
-import io.spbx.util.base.EasyCast;
+import io.spbx.util.base.lang.EasyCast;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
 

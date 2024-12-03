@@ -1,9 +1,9 @@
 package io.spbx.util.code.gen;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CheckReturnValue;
 import io.spbx.util.code.gen.Directive.Modifier;
 import io.spbx.util.code.gen.Directive.Predefined;
-import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Tag;

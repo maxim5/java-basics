@@ -1,10 +1,11 @@
 package io.spbx.util.reflect;
 
-import io.spbx.util.base.BasicNulls;
+import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.classpath.BasicClasspath;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -16,13 +17,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static io.spbx.util.base.EasyCast.castAny;
-import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
-import static io.spbx.util.func.ScopeFunctions.also;
-import static io.spbx.util.func.ScopeFunctions.let;
-import static io.spbx.util.func.ScopeFunctions.map;
+import static io.spbx.util.base.error.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.base.lang.BasicNulls.firstNonNullIfExists;
+import static io.spbx.util.base.lang.EasyCast.castAny;
+import static io.spbx.util.func.ScopeFunctions.*;
 import static java.util.Objects.requireNonNull;
 
+@Stateless
 public class BasicMembers {
     /** Modifiers **/
 
@@ -60,6 +61,7 @@ public class BasicMembers {
 
     /** Methods **/
 
+    @Immutable
     public static class Methods implements MembersContainer<Method> {
         private final Class<?> klass;
 
@@ -85,8 +87,8 @@ public class BasicMembers {
                 case DECLARED -> Stream.of(klass.getDeclaredMethods()).filter(predicate).findAny().orElse(null);
                 case HIERARCHY_PUBLIC -> Stream.of(klass.getMethods()).filter(predicate).findAny().orElse(null);
                 case HIERARCHY_ALL ->
-                    BasicNulls.firstNonNullIfExist(find(Scope.DECLARED, predicate),
-                                                   () -> Methods.of(klass.getSuperclass()).find(Scope.HIERARCHY_ALL, predicate));
+                    firstNonNullIfExists(find(Scope.DECLARED, predicate),
+                                         () -> Methods.of(klass.getSuperclass()).find(Scope.HIERARCHY_ALL, predicate));
             };
         }
     }
@@ -97,6 +99,7 @@ public class BasicMembers {
 
     /** Fields **/
 
+    @Immutable
     public static class Fields implements MembersContainer<Field> {
         private final Class<?> klass;
 
@@ -122,8 +125,8 @@ public class BasicMembers {
                 case DECLARED -> Stream.of(klass.getDeclaredFields()).filter(predicate).findAny().orElse(null);
                 case HIERARCHY_PUBLIC -> Stream.of(klass.getFields()).filter(predicate).findAny().orElse(null);
                 case HIERARCHY_ALL ->
-                    BasicNulls.firstNonNullIfExist(find(Scope.DECLARED, predicate),
-                                                   () -> Fields.of(klass.getSuperclass()).find(Scope.HIERARCHY_ALL, predicate));
+                    firstNonNullIfExists(find(Scope.DECLARED, predicate),
+                                         () -> Fields.of(klass.getSuperclass()).find(Scope.HIERARCHY_ALL, predicate));
             };
         }
 
@@ -132,6 +135,7 @@ public class BasicMembers {
         }
     }
 
+    @Immutable
     public record FieldValue(@Nullable Field field) {
         public static @NotNull FieldValue of(@Nullable Field field) {
             return new FieldValue(field);
@@ -157,6 +161,7 @@ public class BasicMembers {
 
     /** Constructors **/
 
+    @Immutable
     public static class Constructors implements MembersContainer<Constructor<?>> {
         private final Class<?> klass;
 

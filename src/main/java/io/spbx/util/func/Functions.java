@@ -1,5 +1,6 @@
 package io.spbx.util.func;
 
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
@@ -12,6 +13,7 @@ import java.util.function.Function;
  * @see Predicates
  * @see Consumers
  */
+@Stateless
 public class Functions {
     /**
      * Returns a constant {@link Function}: evaluates to the same result {@code value} regardless of the input.

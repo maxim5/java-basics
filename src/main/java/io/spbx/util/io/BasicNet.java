@@ -1,7 +1,9 @@
 package io.spbx.util.io;
 
-import io.spbx.util.base.BasicExceptions.IllegalArgumentExceptions;
-import io.spbx.util.base.Unchecked;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.base.error.BasicExceptions.IllegalArgumentExceptions;
+import io.spbx.util.base.error.Unchecked;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -16,8 +18,10 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Set;
 
-import static io.spbx.util.base.EasyCast.castAny;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 
+@Stateless
+@CheckReturnValue
 public class BasicNet {
     public static int nextAvailablePort() throws UncheckedIOException {
         // https://stackoverflow.com/questions/2675362/how-to-find-an-available-port

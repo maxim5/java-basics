@@ -3,6 +3,9 @@ package io.spbx.util.extern.guava;
 import com.google.common.escape.ArrayBasedCharEscaper;
 import com.google.common.escape.CharEscaper;
 import com.google.common.escape.Escaper;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +20,9 @@ import java.util.Map;
 // https://stackoverflow.com/questions/2406121/how-do-i-escape-a-string-in-java
 // https://stackoverflow.com/questions/18898773/java-escape-json-string
 //
+@Stateless
+@Pure
+@CheckReturnValue
 public final class SourceCodeEscapers {
     // For each xxxEscaper() method, please add links to external reference pages
     // that are considered authoritative for the behavior of that escaper.
@@ -44,7 +50,7 @@ public final class SourceCodeEscapers {
     private static final CharEscaper JAVA_STRING_ESCAPER_WITH_OCTAL;
 
     static {
-        Map<Character, String> javaMap = new HashMap<Character, String>();
+        Map<Character, String> javaMap = new HashMap<>();
         javaMap.put('\b', "\\b");
         javaMap.put('\f', "\\f");
         javaMap.put('\n', "\\n");
@@ -69,8 +75,7 @@ public final class SourceCodeEscapers {
             super(replacements, PRINTABLE_ASCII_MIN, PRINTABLE_ASCII_MAX);
         }
 
-        @Override
-        protected char[] escapeUnsafe(char c) {
+        @Override protected char[] escapeUnsafe(char c) {
             return asUnicodeHexEscape(c);
         }
     }
@@ -80,8 +85,7 @@ public final class SourceCodeEscapers {
             super(replacements, PRINTABLE_ASCII_MIN, PRINTABLE_ASCII_MAX);
         }
 
-        @Override
-        protected char[] escapeUnsafe(char c) {
+        @Override protected char[] escapeUnsafe(char c) {
             if (c < 0x100) {
                 return asOctalEscape(c);
             } else {
@@ -106,10 +110,8 @@ public final class SourceCodeEscapers {
         return JAVA_STRING_UNICODE_ESCAPER;
     }
 
-    private static final CharEscaper JAVA_STRING_UNICODE_ESCAPER
-        = new CharEscaper() {
-        @Override
-        protected char[] escape(char c) {
+    private static final CharEscaper JAVA_STRING_UNICODE_ESCAPER = new CharEscaper() {
+        @Override protected char[] escape(char c) {
             if (c < 0x80) {
                 return null;
             }

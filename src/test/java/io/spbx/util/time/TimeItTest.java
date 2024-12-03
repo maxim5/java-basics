@@ -1,6 +1,6 @@
 package io.spbx.util.time;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
 import io.spbx.util.testing.TestingBasics;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

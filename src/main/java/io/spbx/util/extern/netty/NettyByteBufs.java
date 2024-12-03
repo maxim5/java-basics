@@ -3,14 +3,22 @@ package io.spbx.util.extern.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import io.netty.util.AsciiString;
-import io.spbx.util.rt.RuntimeRequirement;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.base.str.BasicParsing;
+import io.spbx.util.classpath.RuntimeRequirement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
+import static io.spbx.util.base.str.BasicParsing.DECIMAL;
+
+@Stateless
+@Pure
+@CheckReturnValue
 public class NettyByteBufs {
     static {
         RuntimeRequirement.verify("io.netty.buffer.ByteBuf");
@@ -26,10 +34,6 @@ public class NettyByteBufs {
         ByteBuf buffer = allocator.buffer(length);
         buffer.writeBytes(bytes, offset, length);
         return buffer;
-    }
-
-    public static @NotNull AsciiString toAsciiString(byte @NotNull[] bytes) {
-        return new AsciiString(bytes, false);
     }
 
     public static byte @NotNull[] copyToByteArray(@NotNull ByteBuf byteBuf) {
@@ -49,36 +53,48 @@ public class NettyByteBufs {
         return result;
     }
 
+    public static int parseInt(@NotNull ByteBuf content) {
+        return parseInt(content, DECIMAL);
+    }
+
+    public static int parseInt(@NotNull ByteBuf content, int radix) {
+        if (content.hasArray()) {
+            return BasicParsing.parseInt(content.array(), content.readerIndex(), content.readableBytes(), radix);
+        } else {
+            return Integer.parseInt(content.toString(StandardCharsets.US_ASCII));
+        }
+    }
+
     public static int parseIntSafe(@NotNull ByteBuf content, int defaultValue) {
-        try {
-            if (content.hasArray()) {
-                return parseInt(content.array(), content.readerIndex(), content.readableBytes(), 10);
-            } else {
-                return Integer.parseInt(content.toString(StandardCharsets.US_ASCII));
-            }
-        } catch (NumberFormatException ignore) {
-            return defaultValue;
+        return parseIntSafe(content, DECIMAL, defaultValue);
+    }
+
+    public static int parseIntSafe(@NotNull ByteBuf content, int radix, int defaultValue) {
+        return BasicParsing.parseIntSafe(() -> parseInt(content, radix), defaultValue);
+    }
+
+    public static long parseLong(@NotNull ByteBuf content) {
+        return parseLong(content, DECIMAL);
+    }
+
+    public static long parseLong(@NotNull ByteBuf content, int radix) {
+        if (content.hasArray()) {
+            return BasicParsing.parseLong(content.array(), content.readerIndex(), content.readableBytes(), radix);
+        } else {
+            return Long.parseLong(content.toString(StandardCharsets.US_ASCII));
         }
     }
 
     public static long parseLongSafe(@NotNull ByteBuf content, long defaultValue) {
+        return parseLongSafe(content, DECIMAL, defaultValue);
+    }
+
+    public static long parseLongSafe(@NotNull ByteBuf content, int radix, long defaultValue) {
         try {
-            if (content.hasArray()) {
-                return parseLong(content.array(), content.readerIndex(), content.readableBytes(), 10);
-            } else {
-                return Long.parseLong(content.toString(StandardCharsets.US_ASCII));
-            }
+            return parseLong(content, radix);
         } catch (NumberFormatException ignore) {
             return defaultValue;
         }
-    }
-
-    public static int parseInt(byte @NotNull[] bytes, int fromIndex, int length, int radix) {
-        return Integer.parseInt(toAsciiString(bytes), fromIndex, length, radix);
-    }
-
-    public static long parseLong(byte @NotNull[] bytes, int fromIndex, int length, int radix) {
-        return Long.parseLong(toAsciiString(bytes), fromIndex, length, radix);
     }
 
     public static void writeIntString(int value, @NotNull ByteBuf dest) {

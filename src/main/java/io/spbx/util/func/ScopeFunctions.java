@@ -1,5 +1,6 @@
 package io.spbx.util.func;
 
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * @see IntScopeFunctions
  * @see LongScopeFunctions
  */
+@Stateless
 public class ScopeFunctions {
     /**
      * Pipes the input {@code instance} argument through and calls the specified {@link ThrowConsumer} {@code action}.

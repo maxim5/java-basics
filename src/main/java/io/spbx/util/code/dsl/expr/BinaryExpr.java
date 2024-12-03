@@ -1,7 +1,8 @@
 package io.spbx.util.code.dsl.expr;
 
-import com.google.errorprone.annotations.Immutable;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.concurrent.Immutable;
 
 @Immutable
 public record BinaryExpr(@NotNull Expr left, @NotNull InfixOp op, @NotNull Expr right) implements Expr {

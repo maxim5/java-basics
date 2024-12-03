@@ -1,5 +1,6 @@
 package io.spbx.util.func;
 
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -13,6 +14,7 @@ import java.util.function.Predicate;
  * @see BoolFunctions
  * @see Predicates
  */
+@Stateless
 public class Consumers {
     /**
      * Returns a {@link Consumer} which calls both {@code first} and {@code second} in sequence.

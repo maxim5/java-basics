@@ -1,8 +1,9 @@
 package io.spbx.util.extern.trove;
 
 import gnu.trove.strategy.HashingStrategy;
-import io.spbx.util.base.BasicStrings;
-import io.spbx.util.rt.RuntimeRequirement;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.base.str.BasicStrings;
+import io.spbx.util.classpath.RuntimeRequirement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
  * @link <a href="https://bitbucket.org/trove4j/trove/src/master/">Original Trove4J</a>
  * @link <a href="https://github.com/palantir/trove">Trove Fork by Palantir</a>
  */
+@Stateless
 public class TroveHashing {
     static {
         RuntimeRequirement.verify("gnu.trove.strategy.HashingStrategy");

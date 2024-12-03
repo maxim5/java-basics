@@ -13,6 +13,7 @@ import java.util.function.BiPredicate;
 @FunctionalInterface
 public interface ClassNamePredicate extends BiPredicate<String, String>, Serializable {
     ClassNamePredicate ALLOW_ALL = (packageName, simpleClassName) -> true;
+    ClassNamePredicate DISALLOW_ALL = (packageName, simpleClassName) -> false;
 
     @Override
     boolean test(@NotNull String packageName, @NotNull String simpleClassName);

@@ -2,8 +2,8 @@ package io.spbx.util.testing.ext;
 
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
+import io.spbx.util.base.str.BasicJoin;
 import io.spbx.util.logging.Logger;
-import io.spbx.util.text.BasicJoin;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;

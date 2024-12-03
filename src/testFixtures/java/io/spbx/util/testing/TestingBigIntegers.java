@@ -1,11 +1,17 @@
 package io.spbx.util.testing;
 
 import com.google.common.collect.Range;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class TestingBigIntegers {
     public static final BigInteger $0 = BigInteger.ZERO;                // 0
     public static final BigInteger $1 = BigInteger.ONE;                 // 1

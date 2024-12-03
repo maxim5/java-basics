@@ -1,9 +1,11 @@
 package io.spbx.util.classpath;
 
+import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@Stateless
 public class BasicClasspath {
     private static final Logger log = Logger.forEnclosingClass();
 

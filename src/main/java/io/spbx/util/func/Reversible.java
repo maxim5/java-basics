@@ -17,6 +17,8 @@ import org.jetbrains.annotations.Nullable;
  * </ul>
  * <p>
  * The implementations can distinguish nullable and non-null transformations, as per {@link NullAwareFunction} contract.
+ * <p>
+ * {@link Reversible} implementations are usually {@link io.spbx.util.base.annotate.Stateless}.
  *
  * @see com.google.common.base.Converter
  */

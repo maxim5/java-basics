@@ -1,8 +1,9 @@
 package io.spbx.util.code.dsl.expr;
 
-import com.google.errorprone.annotations.Immutable;
 import io.spbx.util.func.Allowed;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.concurrent.Immutable;
 
 @Immutable
 public record SyntaxOptions(@NotNull Allowed<Identifier> identifiers,

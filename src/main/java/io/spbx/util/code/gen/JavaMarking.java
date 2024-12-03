@@ -1,14 +1,14 @@
 package io.spbx.util.code.gen;
 
-import com.google.errorprone.annotations.Immutable;
+import io.spbx.util.base.str.BasicJoin;
 import io.spbx.util.logging.Logger;
-import io.spbx.util.text.BasicJoin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.List;
 
-import static io.spbx.util.base.BasicNulls.firstNonNullIfExist;
+import static io.spbx.util.base.lang.BasicNulls.firstNonNullIfExists;
 
 @Immutable
 class JavaMarking implements Marking {
@@ -45,7 +45,7 @@ class JavaMarking implements Marking {
 
     @Override
     public @Nullable DirectivePosition extract(@NotNull String input) {
-        return firstNonNullIfExist(List.of(
+        return firstNonNullIfExists(List.of(
             () -> tryExtractCommentBlock(input),
             () -> tryExtractCommentInline(input),
             () -> tryExtractBlock(input),

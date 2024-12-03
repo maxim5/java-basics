@@ -1,7 +1,7 @@
 package io.spbx.util.extern.guava;
 
 import com.google.common.collect.HashBiMap;
-import io.spbx.util.base.Pair;
+import io.spbx.util.base.tuple.Pair;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

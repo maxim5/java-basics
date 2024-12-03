@@ -1,14 +1,14 @@
 package io.spbx.util.code.gen;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spbx.util.collect.Streamer;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.collect.stream.Streamer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
 
-import static io.spbx.util.base.EasyCast.castAny;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 
 @CanIgnoreReturnValue
 class CodeBuilder extends LinesBuilder<CodeBuilder> {

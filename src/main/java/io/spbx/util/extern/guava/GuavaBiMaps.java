@@ -2,7 +2,10 @@ package io.spbx.util.extern.guava;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import io.spbx.util.base.BasicExceptions.IllegalArgumentExceptions;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.base.error.BasicExceptions.IllegalArgumentExceptions;
 import io.spbx.util.func.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +14,9 @@ import java.util.stream.Collector;
 
 import static io.spbx.util.func.ScopeFunctions.also;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class GuavaBiMaps {
     public static <E, K, V> @NotNull Collector<E, ?, HashBiMap<K, V>> toHashBiMap(
             @NotNull Function<? super E, ? extends K> keyFunc,

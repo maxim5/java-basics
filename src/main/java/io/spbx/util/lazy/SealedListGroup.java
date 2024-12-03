@@ -4,10 +4,12 @@ import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@ThreadSafe
 public class SealedListGroup implements SealedGroup {
     private final Sealed<List<Sealed<?>>> list = AtomicSealed.create(new ArrayList<>());
 

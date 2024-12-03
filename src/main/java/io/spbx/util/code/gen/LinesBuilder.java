@@ -1,8 +1,8 @@
 package io.spbx.util.code.gen;
 
 import com.google.common.collect.ImmutableList;
-import io.spbx.util.collect.BasicIterables;
-import org.checkerframework.dataflow.qual.Pure;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.collect.iter.BasicIterables;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,8 +14,9 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-import static io.spbx.util.base.EasyCast.castAny;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 
+@CheckReturnValue
 public abstract class LinesBuilder<B extends LinesBuilder<?>> implements Iterable<String> {
     protected final ArrayList<String> lines;
     private final AtomicBoolean isSealed = new AtomicBoolean(false);
@@ -112,17 +113,14 @@ public abstract class LinesBuilder<B extends LinesBuilder<?>> implements Iterabl
         return castAny(this);
     }
 
-    @Pure
     public @NotNull String joinLines() {
         return join("\n");
     }
 
-    @Pure
     public @NotNull String join(@NotNull CharSequence delimiter) {
         return String.join(delimiter, lines);
     }
 
-    @Pure
     public @NotNull String join(@NotNull Collector<CharSequence, ?, String> collector) {
         return lines.stream().collect(collector);
     }

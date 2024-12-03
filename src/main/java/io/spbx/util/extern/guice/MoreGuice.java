@@ -12,9 +12,9 @@ import com.google.inject.spi.BindingScopingVisitor;
 import com.google.inject.spi.BindingTargetVisitor;
 import com.google.inject.spi.ElementVisitor;
 import com.google.inject.util.Providers;
-import io.spbx.util.collect.BasicMaps;
+import io.spbx.util.classpath.RuntimeRequirement;
+import io.spbx.util.collect.map.BasicMaps;
 import io.spbx.util.logging.Logger;
-import io.spbx.util.rt.RuntimeRequirement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static io.spbx.util.base.EasyCast.castAny;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 
 public class MoreGuice {
     private static final Logger log = Logger.forEnclosingClass();

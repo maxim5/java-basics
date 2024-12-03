@@ -1,5 +1,6 @@
 package io.spbx.util.logging;
 
+import io.spbx.util.base.ops.IntOps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntPredicate;
@@ -29,7 +30,7 @@ public class Levels {
     static int binarySearchMinLoggableLevel(int low, int high, @NotNull IntPredicate isLoggable) {
         assert low <= high : "Invalid arguments: low=%s high=%s".formatted(low, high);
         while (high - low > 1) {
-            int mid = (high + low) >> 1;
+            int mid = IntOps.avg(high, low);
             if (isLoggable.test(mid)) {
                 high = mid;
             } else {

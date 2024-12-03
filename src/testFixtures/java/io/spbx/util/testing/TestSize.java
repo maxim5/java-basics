@@ -1,21 +1,22 @@
 package io.spbx.util.testing;
 
-import io.spbx.util.props.PropertyMap;
+import io.spbx.util.props.StandardProperties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Arrays;
 
-import static io.spbx.util.base.BasicNulls.firstNonNull;
-import static io.spbx.util.base.Unchecked.Suppliers.runQuietlyOrNull;
+import static io.spbx.util.base.lang.BasicNulls.firstNonNull;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+@Immutable
 public enum TestSize {
-    FAST(0),
-    MEDIUM(10),
-    SLOW(20),
-    STRESS(50),
-    STRESS_THOROUGH(100);
+    FAST(0),            // <= 100ms
+    MEDIUM(10),         // <= 500ms
+    SLOW(20),           // <= 5sec
+    EXTENDED(50),       // <= 30sec
+    ENDLESS(100);       // no limit
 
     private final int value;
 
@@ -29,8 +30,7 @@ public enum TestSize {
     }
 
     public static @Nullable TestSize getTestSizeFromProps() {
-        String property = PropertyMap.system().getOrNull("test.size");
-        return property != null ? runQuietlyOrNull(() -> TestSize.valueOf(property.trim().toUpperCase())) : null;
+        return StandardProperties.system().getEnumOrNull("test.size", property -> TestSize.valueOf(property.toUpperCase()));
     }
 
     public static @NotNull TestSize getTestSizeFromPropsOrDefault(@NotNull TestSize testSize) {
@@ -40,9 +40,9 @@ public enum TestSize {
     public static @NotNull TestSize getTestSizeFromPropsOrDefaultForCurrentLaunch() {
         // By default, when a single class/method is launched, run all tests.
         return firstNonNull(getTestSizeFromProps(), () -> switch (JUnits.getJUnitLaunch()) {
-            case SINGLE_METHOD, SINGLE_CLASS -> STRESS;     // run stress tests for a targeted test launch
-            case SINGLE_PACKAGE, OTHER -> FAST;             // ignore stress tests for a wide test launch
-            case UNKNOWN -> STRESS;                         // include stress tests for all other launches
+            case SINGLE_METHOD, SINGLE_CLASS -> EXTENDED;   // run EXTENDED tests for a targeted test launch
+            case SINGLE_PACKAGE, OTHER -> SLOW;             // ignore EXTENDED tests for a wide test launch
+            case UNKNOWN -> EXTENDED;                       // include EXTENDED tests for all other launches
         });
     }
 }

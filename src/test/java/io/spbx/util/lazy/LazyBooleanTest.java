@@ -1,6 +1,6 @@
 package io.spbx.util.lazy;
 
-import io.spbx.util.testing.MockSupplier;
+import io.spbx.util.testing.func.MockBoolSupplier;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class LazyBooleanTest {
     @Test
     public void simple() {
-        MockSupplier.Bool mockSupplier = MockSupplier.Bool.of(true);
+        MockBoolSupplier mockSupplier = MockBoolSupplier.of(true);
 
         LazyBoolean lazy = LazyBoolean.of(mockSupplier);
         assertThat(mockSupplier.timesCalled()).isEqualTo(0);

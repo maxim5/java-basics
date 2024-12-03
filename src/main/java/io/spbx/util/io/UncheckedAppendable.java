@@ -1,6 +1,6 @@
 package io.spbx.util.io;
 
-import io.spbx.util.base.Unchecked;
+import io.spbx.util.base.error.Unchecked;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

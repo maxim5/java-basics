@@ -1,6 +1,6 @@
 package io.spbx.util.time;
 
-import io.spbx.util.collect.IntSize;
+import io.spbx.util.collect.container.IntSize;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;

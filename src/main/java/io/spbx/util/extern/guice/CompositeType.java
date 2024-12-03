@@ -1,12 +1,14 @@
 package io.spbx.util.extern.guice;
 
-import io.spbx.util.collect.Streamer;
+import io.spbx.util.collect.stream.Streamer;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.Immutable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 // Thanks to https://stackoverflow.com/questions/4238919/inject-generic-implementation-using-guice
+@Immutable
 public class CompositeType implements ParameterizedType {
     private final String typeName;
     private final Class<?> baseClass;

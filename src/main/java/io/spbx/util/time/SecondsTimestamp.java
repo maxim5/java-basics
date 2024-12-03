@@ -1,7 +1,9 @@
 package io.spbx.util.time;
 
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.func.IntReversible;
-import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -14,6 +16,8 @@ import java.time.Instant;
  * Min supported timestamp: <code>Thu 1970-01-01 00:00:00.000000000</code>
  * Max supported timestamp: <code>Sun 2106-02-07 06:28:15.000000000</code>
  */
+@Stateless
+@CheckReturnValue
 public class SecondsTimestamp {
     /**
      * <code>Thu 1970-01-01 00:00:00.000000000</code>
@@ -25,13 +29,11 @@ public class SecondsTimestamp {
      */
     public static final Instant MAX_TIMESTAMP = seconds32ToInstant(-1);
 
-    @Pure
-    public static int instantToSeconds32(@NotNull Instant instant) {
+    @Pure public static int instantToSeconds32(@NotNull Instant instant) {
         return (int) instant.getEpochSecond();
     }
 
-    @Pure
-    public static @NotNull Instant seconds32ToInstant(int timestamp) {
+    @Pure public static @NotNull Instant seconds32ToInstant(int timestamp) {
         long epochSeconds = Integer.toUnsignedLong(timestamp);
         return Instant.ofEpochSecond(epochSeconds);
     }

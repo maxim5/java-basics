@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.spbx.util.base.BasicExceptions.InternalErrors.assureNonNull;
+import static io.spbx.util.base.error.BasicExceptions.InternalErrors.assureNonNull;
 import static io.spbx.util.reflect.BasicMembers.hasType;
 
 public class LoggingCapture extends FluentLoggingCapture {

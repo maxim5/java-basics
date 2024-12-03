@@ -1,9 +1,15 @@
 package io.spbx.util.reflect;
 
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Modifier;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class BasicClasses {
     public static boolean isPublic(@NotNull Class<?> klass) {
         return Modifier.isPublic(klass.getModifiers());

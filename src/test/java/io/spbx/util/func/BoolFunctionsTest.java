@@ -1,6 +1,6 @@
 package io.spbx.util.func;
 
-import io.spbx.util.base.EasyCast;
+import io.spbx.util.base.lang.EasyCast;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

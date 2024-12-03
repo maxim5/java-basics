@@ -1,10 +1,13 @@
 package io.spbx.util.testing;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spbx.util.base.Pair;
-import io.spbx.util.collect.BasicMaps;
-import io.spbx.util.collect.BasicStreams;
-import io.spbx.util.collect.ListBuilder;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.base.tuple.Pair;
+import io.spbx.util.collect.list.ListBuilder;
+import io.spbx.util.collect.map.BasicMaps;
+import io.spbx.util.collect.stream.BasicStreams;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,14 +25,18 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.TreeSet;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import static io.spbx.util.base.EasyCast.castAny;
-import static io.spbx.util.collect.BasicMaps.newOrderedMap;
-import static io.spbx.util.collect.BasicMaps.orderedMapOf;
+import static io.spbx.util.base.lang.EasyCast.castAny;
+import static io.spbx.util.collect.map.BasicMaps.newOrderedMap;
+import static io.spbx.util.collect.map.BasicMaps.orderedMapOf;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class TestingBasics {
     public static final Integer[] NULL_ARRAY = null;
     public static final List<Integer> NULL_LIST = null;
@@ -50,7 +57,7 @@ public class TestingBasics {
         return Arrays.asList(items);
     }
 
-    public static @SafeVarargs <T> @NotNull Set<T> setOf(@Nullable T @NotNull... items) {
+    public static @SafeVarargs <T> @NotNull LinkedHashSet<T> setOf(@Nullable T @NotNull... items) {
         return new LinkedHashSet<>(listOf(items));
     }
 
@@ -145,17 +152,24 @@ public class TestingBasics {
         return Pair.of(key, val);
     }
 
-    public static @SafeVarargs <T> @NotNull T[] appendVarArg(@Nullable T arg, @Nullable T @NotNull... args) {
-        T[] result = Arrays.copyOf(args, args.length + 1);
-        result[args.length] = arg;
-        return result;
+    public static @NotNull Object toStr(@NotNull Supplier<String> supplier) {
+        return new Object() {
+            @Override public String toString() {
+                return supplier.get();
+            }
+        };
     }
 
-    public static @SafeVarargs <T> @NotNull T[] prependVarArg(@Nullable T arg, @Nullable T @NotNull... args) {
-        T[] result = Arrays.copyOf(args, args.length + 1);
-        result[0] = arg;
-        System.arraycopy(args, 0, result, 1, args.length);
-        return result;
+    public static @NotNull Object toStr(int[] values) {
+        return toStr(() -> Arrays.toString(values));
+    }
+
+    public static @NotNull Object toStr(long[] values) {
+        return toStr(() -> Arrays.toString(values));
+    }
+
+    public static @NotNull Object toStr(Object[] values) {
+        return toStr(() -> Arrays.toString(values));
     }
 
     public static @NotNull Path toPath(@NotNull String path) {

@@ -1,7 +1,9 @@
 package io.spbx.util.time;
 
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.func.LongReversible;
-import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -16,16 +18,16 @@ import java.time.Instant;
  * Min supported timestamp: <code>-276768-11-27 19:09:52.000000</code>
  * Max supported timestamp: <code>+280707-02-04 04:50:08.048575</code>
  */
+@Stateless
+@CheckReturnValue
 public class MicroTimestamp {
-    @Pure
-    public static long instantToMicros64(@NotNull Instant instant) {
+    @Pure public static long instantToMicros64(@NotNull Instant instant) {
         long epochSecond = instant.getEpochSecond();
         int nano = instant.getNano();
         return (epochSecond << 20) + (nano / 1000);
     }
 
-    @Pure
-    public static @NotNull Instant micros64ToInstant(long timestamp) {
+    @Pure public static @NotNull Instant micros64ToInstant(long timestamp) {
         long epochSeconds = timestamp >> 20;
         int micros = (int) (timestamp & 0x000f_ffffL);  // 0b1111_1111_1111_1111_1111L, 20 bits
         return Instant.ofEpochSecond(epochSeconds, micros * 1000);

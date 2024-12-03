@@ -1,8 +1,9 @@
 package io.spbx.util.code.dsl.expr;
 
-import com.google.errorprone.annotations.Immutable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.concurrent.Immutable;
 
 @Immutable
 public record UnaryPrefixExpr(@NotNull PrefixOp op, @NotNull Expr expr) implements Expr {

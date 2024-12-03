@@ -1,8 +1,8 @@
 package io.spbx.util.lazy;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spbx.util.collect.BasicIterables;
-import org.jetbrains.annotations.CheckReturnValue;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.collect.iter.BasicIterables;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

@@ -1,11 +1,13 @@
 package io.spbx.util.testing;
 
 import com.google.common.truth.Truth;
-import com.google.errorprone.annotations.CheckReturnValue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufHolder;
 import io.netty.buffer.DuplicatedByteBuf;
 import io.netty.buffer.Unpooled;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,10 +16,13 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
-import static io.spbx.util.base.EasyCast.castAny;
-import static io.spbx.util.base.BasicExceptions.newIllegalStateException;
+import static io.spbx.util.base.error.BasicExceptions.newIllegalStateException;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 import static io.spbx.util.testing.TestingPrimitives.bytes;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class TestingBytes {
     public static final Charset CHARSET = Charset.defaultCharset();
     private static final Readability READABILITY_MODE = Readability.HUMAN_READABLE;

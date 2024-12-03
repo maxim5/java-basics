@@ -11,10 +11,11 @@ import com.google.common.truth.StringSubject;
 import com.google.common.truth.Subject;
 import com.google.common.truth.ThrowableSubject;
 import com.google.common.truth.Truth;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spbx.util.base.Unchecked;
-import io.spbx.util.collect.Streamer;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.base.error.Unchecked;
+import io.spbx.util.collect.stream.Streamer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,9 +25,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import static io.spbx.util.base.EasyCast.castAny;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 import static java.util.Objects.requireNonNull;
 
+@Stateless
 public class MoreTruth {
     @CheckReturnValue
     public static @NotNull StringSubject assertThat(@Nullable CharSequence charSequence) {

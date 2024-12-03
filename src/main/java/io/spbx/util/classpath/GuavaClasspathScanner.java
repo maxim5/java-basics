@@ -1,7 +1,7 @@
 package io.spbx.util.classpath;
 
 import com.google.common.reflect.ClassPath;
-import io.spbx.util.base.Unchecked;
+import io.spbx.util.base.error.Unchecked;
 import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 

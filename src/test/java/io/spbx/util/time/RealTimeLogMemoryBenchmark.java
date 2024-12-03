@@ -1,16 +1,16 @@
 package io.spbx.util.time;
 
-import io.spbx.util.base.DataSize;
-import io.spbx.util.base.Tuple;
-import io.spbx.util.collect.BasicIterables;
-import io.spbx.util.collect.RowListTabular;
-import io.spbx.util.testing.MoreRandomArrays;
+import io.spbx.util.base.lang.DataSize;
+import io.spbx.util.base.tuple.Tuple;
+import io.spbx.util.collect.iter.BasicIterables;
+import io.spbx.util.collect.tab.RowListTabular;
+import io.spbx.util.testing.random.MoreRandomArrays;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-import static io.spbx.util.collect.TabularFormatter.BORDERLESS_FORMATTER;
+import static io.spbx.util.collect.tab.TabularFormatter.BORDERLESS_FORMATTER;
 import static io.spbx.util.testing.TestingBasics.longStreamOf;
 
 public class RealTimeLogMemoryBenchmark {

@@ -1,5 +1,6 @@
 package io.spbx.util.testing;
 
+import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.classpath.BasicClasspath;
 import io.spbx.util.code.jvm.JavaNameValidator;
 import io.spbx.util.lazy.Lazy;
@@ -8,11 +9,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static io.spbx.util.base.BasicExceptions.InternalErrors.assureNonNull;
-import static io.spbx.util.base.EasyCast.castAny;
-import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.base.error.BasicExceptions.InternalErrors.assureNonNull;
+import static io.spbx.util.base.error.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 import static io.spbx.util.func.ScopeFunctions.also;
 
+@Stateless
 public class JUnits {
     private static final Logger log = Logger.forEnclosingClass();
     private static final Lazy<JUnitLaunch> launch = Lazy.of(JUnits::detectJUnitLaunch);

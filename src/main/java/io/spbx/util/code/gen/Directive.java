@@ -1,12 +1,12 @@
 package io.spbx.util.code.gen;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spbx.util.base.BasicStrings;
-import io.spbx.util.base.OneOf;
-import io.spbx.util.base.Pair;
+import io.spbx.util.base.str.BasicStrings;
+import io.spbx.util.base.tuple.OneOf;
+import io.spbx.util.base.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.stream.Stream;
 
 @Immutable

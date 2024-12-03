@@ -5,12 +5,14 @@ import io.spbx.util.func.LongReversible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 
+@Immutable
 public record YoutubeVideoId(@NotNull String id) {
     public static final LongReversible<String> CONVERTER = new LongReversible<>() {
         @Override public long forwardToLong(@NotNull String s) {

@@ -18,8 +18,8 @@ import java.nio.file.WatchService;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
-import static io.spbx.util.base.Unchecked.rethrow;
+import static io.spbx.util.base.error.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.base.error.Unchecked.rethrow;
 
 @ThreadSafe
 public class LiveProperties implements StandardProperties, UncheckedClosable {

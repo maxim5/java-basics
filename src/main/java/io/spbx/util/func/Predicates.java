@@ -1,5 +1,6 @@
 package io.spbx.util.func;
 
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,12 +16,27 @@ import java.util.function.Predicate;
  * @see Functions
  * @see Consumers
  */
+@Stateless
 public class Predicates {
     /**
      * Returns a constant {@link Predicate}: evaluates to the same result {@code value} regardless of the input.
      */
     public static <T> @NotNull Predicate<T> constant(boolean value) {
         return t -> value;
+    }
+
+    /**
+     * Returns a constant {@link Predicate} which always returns {@code true} regardless of the input.
+     */
+    public static <T> @NotNull Predicate<T> alwaysTrue() {
+        return t -> true;
+    }
+
+    /**
+     * Returns a constant {@link Predicate} which always returns {@code false} regardless of the input.
+     */
+    public static <T> @NotNull Predicate<T> alwaysFalse() {
+        return t -> false;
     }
 
     /**
@@ -31,41 +47,73 @@ public class Predicates {
     }
 
     /**
+     * Returns a constant {@link Predicate} which returns {@code true} iff the input is {@code null}.
+     */
+    public static <T> @NotNull Predicate<T> isNull() {
+        return Objects::isNull;
+    }
+
+    /**
+     * Returns a constant {@link Predicate} which returns {@code true} iff the input is non-{@code null}.
+     */
+    public static <T> @NotNull Predicate<T> isNonNull() {
+        return Objects::nonNull;
+    }
+
+    /**
+     * Non-nullizes the predicate {@code p} by returning the {@link #alwaysTrue()} if {@code p == null}.
+     */
+    public static <T> @NotNull Predicate<T> constTrueIfNull(@Nullable Predicate<T> p) {
+        return p == null ? alwaysTrue() : p;
+    }
+
+    /**
+     * Non-nullizes the predicate {@code p} by returning the {@link #alwaysFalse()} if {@code p == null}.
+     */
+    public static <T> @NotNull Predicate<T> constFalseIfNull(@Nullable Predicate<T> p) {
+        return p == null ? alwaysFalse() : p;
+    }
+
+    /**
      * Returns a {@link Predicate} which evaluates a short-circuiting {@code &&} operator.
      * This means that both {@code p1} and {@code p2} must not have side effects.
      * They are not guaranteed to be called if the result can be evaluated earlier (short-circuiting).
+     * The {@code null} predicates are ignored, i.e., treated as {@link #alwaysTrue()}.
      */
-    public static <T> @NotNull Predicate<T> and(@NotNull Predicate<T> p1, @NotNull Predicate<T> p2) {
-        return t -> p1.test(t) && p2.test(t);
+    public static <T> @NotNull Predicate<T> and(@Nullable Predicate<T> p1, @Nullable Predicate<T> p2) {
+        return p1 == null ? constTrueIfNull(p2) : p2 == null ? p1 : t -> p1.test(t) && p2.test(t);
     }
 
     /**
      * Returns a {@link Predicate} which evaluates a short-circuiting {@code &&} operator.
      * This means that {@code p} must not have side effects.
      * It is not guaranteed to be called if the result can be evaluated earlier (short-circuiting).
+     * The {@code null} predicates are ignored, i.e., treated as {@link #alwaysTrue()}.
      */
-    public static <T> @NotNull Predicate<T> and(@NotNull Predicate<T> p, boolean value) {
-        return t -> value && p.test(t);
+    public static <T> @NotNull Predicate<T> and(@Nullable Predicate<T> p, boolean value) {
+        return p == null ? constant(value) : t -> value && p.test(t);
     }
 
     /**
      * Returns a {@link Predicate} which evaluates a short-circuiting {@code &&} operator.
      * This means that {@code p} must not have side effects.
      * It is not guaranteed to be called if the result can be evaluated earlier (short-circuiting).
+     * The {@code null} predicates are ignored, i.e., treated as {@link #alwaysTrue()}.
      */
-    public static <T> @NotNull Predicate<T> and(boolean value, @NotNull Predicate<T> p) {
-        return t -> value && p.test(t);
+    public static <T> @NotNull Predicate<T> and(boolean value, @Nullable Predicate<T> p) {
+        return p == null ? constant(value) : t -> value && p.test(t);
     }
 
     /**
      * Returns a {@link Predicate} which evaluates a short-circuiting {@code &&} operator.
      * This means that all {@code predicates} must not have side effects.
      * They are not guaranteed to be called if the result can be evaluated earlier (short-circuiting).
+     * The {@code null} predicates are ignored, i.e., treated as {@link #alwaysTrue()}.
      */
-    public static @SafeVarargs <T> @NotNull Predicate<T> and(@NotNull Predicate<T> @NotNull... predicates) {
+    public static @SafeVarargs <T> @NotNull Predicate<T> and(@Nullable Predicate<T> @NotNull... predicates) {
         return t -> {
             for (Predicate<T> predicate : predicates) {
-                if (!predicate.test(t)) {
+                if (predicate != null && !predicate.test(t)) {
                     return false;
                 }
             }
@@ -77,38 +125,42 @@ public class Predicates {
      * Returns a {@link Predicate} which evaluates a short-circuiting {@code ||} operator.
      * This means that both {@code p1} and {@code p2} must not have side effects.
      * They are not guaranteed to be called if the result can be evaluated earlier (short-circuiting).
+     * The {@code null} predicates are ignored, i.e., treated as {@link #alwaysFalse()}.
      */
-    public static <T> @NotNull Predicate<T> or(@NotNull Predicate<T> p1, @NotNull Predicate<T> p2) {
-        return t -> p1.test(t) || p2.test(t);
+    public static <T> @NotNull Predicate<T> or(@Nullable Predicate<T> p1, @Nullable Predicate<T> p2) {
+        return p1 == null ? constTrueIfNull(p2) : p2 == null ? p1 : t -> p1.test(t) || p2.test(t);
     }
 
     /**
      * Returns a {@link Predicate} which evaluates a short-circuiting {@code ||} operator.
      * This means that {@code p} must not have side effects.
      * It is not guaranteed to be called if the result can be evaluated earlier (short-circuiting).
+     * The {@code null} predicates are ignored, i.e., treated as {@link #alwaysFalse()}.
      */
-    public static <T> @NotNull Predicate<T> or(@NotNull Predicate<T> p, boolean value) {
-        return t -> value || p.test(t);
+    public static <T> @NotNull Predicate<T> or(@Nullable Predicate<T> p, boolean value) {
+        return p == null ? constant(value) : t -> value || p.test(t);
     }
 
     /**
      * Returns a {@link Predicate} which evaluates a short-circuiting {@code ||} operator.
      * This means that {@code p} must not have side effects.
      * It is not guaranteed to be called if the result can be evaluated earlier (short-circuiting).
+     * The {@code null} predicates are ignored, i.e., treated as {@link #alwaysFalse()}.
      */
-    public static <T> @NotNull Predicate<T> or(boolean value, @NotNull Predicate<T> p) {
-        return t -> value || p.test(t);
+    public static <T> @NotNull Predicate<T> or(boolean value, @Nullable Predicate<T> p) {
+        return p == null ? constant(value) : t -> value || p.test(t);
     }
 
     /**
      * Returns a {@link Predicate} which evaluates a short-circuiting {@code ||} operator.
      * This means that all {@code predicates} must not have side effects.
      * They are not guaranteed to be called if the result can be evaluated earlier (short-circuiting).
+     * The {@code null} predicates are ignored, i.e., treated as {@link #alwaysFalse()}.
      */
-    public static @SafeVarargs <T> @NotNull Predicate<T> or(@NotNull Predicate<T> @NotNull... predicates) {
+    public static @SafeVarargs <T> @NotNull Predicate<T> or(@Nullable Predicate<T> @NotNull... predicates) {
         return t -> {
             for (Predicate<T> predicate : predicates) {
-                if (predicate.test(t)) {
+                if (predicate != null && predicate.test(t)) {
                     return true;
                 }
             }

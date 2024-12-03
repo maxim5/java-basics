@@ -1,7 +1,7 @@
 package io.spbx.util.extern.asm;
 
-import io.spbx.util.base.Unchecked;
-import io.spbx.util.rt.RuntimeRequirement;
+import io.spbx.util.base.error.Unchecked;
+import io.spbx.util.classpath.RuntimeRequirement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.ClassReader;
@@ -10,6 +10,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -17,13 +18,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
-import static io.spbx.util.base.BasicExceptions.IllegalStateExceptions.assureNonNull;
-import static io.spbx.util.base.Unchecked.Suppliers.runQuietlyOrNull;
-import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
-import static io.spbx.util.collect.BasicIterables.newMutableList;
+import static io.spbx.util.base.error.BasicExceptions.IllegalStateExceptions.assureNonNull;
+import static io.spbx.util.base.error.Unchecked.Suppliers.runQuietlyOrNull;
+import static io.spbx.util.base.error.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.collect.iter.BasicIterables.newMutableList;
 import static io.spbx.util.func.IntPredicates.equalTo;
 import static io.spbx.util.func.Predicates.equalTo;
 
+@Immutable
 public class AsmClassScanner {
     static {
         RuntimeRequirement.verify("org.objectweb.asm.ClassReader");

@@ -1,10 +1,12 @@
 package io.spbx.util.time;
 
 import com.google.common.collect.Range;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
 import io.spbx.util.func.Reversible;
-import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.Immutable;
 import java.time.LocalDate;
 
 /**
@@ -18,6 +20,8 @@ import java.time.LocalDate;
  *     <li> {@link EpochDay16#XX_CENTURY}: <code>1900-01-01 ... 2079-06-06</code>. </li>
  * </ul>
  */
+@Immutable
+@CheckReturnValue
 public enum EpochDay16 {
     /** <code>1970-01-01 ... 2149-06-06</code> */
     DEFAULT(Epoch.DEFAULT),
@@ -55,13 +59,11 @@ public enum EpochDay16 {
         };
     }
 
-    @Pure
-    public short localDateToEpochDay16(@NotNull LocalDate localDate) {
+    @Pure public short localDateToEpochDay16(@NotNull LocalDate localDate) {
         return (short) (localDate.toEpochDay() - epochStartInDays);
     }
 
-    @Pure
-    public @NotNull LocalDate epochDay16ToLocalDate(short epochDay) {
+    @Pure public @NotNull LocalDate epochDay16ToLocalDate(short epochDay) {
         return LocalDate.ofEpochDay(epochStartInDays + Short.toUnsignedInt(epochDay));
     }
 }

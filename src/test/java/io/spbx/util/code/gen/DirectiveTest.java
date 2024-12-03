@@ -1,6 +1,6 @@
 package io.spbx.util.code.gen;
 
-import io.spbx.util.base.Pair;
+import io.spbx.util.base.tuple.Pair;
 import io.spbx.util.code.gen.Directive.Modifier;
 import io.spbx.util.code.gen.Directive.Predefined;
 import io.spbx.util.code.gen.Directive.Type;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spbx.util.base.AssertTuples.assertOneOf;
+import static io.spbx.util.base.tuple.AssertTuples.assertOneOf;
 import static io.spbx.util.code.gen.DirectiveBuilder.block;
 import static io.spbx.util.code.gen.DirectiveBuilder.inline;
 

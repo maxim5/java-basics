@@ -6,7 +6,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 import java.util.Arrays;
 import java.util.function.LongPredicate;
 
-import static io.spbx.util.base.BasicExceptions.newInternalError;
+import static io.spbx.util.base.error.BasicExceptions.newInternalError;
 
 /**
  * Stores the {@link RealTimeLog} in 8-bit byte array.

@@ -1,9 +1,9 @@
 package io.spbx.util.func;
 
-import io.spbx.util.testing.MockConsumer;
-import io.spbx.util.testing.MockFunction;
-import io.spbx.util.testing.MockFunction.Applying;
-import io.spbx.util.testing.MockRunnable;
+import io.spbx.util.testing.func.MockConsumer;
+import io.spbx.util.testing.func.MockFunction;
+import io.spbx.util.testing.func.MockFunction.Applying;
+import io.spbx.util.testing.func.MockRunnable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

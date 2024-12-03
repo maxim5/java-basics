@@ -1,6 +1,6 @@
 package io.spbx.util.props;
 
-import io.spbx.util.base.Secret;
+import io.spbx.util.base.security.Secret;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 
-import static io.spbx.util.base.BasicNulls.firstNonNullIfExist;
+import static io.spbx.util.base.lang.BasicNulls.firstNonNullIfExists;
 
 public interface StandardMutableProperties extends StandardProperties, MutablePropertyMap {
     /* Specialized shortcuts for setters */
@@ -59,7 +59,7 @@ public interface StandardMutableProperties extends StandardProperties, MutablePr
                 return StandardMutableProperties.this.setString(key, val);
             }
             @Override public @Nullable String getOrNull(@NotNull String key) {
-                return firstNonNullIfExist(StandardMutableProperties.this.getOrNull(key), () -> backup.getOrNull(key));
+                return firstNonNullIfExists(StandardMutableProperties.this.getOrNull(key), () -> backup.getOrNull(key));
             }
         };
     }

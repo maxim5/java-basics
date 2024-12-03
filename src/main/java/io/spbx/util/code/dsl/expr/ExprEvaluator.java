@@ -1,7 +1,7 @@
 package io.spbx.util.code.dsl.expr;
 
-import io.spbx.util.base.Pair;
-import io.spbx.util.base.Tuple;
+import io.spbx.util.base.tuple.Pair;
+import io.spbx.util.base.tuple.Tuple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,12 +1,12 @@
 package io.spbx.util.code.gen;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CheckReturnValue;
 import io.spbx.util.code.gen.CompiledTemplate.Block;
 import io.spbx.util.code.gen.CompiledTemplate.CompiledDirective;
 import io.spbx.util.code.gen.CompiledTemplate.DirectiveBlock;
 import io.spbx.util.code.gen.CompiledTemplate.LiteralBlock;
 import io.spbx.util.code.gen.Directive.Predefined;
-import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

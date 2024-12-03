@@ -1,6 +1,6 @@
 package io.spbx.util.extern.trove;
 
-import io.spbx.util.array.CharArray;
+import io.spbx.util.base.str.CharArray;
 import io.spbx.util.extern.trove.TroveHashMaps.StringContentHashMap;
 import io.spbx.util.extern.trove.TroveHashMaps.StringHashMap;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spbx.util.testing.TestingBasics.toStr;
 
 @Tag("fast")
 @SuppressWarnings("SuspiciousMethodCalls")
@@ -96,10 +97,6 @@ public class TroveHashMapsTest {
     }
 
     private static @NotNull Object dummyWithCustomToString(@Nullable String value) {
-        return new Object() {
-            @Override public String toString() {
-                return value;
-            }
-        };
+        return toStr(() -> value);
     }
 }

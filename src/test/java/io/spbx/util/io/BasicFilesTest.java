@@ -20,6 +20,17 @@ public class BasicFilesTest {
     }
 
     @Test
+    public void getFileExtensionWithDot_simple() {
+        assertThat(BasicFiles.getFileExtensionWithDot("")).isEqualTo("");
+        assertThat(BasicFiles.getFileExtensionWithDot("foo")).isEqualTo("");
+        assertThat(BasicFiles.getFileExtensionWithDot("foo.txt")).isEqualTo(".txt");
+        assertThat(BasicFiles.getFileExtensionWithDot("foo.java")).isEqualTo(".java");
+        assertThat(BasicFiles.getFileExtensionWithDot("build.gradle.kts")).isEqualTo(".gradle.kts");
+        assertThat(BasicFiles.getFileExtensionWithDot(".git")).isEqualTo(".git");
+        assertThat(BasicFiles.getFileExtensionWithDot(".gitignore")).isEqualTo(".gitignore");
+    }
+
+    @Test
     public void cutOffFileExtension_simple() {
         assertThat(BasicFiles.cutOffFileExtension("")).isEqualTo("");
         assertThat(BasicFiles.cutOffFileExtension("foo")).isEqualTo("foo");

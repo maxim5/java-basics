@@ -4,7 +4,7 @@ import io.spbx.util.code.gen.CompiledTemplate.Block;
 import io.spbx.util.code.gen.CompiledTemplate.CompiledDirective;
 import io.spbx.util.code.gen.CompiledTemplate.DirectiveBlock;
 import io.spbx.util.code.gen.CompiledTemplate.Node;
-import io.spbx.util.collect.ListBuilder;
+import io.spbx.util.collect.list.ListBuilder;
 import io.spbx.util.func.Predicates;
 import io.spbx.util.func.ScopeFunctions;
 import org.jetbrains.annotations.NotNull;
@@ -15,8 +15,8 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Stream;
 
-import static io.spbx.util.collect.BasicIterables.newMutableList;
-import static io.spbx.util.collect.BasicStreams.streamOf;
+import static io.spbx.util.collect.iter.BasicIterables.newMutableList;
+import static io.spbx.util.collect.stream.BasicStreams.streamOf;
 import static java.util.Objects.requireNonNull;
 
 class TemplateCompiler {

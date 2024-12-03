@@ -2,44 +2,44 @@ package io.spbx.util.extern.guava;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.spbx.util.collect.Streamer;
-import org.checkerframework.dataflow.qual.Pure;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.collect.stream.Streamer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 
-import static io.spbx.util.base.EasyCast.castAny;
-import static io.spbx.util.collect.BasicMaps.emptyIfNull;
+import static io.spbx.util.base.lang.EasyCast.castAny;
+import static io.spbx.util.collect.map.BasicMaps.emptyIfNull;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class GuavaMaps {
     /* Conversions to `ImmutableMap` */
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, V> immutableMapOf() {
         return ImmutableMap.of();
     }
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, V> immutableMapOf(@NotNull K key, @NotNull V val) {
         return ImmutableMap.of(key, val);
     }
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, V> immutableMapOf(@NotNull K key1, @NotNull V val1,
                                                                     @NotNull K key2, @NotNull V val2) {
         return ImmutableMap.of(key1, val1, key2, val2);
     }
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, V> immutableMapOf(@NotNull K key1, @NotNull V val1,
                                                                     @NotNull K key2, @NotNull V val2,
                                                                     @NotNull K key3, @NotNull V val3) {
         return ImmutableMap.of(key1, val1, key2, val2, key3, val3);
     }
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, V> immutableMapOf(@NotNull K key1, @NotNull V val1,
                                                                     @NotNull K key2, @NotNull V val2,
                                                                     @NotNull K key3, @NotNull V val3,
@@ -47,7 +47,6 @@ public class GuavaMaps {
         return ImmutableMap.of(key1, val1, key2, val2, key3, val3, key4, val4);
     }
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, V> immutableMapOf(@NotNull K key1, @NotNull V val1,
                                                                     @NotNull K key2, @NotNull V val2,
                                                                     @NotNull K key3, @NotNull V val3,
@@ -56,9 +55,8 @@ public class GuavaMaps {
         return ImmutableMap.of(key1, val1, key2, val2, key3, val3, key4, val4, key5, val5);
     }
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, V> immutableMapOf(@NotNull K key1, @NotNull V val1,
-                                                                    @NotNull Object @NotNull ... items) {
+                                                                    @NotNull Object @NotNull... items) {
         assert items.length % 2 == 0 : "Invalid number of items: %d".formatted(items.length);
         ImmutableMap.Builder<K, V> builder = ImmutableMap.builderWithExpectedSize(1 + items.length >> 1);
         builder.put(key1, val1);
@@ -68,7 +66,6 @@ public class GuavaMaps {
         return builder.buildOrThrow();
     }
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, List<V>> deepImmutableMapOf(@NotNull Map<K, List<V>> map) {
         ImmutableMap.Builder<K, List<V>> builder = new ImmutableMap.Builder<>();
         for (Map.Entry<K, List<V>> entry : map.entrySet()) {
@@ -79,7 +76,6 @@ public class GuavaMaps {
 
     /* `Map` merging */
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, V> mergeToImmutableMap(@Nullable Map<? extends K, ? extends V> map1,
                                                                          @Nullable Map<? extends K, ? extends V> map2) {
         return ImmutableMap.<K, V>builder()
@@ -88,7 +84,6 @@ public class GuavaMaps {
             .buildOrThrow();
     }
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<K, V> mergeToImmutableMap(@Nullable Map<? extends K, ? extends V> map1,
                                                                          @Nullable Map<? extends K, ? extends V> map2,
                                                                          @Nullable Map<? extends K, ? extends V> map3) {
@@ -101,7 +96,6 @@ public class GuavaMaps {
 
     /* `Map` manipulations */
 
-    @Pure
     public static <K, V> @NotNull ImmutableMap<V, K> inverseMap(@NotNull ImmutableMap<K, V> map) {
         return Streamer.of(map).inverse().toGuavaImmutableMap();
     }

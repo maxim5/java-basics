@@ -1,5 +1,12 @@
 package io.spbx.util.testing;
 
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
+
+@Stateless
+@Pure
+@CheckReturnValue
 public class TestingPrimitives {
     public static int[] ints(int... values) {
         return values;

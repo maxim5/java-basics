@@ -2,10 +2,9 @@ package io.spbx.util.text;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.errorprone.annotations.Immutable;
-import io.spbx.util.array.CharArray;
-import io.spbx.util.array.MutableCharArray;
-import io.spbx.util.collect.BasicMaps;
+import io.spbx.util.base.str.CharArray;
+import io.spbx.util.base.str.MutableCharArray;
+import io.spbx.util.collect.map.BasicMaps;
 import io.spbx.util.lazy.AtomicLazyRecycle;
 import io.spbx.util.lazy.LazyRecycle;
 import io.spbx.util.lazy.Sealed;
@@ -15,6 +14,7 @@ import io.spbx.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -25,9 +25,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static io.spbx.util.base.BasicExceptions.newIllegalStateException;
-import static io.spbx.util.base.BasicExceptions.newInternalError;
-import static io.spbx.util.base.EasyCast.castAny;
+import static io.spbx.util.base.error.BasicExceptions.newIllegalStateException;
+import static io.spbx.util.base.error.BasicExceptions.newInternalError;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 import static java.util.Objects.requireNonNull;
 
 @Immutable
@@ -76,7 +76,7 @@ public class TextExtractor {
         return result;
     }
 
-    // Actions
+    /* Actions */
 
     public static @NotNull MatchAction skipTo(@NotNull CharSequence mark) {
         CharArray mark_arr = CharArray.asCharArray(mark);

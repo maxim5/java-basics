@@ -1,7 +1,10 @@
 package io.spbx.util.io;
 
 import com.google.common.io.Closeables;
-import io.spbx.util.base.Unchecked;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.base.error.Unchecked;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,8 +16,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import static io.spbx.util.base.EasyCast.castAny;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class BasicIo {
     public static <T> byte @NotNull[] serialize(@NotNull T instance) {
         return serialize(instance, 8192);

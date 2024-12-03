@@ -2,6 +2,7 @@ package io.spbx.util.time;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.Immutable;
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -9,6 +10,7 @@ import java.time.Instant;
  * A util enum class representing the epoch start for date calculations.
  * Each value is bound to a particular {@link Instant} timestamp.
  */
+@Immutable
 public enum Epoch {
     /** <code>1970-01-01T00:00:00Z</code> */
     DEFAULT(0),

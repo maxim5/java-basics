@@ -1,16 +1,16 @@
 package io.spbx.util.code.gen;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.errorprone.annotations.Immutable;
-import io.spbx.util.base.BasicStrings;
-import io.spbx.util.collect.BasicMaps;
-import io.spbx.util.collect.Streamer;
+import io.spbx.util.base.str.BasicStrings;
+import io.spbx.util.collect.map.BasicMaps;
+import io.spbx.util.collect.stream.Streamer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Map;
 
-import static io.spbx.util.base.BasicExceptions.runOnlyInDev;
+import static io.spbx.util.base.error.BasicExceptions.runOnlyInDev;
 
 @Immutable
 public class Variables {

@@ -1,7 +1,7 @@
 package io.spbx.util.code.dsl.expr;
 
-import io.spbx.util.array.CharArray;
-import io.spbx.util.base.Pair;
+import io.spbx.util.base.str.CharArray;
+import io.spbx.util.base.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import static io.spbx.util.testing.TestingBasics.listOf;

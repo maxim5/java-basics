@@ -1,10 +1,10 @@
 package io.spbx.util.code.dsl.expr;
 
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spbx.util.base.Pair;
+import io.spbx.util.base.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.List;
 
 @Immutable

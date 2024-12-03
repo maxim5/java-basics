@@ -1,7 +1,7 @@
 package io.spbx.util.func;
 
-import io.spbx.util.base.Unchecked;
-import io.spbx.util.collect.BasicIterables;
+import io.spbx.util.base.error.Unchecked;
+import io.spbx.util.collect.iter.BasicIterables;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

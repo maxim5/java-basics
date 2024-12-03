@@ -3,13 +3,19 @@ package io.spbx.util.testing;
 import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static io.spbx.util.base.BasicExceptions.InternalErrors.assureNonNull;
+import static io.spbx.util.base.error.BasicExceptions.InternalErrors.assureNonNull;
 import static io.spbx.util.testing.TestingBasics.streamOf;
 import static io.spbx.util.testing.TestingBytes.CHARSET;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class TestingParams {
     public static byte @Nullable[] paramToNullBytes(@NotNull String encoded) {
         return encoded.equals("null") ? null :

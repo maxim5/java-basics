@@ -1,13 +1,13 @@
 package io.spbx.util.code.dsl.expr;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spbx.util.array.CharArray;
+import io.spbx.util.base.str.CharArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.regex.Pattern;
 
-import static io.spbx.util.base.BasicExceptions.newIllegalStateException;
+import static io.spbx.util.base.error.BasicExceptions.newIllegalStateException;
 
 @Immutable
 public record Lexem(@NotNull CharArray value) {

@@ -1,5 +1,6 @@
 package io.spbx.util.func;
 
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
@@ -14,6 +15,7 @@ import java.util.function.Predicate;
  * @see Predicates
  * @see Consumers
  */
+@Stateless
 public class BoolFunctions {
     /**
      * Chains the {@link Predicate} {@code p} and boolean {@link Function} {@code f}

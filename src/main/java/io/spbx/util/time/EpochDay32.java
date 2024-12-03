@@ -1,7 +1,9 @@
 package io.spbx.util.time;
 
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.func.IntReversible;
-import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -11,14 +13,14 @@ import java.time.LocalDate;
  * <p>
  * Supported date range for 32-bit conversion: <code>-5877641-06-23 ... +5881580-07-11</code>.
  */
+@Stateless
+@CheckReturnValue
 public class EpochDay32 {
-    @Pure
-    public static int localDateToEpochDay32(@NotNull LocalDate localDate) {
+    @Pure public static int localDateToEpochDay32(@NotNull LocalDate localDate) {
         return (int) localDate.toEpochDay();
     }
 
-    @Pure
-    public static @NotNull LocalDate epochDay32ToLocalDate(int epochDay) {
+    @Pure public static @NotNull LocalDate epochDay32ToLocalDate(int epochDay) {
         return LocalDate.ofEpochDay(epochDay);
     }
 

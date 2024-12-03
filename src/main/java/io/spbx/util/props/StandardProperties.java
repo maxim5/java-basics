@@ -1,13 +1,14 @@
 package io.spbx.util.props;
 
-import io.spbx.util.base.DataSize;
-import io.spbx.util.base.Int128;
-import io.spbx.util.base.Pair;
-import io.spbx.util.base.Secret;
+import io.spbx.util.base.lang.DataSize;
+import io.spbx.util.base.math.Int128;
+import io.spbx.util.base.security.Secret;
+import io.spbx.util.base.str.BasicJoin;
+import io.spbx.util.base.tuple.Pair;
 import io.spbx.util.func.Reversibles;
 import io.spbx.util.io.BasicNet;
-import io.spbx.util.text.BasicJoin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -25,11 +26,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static io.spbx.util.base.EasyCast.castAny;
-import static io.spbx.util.base.BasicNulls.firstNonNullIfExist;
-import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.base.error.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.base.lang.BasicNulls.firstNonNullIfExists;
+import static io.spbx.util.base.lang.EasyCast.castAny;
 
 public interface StandardProperties extends PropertyMap {
     /* Standard `TypeExtractor`s */
@@ -83,6 +85,9 @@ public interface StandardProperties extends PropertyMap {
     }
     default <T extends Enum<T>> @NotNull T getEnum(@NotNull EnumProperty<T> property) {
         return getEnum(property.key(), property.def());
+    }
+    default <T extends Enum<T>> @Nullable T getEnumOrNull(@NotNull String key, @NotNull Function<String, T> valueOf) {
+        return getOptional(key).map(property -> toEnum(property, valueOf)).orElse(null);
     }
 
     default @NotNull Path getPath(@NotNull PropertyKeyDefault<Path> property) {
@@ -144,7 +149,7 @@ public interface StandardProperties extends PropertyMap {
     }
 
     @Override default @NotNull StandardProperties chainedWith(@NotNull PropertyMap backup) {
-        return key -> firstNonNullIfExist(this.getOrNull(key), () -> backup.getOrNull(key));
+        return key -> firstNonNullIfExists(this.getOrNull(key), () -> backup.getOrNull(key));
     }
 
     @Override default @NotNull StandardProperties standardize() {
@@ -166,6 +171,14 @@ public interface StandardProperties extends PropertyMap {
         }
         Optional<T> closeMatch = Stream.of(enumConstants).filter(v -> v.name().equalsIgnoreCase(property)).findFirst();
         return closeMatch.orElse(def);
+    }
+
+    private static <T extends Enum<T>> @Nullable T toEnum(@NotNull String property, @NotNull Function<String, T> valueOf) {
+        try {
+            return valueOf.apply(property.trim());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     private static @NotNull URL parseUrl(@NotNull String url) {

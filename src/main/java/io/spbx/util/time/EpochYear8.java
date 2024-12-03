@@ -1,9 +1,12 @@
 package io.spbx.util.time;
 
 import com.google.common.collect.Range;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Pure;
 import io.spbx.util.func.Reversible;
-import org.checkerframework.dataflow.qual.Pure;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Provides 8-bit conversions from an integer human year to a {@code byte} integer.
@@ -12,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
  * {@link #DEFAULT_SIGNED} supports years in <code>1842 ... 2097</code> range and
  * {@link #MILLENNIAL_UNSIGNED} supports years in <code>2000 ... 2255</code> range.
  */
+@Immutable
+@CheckReturnValue
 public enum EpochYear8 {
     /** <code>1842 ... 2097</code> */
     DEFAULT_SIGNED(Epoch.DEFAULT, true),
@@ -57,13 +62,11 @@ public enum EpochYear8 {
         };
     }
 
-    @Pure
-    public byte humanYearToEpochYear8(int humanYear) {
+    @Pure public byte humanYearToEpochYear8(int humanYear) {
         return (byte) (humanYear - epochStartYear);
     }
 
-    @Pure
-    public int epochYear8ToHumanYear(byte epochYear) {
+    @Pure public int epochYear8ToHumanYear(byte epochYear) {
         return epochStartYear + (isSigned ? (int) epochYear : Byte.toUnsignedInt(epochYear));
     }
 }

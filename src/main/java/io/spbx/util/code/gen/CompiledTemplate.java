@@ -1,20 +1,20 @@
 package io.spbx.util.code.gen;
 
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spbx.util.base.BasicNulls;
-import io.spbx.util.base.OneOf;
+import io.spbx.util.base.lang.BasicNulls;
+import io.spbx.util.base.tuple.OneOf;
 import io.spbx.util.code.gen.Directive.Predefined;
-import io.spbx.util.collect.BasicIterables;
+import io.spbx.util.collect.iter.BasicIterables;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static io.spbx.util.base.BasicNulls.firstNonNullIfExist;
+import static io.spbx.util.base.lang.BasicNulls.firstNonNullIfExists;
 
 @Immutable
 record CompiledTemplate(@NotNull List<Block> blocks) {
@@ -23,7 +23,7 @@ record CompiledTemplate(@NotNull List<Block> blocks) {
     }
 
     @Nullable DirectiveBlock findBlockByNameOrNull(@NotNull String name) {
-        return firstNonNullIfExist(blocks,  block -> block.findBlockByNameOrNull(name));
+        return firstNonNullIfExists(blocks, block -> block.findBlockByNameOrNull(name));
     }
 
     void forEachReference(@NotNull Consumer<String> consumer) {
@@ -104,7 +104,7 @@ record CompiledTemplate(@NotNull List<Block> blocks) {
             if (name.equals(directive.name())) {
                 return this;
             }
-            return firstNonNullIfExist(inner,  block -> block.findBlockByNameOrNull(name));
+            return firstNonNullIfExists(inner, block -> block.findBlockByNameOrNull(name));
         }
 
         @Override

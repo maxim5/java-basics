@@ -1,7 +1,7 @@
 package io.spbx.util.lazy;
 
-import io.spbx.util.testing.MockFunction;
-import io.spbx.util.testing.MockSupplier;
+import io.spbx.util.testing.func.MockFunction;
+import io.spbx.util.testing.func.MockSupplier;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

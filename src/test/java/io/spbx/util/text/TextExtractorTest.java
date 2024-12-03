@@ -1,12 +1,12 @@
 package io.spbx.util.text;
 
 import com.google.common.truth.MapSubject;
-import io.spbx.util.array.CharArray;
-import io.spbx.util.array.MutableCharArray;
-import io.spbx.util.base.BasicParsing;
-import io.spbx.util.collect.Streamer;
-import io.spbx.util.testing.MockConsumer;
+import io.spbx.util.base.str.BasicParsing;
+import io.spbx.util.base.str.CharArray;
+import io.spbx.util.base.str.MutableCharArray;
+import io.spbx.util.collect.stream.Streamer;
 import io.spbx.util.testing.ext.LoggingCapture;
+import io.spbx.util.testing.func.MockConsumer;
 import io.spbx.util.text.TextExtractor.Extracted;
 import io.spbx.util.text.TextExtractor.ExtractedMap;
 import io.spbx.util.text.TextExtractor.Fallback;

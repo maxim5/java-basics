@@ -1,12 +1,12 @@
 package io.spbx.util.props;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static io.spbx.util.base.BasicNulls.firstNonNullIfExist;
+import static io.spbx.util.base.lang.BasicNulls.firstNonNullIfExists;
 
 @CanIgnoreReturnValue
 public interface MutablePropertyMap extends PropertyMap {
@@ -23,6 +23,9 @@ public interface MutablePropertyMap extends PropertyMap {
 
     default @Nullable String setByte(@NotNull String key, byte val) { return setString(key, Byte.toString(val)); }
     default @Nullable String setByte(@NotNull ByteProperty prop, byte val) { return setByte(prop.key(), val); }
+
+    default @Nullable String setChar(@NotNull String key, char val) { return setString(key, Character.toString(val)); }
+    default @Nullable String setChar(@NotNull CharProperty prop, char val) { return setChar(prop.key(), val); }
 
     default @Nullable String setBool(@NotNull String key, boolean val) { return setString(key, Boolean.toString(val)); }
     default @Nullable String setBool(@NotNull BoolProperty prop, boolean val) { return setBool(prop.key(), val); }
@@ -72,7 +75,7 @@ public interface MutablePropertyMap extends PropertyMap {
                 return MutablePropertyMap.this.setString(key, val);
             }
             @Override public @Nullable String getOrNull(@NotNull String key) {
-                return firstNonNullIfExist(MutablePropertyMap.this.getOrNull(key), () -> backup.getOrNull(key));
+                return firstNonNullIfExists(MutablePropertyMap.this.getOrNull(key), () -> backup.getOrNull(key));
             }
         };
     }

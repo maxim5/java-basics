@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
-import static io.spbx.util.base.BasicExceptions.newIllegalStateException;
+import static io.spbx.util.base.error.BasicExceptions.newIllegalStateException;
 
 /**
  * A logger class which extends Google Fluent logging capabilities but at the same time hides it to avoid a direct dependency.

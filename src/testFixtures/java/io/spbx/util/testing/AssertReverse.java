@@ -1,6 +1,7 @@
 package io.spbx.util.testing;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.func.Reversible;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,6 +9,7 @@ import java.util.function.Function;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Stateless
 public class AssertReverse {
     @CanIgnoreReturnValue
     public static <U, V> @NotNull V assertRoundtrip(@NotNull Reversible<U, V> reversible, @NotNull U input) {
@@ -15,6 +17,14 @@ public class AssertReverse {
         assertOneWayRoundtrip(reversible.reverse(), forward);
         assertThat(reversible.reverse().reverse()).isSameInstanceAs(reversible);
         return forward;
+    }
+
+    @CanIgnoreReturnValue
+    public static @SafeVarargs <U, V> void assertRoundtrip(@NotNull Reversible<U, V> rev,
+                                                           @NotNull U @NotNull... inputs) {
+        for (U input : inputs) {
+            assertRoundtrip(rev, input);
+        }
     }
 
     @CanIgnoreReturnValue
@@ -27,13 +37,15 @@ public class AssertReverse {
     }
 
     @CanIgnoreReturnValue
-    public static @SafeVarargs <U, V> void assertRoundtrip(@NotNull Reversible<U, V> rev,
+    public static @SafeVarargs <U, V> void assertRoundtrip(@NotNull Function<U, V> forwardFunc,
+                                                           @NotNull Function<V, U> backwardFunc,
                                                            @NotNull U @NotNull... inputs) {
         for (U input : inputs) {
-            assertRoundtrip(rev, input);
+            assertRoundtrip(forwardFunc, backwardFunc, input);
         }
     }
 
+    @CanIgnoreReturnValue
     public static <U, V> @NotNull V assertOneWayRoundtrip(@NotNull Reversible<U, V> reversible, @NotNull U input) {
         V forward = reversible.forward(input);
         U backward = reversible.backward(forward);
@@ -41,6 +53,7 @@ public class AssertReverse {
         return forward;
     }
 
+    @CanIgnoreReturnValue
     public static <U, V> @NotNull V assertOneWayRoundtrip(@NotNull Function<U, V> forwardFunc,
                                                           @NotNull Function<V, U> backwardFunc,
                                                           @NotNull U input) {

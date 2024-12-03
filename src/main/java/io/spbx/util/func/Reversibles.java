@@ -1,6 +1,7 @@
 package io.spbx.util.func;
 
 import com.google.common.base.Converter;
+import io.spbx.util.base.annotate.Stateless;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,6 +10,7 @@ import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
+@Stateless
 public class Reversibles {
     public static <A, B> @NotNull Reversible<A, B> fromNotNullFunctions(@NotNull Function<A, B> forward,
                                                                         @NotNull Function<B, A> backward) {

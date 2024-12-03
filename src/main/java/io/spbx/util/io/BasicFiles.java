@@ -1,8 +1,11 @@
 package io.spbx.util.io;
 
-import com.google.errorprone.annotations.MustBeClosed;
-import io.spbx.util.base.BasicHash;
-import io.spbx.util.base.DataSize;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.MustBeClosed;
+import io.spbx.util.base.annotate.Pure;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.base.lang.DataSize;
+import io.spbx.util.base.security.BasicHash;
 import io.spbx.util.func.Consumers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,18 +24,35 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static io.spbx.util.base.Unchecked.LongSuppliers.runRethrow;
-import static io.spbx.util.base.Unchecked.Runnables.runRethrow;
-import static io.spbx.util.base.Unchecked.Suppliers.runRethrow;
+import static io.spbx.util.base.error.Unchecked.LongSuppliers.runRethrow;
+import static io.spbx.util.base.error.Unchecked.Runnables.runRethrow;
+import static io.spbx.util.base.error.Unchecked.Suppliers.runRethrow;
 
+@Stateless
+@Pure
+@CheckReturnValue
 public class BasicFiles {
     /* `String` and `Path` manipulations */
 
+    // foo.txt -> txt
+    // build.gradle.kts -> gradle.kts
+    // .git -> git
     public static @NotNull String getFileExtension(@NotNull String filename) {
         int dotIndex = filename.indexOf('.');
         return dotIndex == -1 ? "" : filename.substring(dotIndex + 1);
     }
 
+    // foo.txt -> .txt
+    // build.gradle.kts -> .gradle.kts
+    // .git -> .git
+    public static @NotNull String getFileExtensionWithDot(@NotNull String filename) {
+        int dotIndex = filename.indexOf('.');
+        return dotIndex == -1 ? "" : filename.substring(dotIndex);
+    }
+
+    // foo.txt -> foo
+    // build.gradle.kts -> build
+    // .git ->
     public static @NotNull String cutOffFileExtension(@NotNull String filename) {
         int dotIndex = filename.indexOf('.');
         return dotIndex == -1 ? filename : filename.substring(0, dotIndex);

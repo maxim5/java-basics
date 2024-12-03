@@ -1,8 +1,8 @@
 package io.spbx.util.code.gen;
 
 import com.google.common.truth.Truth;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.jetbrains.annotations.CheckReturnValue;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

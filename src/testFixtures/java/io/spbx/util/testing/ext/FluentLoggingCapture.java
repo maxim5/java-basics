@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spbx.util.base.BasicExceptions.InternalErrors.assureNonNull;
+import static io.spbx.util.base.error.BasicExceptions.InternalErrors.assureNonNull;
 import static io.spbx.util.reflect.BasicMembers.hasType;
 
 public class FluentLoggingCapture implements BeforeEachCallback, AfterEachCallback {

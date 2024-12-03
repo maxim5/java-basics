@@ -1,17 +1,23 @@
 package io.spbx.util.testing;
 
 import com.google.common.truth.Ordered;
-import io.spbx.util.collect.ToStreamApi;
+import io.spbx.util.base.annotate.CanIgnoreReturnValue;
+import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.collect.stream.ToStreamApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@Stateless
 public class AssertStreamer {
+    @CheckReturnValue
     public static <E> @NotNull ToStreamApiSubject<E> assertStream(@NotNull ToStreamApi<E> streamApi) {
         return new ToStreamApiSubject<>(streamApi);
     }
 
+    @CanIgnoreReturnValue
     public record ToStreamApiSubject<E>(@NotNull ToStreamApi<E> streamApi) {
         public void isEmpty() {
             assertThat(streamApi.toStream()).isEmpty();

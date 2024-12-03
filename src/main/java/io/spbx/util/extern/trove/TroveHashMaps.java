@@ -2,14 +2,16 @@ package io.spbx.util.extern.trove;
 
 import gnu.trove.map.hash.TCustomHashMap;
 import gnu.trove.strategy.HashingStrategy;
-import io.spbx.util.base.BasicStrings;
-import io.spbx.util.collect.StringContentMap;
-import io.spbx.util.rt.RuntimeRequirement;
+import io.spbx.util.base.annotate.Stateless;
+import io.spbx.util.base.str.BasicStrings;
+import io.spbx.util.classpath.RuntimeRequirement;
+import io.spbx.util.collect.map.StringContentMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+@Stateless
 public class TroveHashMaps {
     static {
         RuntimeRequirement.verify("gnu.trove.map.hash.TCustomHashMap");

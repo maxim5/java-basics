@@ -1,10 +1,10 @@
 package io.spbx.util.code.dsl.expr;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spbx.util.array.CharArray;
-import io.spbx.util.collect.BasicMaps;
+import io.spbx.util.base.str.CharArray;
+import io.spbx.util.collect.map.BasicMaps;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Map;
 
 @Immutable

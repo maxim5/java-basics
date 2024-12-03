@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 @FunctionalInterface
 public interface ClassPredicate extends Predicate<Class<?>> {
     ClassPredicate ALLOW_ALL = item -> true;
+    ClassPredicate DISALLOW_ALL = item -> false;
 
     @Override
     boolean test(@NotNull Class<?> klass);

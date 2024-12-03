@@ -1,17 +1,17 @@
 package io.spbx.util.props;
 
+import io.spbx.util.base.annotate.CheckReturnValue;
 import io.spbx.util.func.Functions;
 import io.spbx.util.func.Reversible;
-import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Function;
 
-import static io.spbx.util.base.BasicNulls.firstNonNull;
-import static io.spbx.util.base.BasicNulls.firstNonNullIfExist;
-import static io.spbx.util.base.BasicParsing.*;
+import static io.spbx.util.base.lang.BasicNulls.firstNonNull;
+import static io.spbx.util.base.lang.BasicNulls.firstNonNullIfExists;
+import static io.spbx.util.base.str.BasicParsing.*;
 import static java.util.Objects.requireNonNull;
 
 @CheckReturnValue
@@ -26,6 +26,8 @@ public interface PropertyMap {
     default @NotNull Optional<String> getOptional(@NotNull PropertyKey property) { return getOptional(property.key()); }
     default @NotNull String get(@NotNull String key, @NotNull String def) { return firstNonNull(getOrNull(key), def); }
     default @NotNull String get(@NotNull Property property) { return get(property.key(), property.def()); }
+    default boolean contains(@NotNull String key) { return getOrNull(key) != null; }
+    default boolean contains(@NotNull PropertyKey property) { return getOrNull(property) != null; }
 
     default int getIntOrNull(@NotNull String key) { return getInt(key, 0); }
     default int getIntOrDie(@NotNull String key) { return parseIntSafe(getOrDie(key)); }
@@ -41,6 +43,11 @@ public interface PropertyMap {
     default byte getByteOrDie(@NotNull String key) { return parseByteSafe(getOrDie(key)); }
     default byte getByte(@NotNull String key, byte def) { return parseByteSafe(getOrNull(key), def); }
     default byte getByte(@NotNull ByteProperty property) { return getByte(property.key(), property.def()); }
+
+    default char getCharOrNull(@NotNull String key) { return getChar(key, (char) 0); }
+    default char getCharOrDie(@NotNull String key) { return parseCharSafe(getOrDie(key)); }
+    default char getChar(@NotNull String key, char def) { return parseCharSafe(getOrNull(key), def); }
+    default char getChar(@NotNull CharProperty property) { return getChar(property.key(), property.def()); }
 
     default boolean getBoolOrFalse(@NotNull String key) { return getBool(key, false); }
     default boolean getBoolOrTrue(@NotNull String key) { return getBool(key, true); }
@@ -127,6 +134,11 @@ public interface PropertyMap {
         public static @NotNull ByteProperty of(@NotNull String key) { return of(key, (byte) 0); }
     }
 
+    record CharProperty(@NotNull String key, char def) implements PropertyKey {
+        public static @NotNull CharProperty of(@NotNull String key, char def) { return new CharProperty(key, def); }
+        public static @NotNull CharProperty of(@NotNull String key) { return of(key, (char) 0); }
+    }
+
     record BoolProperty(@NotNull String key, boolean def) implements PropertyKey {
         public static @NotNull BoolProperty of(@NotNull String key, boolean def) { return new BoolProperty(key, def); }
         public static @NotNull BoolProperty of(@NotNull String key) { return of(key, false); }
@@ -159,7 +171,7 @@ public interface PropertyMap {
     }
 
     default @NotNull PropertyMap chainedWith(@NotNull PropertyMap backup) {
-        return key -> firstNonNullIfExist(this.getOrNull(key), () -> backup.getOrNull(key));
+        return key -> firstNonNullIfExists(this.getOrNull(key), () -> backup.getOrNull(key));
     }
 
     default @NotNull StandardProperties standardize() {

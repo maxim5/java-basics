@@ -1,5 +1,8 @@
 package io.spbx.util.func;
 
+import io.spbx.util.base.annotate.Stateless;
+
+@Stateless
 class TestingFunctions {
     public static boolean isPositive(int a) {
         return a > 0;

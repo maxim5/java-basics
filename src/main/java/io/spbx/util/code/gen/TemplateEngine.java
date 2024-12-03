@@ -1,14 +1,14 @@
 package io.spbx.util.code.gen;
 
 import com.google.common.collect.ImmutableMap;
-import io.spbx.util.base.BasicExceptions.IllegalStateExceptions;
+import io.spbx.util.base.error.BasicExceptions.IllegalStateExceptions;
 import io.spbx.util.code.gen.CompiledTemplate.Block;
 import io.spbx.util.code.gen.CompiledTemplate.CompiledDirective;
 import io.spbx.util.code.gen.CompiledTemplate.DirectiveBlock;
 import io.spbx.util.code.gen.CompiledTemplate.LiteralBlock;
-import io.spbx.util.collect.BasicIterables;
-import io.spbx.util.collect.BasicMaps;
-import io.spbx.util.collect.Streamer;
+import io.spbx.util.collect.iter.BasicIterables;
+import io.spbx.util.collect.map.BasicMaps;
+import io.spbx.util.collect.stream.Streamer;
 import io.spbx.util.func.Functions;
 import io.spbx.util.io.BasicFiles;
 import io.spbx.util.logging.Logger;
@@ -24,8 +24,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 
-import static io.spbx.util.base.BasicExceptions.newIllegalStateException;
-import static io.spbx.util.base.BasicExceptions.newInternalError;
+import static io.spbx.util.base.error.BasicExceptions.newIllegalStateException;
+import static io.spbx.util.base.error.BasicExceptions.newInternalError;
 import static io.spbx.util.code.gen.SkipTemplateException.newSkipTemplateException;
 
 public class TemplateEngine {
