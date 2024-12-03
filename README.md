@@ -4,7 +4,7 @@ Takes care of the boilerplate so that you don't have to.
 
 ## API
 
-### Concise [streams](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/Streamer.java)
+### Concise [streams](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/stream/Streamer.java)
 
 ```java
 Streamer.of(1, 2, 3, null).toArrayList();                 // [1, 2, 3, null]
@@ -22,7 +22,7 @@ Streamer.of(list).toAtMostTwo();                          // get 0, 1 or 2 eleme
 Streamer.of(array).toExactlyTwo();                        // get exactly 2 elements or throw
 ```
 
-### Non-verbose [exceptions](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/BasicExceptions.java)
+### Non-verbose [exceptions](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/error/BasicExceptions.java)
 
 ```java
 // Concise assertions
@@ -51,7 +51,7 @@ public Shell getAdminShell() {
 }
 ```
 
-### [`Pair`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/Pair.java), [`Triple`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/Triple.java) and other [`Tuple`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/Tuple.java)s
+### [`Pair`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/tuple/Pair.java), [`Triple`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/tuple/Triple.java) and other [`Tuple`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/tuple/Tuple.java)s
 
 ```java
 Pair.of(1, 2).mapFirst(i -> i * 3);                         // (3, 2)
@@ -62,7 +62,7 @@ OneOf.ofFirst(1).hasSecond();                               // false
 Pair.of(1, null).toOneOf();                                 // (1, null)
 ```
 
-### Convenient [builder](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/ListBuilder.java)s
+### Convenient [builder](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/list/ListBuilder.java)s
 
 ```java
 ListBuilder.of(1, 2, 3).add(4).addAll(5, 6).toArrayList();      // [1, 2, 3, 4, 5, 6]
@@ -74,7 +74,7 @@ MapBuilder.builder().put(1, 2).overwrite(1, 3).toTreeMap();     // {1: 3}
 MapBuilder.copyOf(map).overwrite(1, 2).bimaps().toGuavaBiMap(); // Guava BiMap
 ```
 
-### [`DataSize`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/DataSize.java) for size units (Kb, Mb, Gb, ...)
+### [`DataSize`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/lang/DataSize.java) for size units (Kb, Mb, Gb, ...)
 
 ```java
 DataSize.parse("123.0KB").toBytes();            // 125952
@@ -83,7 +83,7 @@ DataSize.ofKilobytes(50000).toString();         // 48.83Mb
 DataSize.ofGigabytes(1).toString(Unit.Byte);    // 1073741824b
 ```
 
-### [`Int128`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/Int128.java) for near native efficient 128-bit arithmetic
+### [`Int128`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/base/math/Int128.java) for near native efficient 128-bit arithmetic
 
 ```java
 Int128.from("9619122375485128076391017781203171")
@@ -110,7 +110,7 @@ BasicParsing.parseIntSafe(str, -1);                 // never throws, falls back 
 BasicParsing.parseLongSafe(str, 0);                 // never throws, falls back to 0
 ```
 
-### [`Tabular`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/Tabular.java) data formatting
+### [`Tabular`](https://github.com/maxim5/java-basics/blob/master/src/main/java/io/spbx/util/collect/tab/Tabular.java) data formatting
 
 ```java
 Tabular<String> tab = ArrayTabular.of(
