@@ -1,6 +1,7 @@
 package io.spbx.util.base.str;
 
-import io.spbx.util.base.annotate.NegativeIndexingSupported;
+import io.spbx.util.base.annotate.AllowPythonIndexing;
+import io.spbx.util.base.annotate.PyIndex;
 import io.spbx.util.base.error.RangeCheck;
 import io.spbx.util.base.error.RangeCheck.LowLevel;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,7 @@ import static io.spbx.util.base.error.RangeCheck.CLOSE_END_RANGE;
  * A mutable version of the {@link CharArray}.
  */
 public class MutableCharArray extends CharArray {
-    protected MutableCharArray(char @NotNull[] chars, int start, int end) {
+    protected MutableCharArray(char @NotNull[] chars, @PyIndex int start, @PyIndex int end) {
         super(chars, start, end);
     }
 
@@ -23,8 +24,8 @@ public class MutableCharArray extends CharArray {
         return new MutableCharArray(chars, 0, chars.length);
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull MutableCharArray wrap(char @NotNull[] chars, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull MutableCharArray wrap(char @NotNull[] chars, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(chars.length, wrap(chars)).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return new MutableCharArray(chars,
                                     LowLevel.translateIndex(start, chars.length),
@@ -35,8 +36,8 @@ public class MutableCharArray extends CharArray {
         return MutableCharArray.wrap(Arrays.copyOf(chars, chars.length));
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull MutableCharArray copyOf(char @NotNull[] chars, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull MutableCharArray copyOf(char @NotNull[] chars, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(chars.length, wrap(chars)).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return MutableCharArray.wrap(
             Arrays.copyOfRange(chars,
@@ -57,16 +58,16 @@ public class MutableCharArray extends CharArray {
         return array.mutableCopy();
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull MutableCharArray of(@NotNull String s, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull MutableCharArray of(@NotNull String s, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(s.length(), s).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return MutableCharArray.wrap(s.toCharArray(),
                                      LowLevel.translateIndex(start, s.length()),
                                      LowLevel.translateIndex(end, s.length()));
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull MutableCharArray of(@NotNull CharSequence s, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull MutableCharArray of(@NotNull CharSequence s, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(s.length(), s).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return MutableCharArray.of(s.toString(),
                                    LowLevel.translateIndex(start, s.length()),
@@ -102,26 +103,26 @@ public class MutableCharArray extends CharArray {
         return CharArray.wrap(chars, start, end);
     }
 
-    @NegativeIndexingSupported
-    public @NotNull MutableCharArray mutableSubstring(int start, int end) {
+    @AllowPythonIndexing
+    public @NotNull MutableCharArray mutableSubstring(@PyIndex int start, @PyIndex int end) {
         assert rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return MutableCharArray.wrap(chars, this.start + translateIndex(start), this.start + translateIndex(end));
     }
 
-    @NegativeIndexingSupported
-    public void sliceInPlace(int start, int end) {
+    @AllowPythonIndexing
+    public void sliceInPlace(@PyIndex int start, @PyIndex int end) {
         assert rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         this.end = this.start + translateIndex(end);
         this.start = this.start + translateIndex(start);
     }
 
-    @NegativeIndexingSupported
-    public void sliceFromInPlace(int start) {
+    @AllowPythonIndexing
+    public void sliceFromInPlace(@PyIndex int start) {
         sliceInPlace(start, length());
     }
 
-    @NegativeIndexingSupported
-    public void sliceUntilInPlace(int end) {
+    @AllowPythonIndexing
+    public void sliceUntilInPlace(@PyIndex int end) {
         sliceInPlace(0, end);
     }
 

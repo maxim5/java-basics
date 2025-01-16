@@ -1,8 +1,10 @@
 package io.spbx.util.base.str;
 
-import io.spbx.util.base.annotate.NegativeIndexingSupported;
+import io.spbx.util.base.annotate.AllowPythonIndexing;
+import io.spbx.util.base.annotate.PyIndex;
 import io.spbx.util.base.error.RangeCheck;
 import io.spbx.util.base.error.RangeCheck.LowLevel;
+import io.spbx.util.base.ops.CharOps;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,9 +34,9 @@ import static io.spbx.util.base.error.RangeCheck.CLOSE_END_RANGE;
  *
  * @see MutableCharArray
  */
-@NegativeIndexingSupported
+@AllowPythonIndexing
 public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
-    public static final CharArray EMPTY = CharArray.wrap(new char[0]);
+    public static final CharArray EMPTY = CharArray.wrap(CharOps.EMPTY_ARRAY);
 
     protected CharArray(char @NotNull[] chars, int start, int end) {
         super(chars, start, end);
@@ -46,8 +48,8 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
         return new CharArray(chars, 0, chars.length);
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull CharArray wrap(char @NotNull[] chars, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull CharArray wrap(char @NotNull[] chars, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(chars.length, wrap(chars)).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return new CharArray(chars,
                              LowLevel.translateIndex(start, chars.length),
@@ -58,8 +60,8 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
         return CharArray.wrap(Arrays.copyOf(chars, chars.length));
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull CharArray copyOf(char @NotNull[] chars, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull CharArray copyOf(char @NotNull[] chars, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(chars.length, wrap(chars)).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return CharArray.wrap(
             Arrays.copyOfRange(chars,
@@ -80,16 +82,16 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
         return CharArray.wrap(array.chars, array.start, array.end);
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull CharArray of(@NotNull String s, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull CharArray of(@NotNull String s, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(s.length(), s).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return CharArray.wrap(s.toCharArray(),
                               LowLevel.translateIndex(start, s.length()),
                               LowLevel.translateIndex(end, s.length()));
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull CharArray of(@NotNull CharSequence s, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull CharArray of(@NotNull CharSequence s, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(s.length(), s).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return CharArray.of(s.toString(),
                             LowLevel.translateIndex(start, s.length()),
@@ -112,25 +114,25 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
 
     /* Substring */
 
-    @NegativeIndexingSupported
-    public @NotNull CharArray substringFrom(int start) {
+    @AllowPythonIndexing
+    public @NotNull CharArray substringFrom(@PyIndex int start) {
         return substring(start, length());
     }
 
-    @NegativeIndexingSupported
-    public @NotNull CharArray substringUntil(int end) {
+    @AllowPythonIndexing
+    public @NotNull CharArray substringUntil(@PyIndex int end) {
         return substring(0, end);
     }
 
-    @NegativeIndexingSupported
-    public @NotNull CharArray substring(int start, int end) {
+    @AllowPythonIndexing
+    public @NotNull CharArray substring(@PyIndex int start, @PyIndex int end) {
         assert rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return CharArray.wrap(chars, translateIndex(start) + this.start, this.start + translateIndex(end));
     }
 
     @Override
-    @NegativeIndexingSupported
-    public @NotNull CharSequence subSequence(int start, int end) {
+    @AllowPythonIndexing
+    public @NotNull CharSequence subSequence(@PyIndex int start, @PyIndex int end) {
         return substring(start, end);
     }
 
@@ -194,13 +196,13 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
         return this.indexOf(CharArray.of(str));
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(@NotNull CharSequence str, int from) {
+    @AllowPythonIndexing
+    public int indexOf(@NotNull CharSequence str, @PyIndex int from) {
         return this.indexOf(CharArray.of(str), from);
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(@NotNull CharSequence str, int from, int def) {
+    @AllowPythonIndexing
+    public int indexOf(@NotNull CharSequence str, @PyIndex int from, int def) {
         return this.indexOf(CharArray.of(str), from, def);
     }
 
@@ -210,8 +212,8 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
         return this.indexOf(pattern, 0);
     }
 
-    @NegativeIndexingSupported
-    public @Nullable Matcher indexOf(@NotNull Pattern pattern, int from) {
+    @AllowPythonIndexing
+    public @Nullable Matcher indexOf(@NotNull Pattern pattern, @PyIndex int from) {
         assert rangeCheck(from, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         Matcher matcher = pattern.matcher(this);
         return matcher.find(translateIndex(from)) ? matcher : null;
@@ -223,13 +225,13 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
         return this.lastIndexOf(CharArray.of(str));
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(@NotNull CharSequence str, int from) {
+    @AllowPythonIndexing
+    public int lastIndexOf(@NotNull CharSequence str, @PyIndex int from) {
         return this.lastIndexOf(CharArray.of(str), from, -1);
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(@NotNull CharSequence str, int from, int def) {
+    @AllowPythonIndexing
+    public int lastIndexOf(@NotNull CharSequence str, @PyIndex int from, int def) {
         return this.lastIndexOf(CharArray.of(str), from, def);
     }
 
@@ -402,7 +404,8 @@ public class CharArray extends BaseCharBuf<CharArray> implements CharSequence {
         return this;
     }
 
-    @Override protected final @NotNull CharArray _wrap(char @NotNull[] chars, int start, int end) {
+    @AllowPythonIndexing
+    @Override protected final @NotNull CharArray _wrap(char @NotNull[] chars, @PyIndex int start, @PyIndex int end) {
         return CharArray.wrap(chars, start, end);
     }
 }

@@ -36,101 +36,144 @@ public class Int128JmhBenchmark {
     private static final List<BigInteger> BIGS_64 = DOUBLES_64.stream().map(Int128::toBigInteger).toList();
     private static final List<BigInteger> BIGS_128 = DOUBLES_128.stream().map(Int128::toBigInteger).toList();
 
-    @Benchmark public void Int128_add_64(Blackhole blackhole) {
+    @Benchmark
+    public void add_64_Int128(Blackhole blackhole) {
         for (Int128 x : DOUBLES_128)
             for (Int128 y : DOUBLES_64)
                 blackhole.consume(x.add(y));
     }
 
-    @Benchmark public void Int128_add_128(Blackhole blackhole) {
+    @Benchmark
+    public void add_128_Int128(Blackhole blackhole) {
         for (Int128 x : DOUBLES_128)
             for (Int128 y : DOUBLES_128)
                 blackhole.consume(x.add(y));
     }
 
-    @Benchmark public void BigInteger_add_64(Blackhole blackhole) {
+    @Benchmark
+    public void add_64_BigInteger(Blackhole blackhole) {
         for (BigInteger x : BIGS_128)
             for (BigInteger y : BIGS_64)
                 blackhole.consume(x.add(y));
     }
 
-    @Benchmark public void BigInteger_add_128(Blackhole blackhole) {
+    @Benchmark
+    public void add_128_BigInteger(Blackhole blackhole) {
         for (BigInteger x : BIGS_128)
             for (BigInteger y : BIGS_128)
                 blackhole.consume(x.add(y));
     }
 
-
-    @Benchmark public void Int128_subtract_64(Blackhole blackhole) {
+    @Benchmark
+    public void subtract_64_Int128(Blackhole blackhole) {
         for (Int128 x : DOUBLES_128)
             for (Int128 y : DOUBLES_64)
                 blackhole.consume(x.subtract(y));
     }
 
-    @Benchmark public void Int128_subtract_128(Blackhole blackhole) {
+    @Benchmark
+    public void subtract_128_Int128(Blackhole blackhole) {
         for (Int128 x : DOUBLES_128)
             for (Int128 y : DOUBLES_128)
                 blackhole.consume(x.subtract(y));
     }
 
-    @Benchmark public void BigInteger_subtract_64(Blackhole blackhole) {
+    @Benchmark
+    public void subtract_64_BigInteger(Blackhole blackhole) {
         for (BigInteger x : BIGS_128)
             for (BigInteger y : BIGS_64)
                 blackhole.consume(x.subtract(y));
     }
 
-    @Benchmark public void BigInteger_subtract_128(Blackhole blackhole) {
+    @Benchmark
+    public void subtract_128_BigInteger(Blackhole blackhole) {
         for (BigInteger x : BIGS_128)
             for (BigInteger y : BIGS_128)
                 blackhole.consume(x.subtract(y));
     }
 
-    @Benchmark public void Int128_multiply_64(Blackhole blackhole) {
+    @Benchmark
+    public void multiply_64_Int128(Blackhole blackhole) {
         for (Int128 x : DOUBLES_128)
             for (Int128 y : DOUBLES_64)
                 blackhole.consume(x.multiply(y));
     }
 
-    @Benchmark public void Int128_multiply_128(Blackhole blackhole) {
+    @Benchmark
+    public void multiply_128_Int128(Blackhole blackhole) {
         for (Int128 x : DOUBLES_128)
             for (Int128 y : DOUBLES_128)
                 blackhole.consume(x.multiply(y));
     }
 
-    @Benchmark public void BigInteger_multiply_64(Blackhole blackhole) {
+    @Benchmark
+    public void multiply_64_BigInteger(Blackhole blackhole) {
         for (BigInteger x : BIGS_128)
             for (BigInteger y : BIGS_64)
                 blackhole.consume(x.multiply(y));
     }
 
-    @Benchmark public void BigInteger_multiply_128(Blackhole blackhole) {
+    @Benchmark
+    public void multiply_128_BigInteger(Blackhole blackhole) {
         for (BigInteger x : BIGS_128)
             for (BigInteger y : BIGS_128)
                 blackhole.consume(x.multiply(y));
     }
 
-    @Benchmark public void Int128_divide_64(Blackhole blackhole) {
+    @Benchmark
+    public void divide_64_Int128(Blackhole blackhole) {
         for (Int128 x : DOUBLES_128)
             for (Int128 y : DOUBLES_64)
                 blackhole.consume(x.divide(y));
     }
 
-    @Benchmark public void Int128_divide_128(Blackhole blackhole) {
+    @Benchmark
+    public void divide_128_Int128(Blackhole blackhole) {
         for (Int128 x : DOUBLES_128)
             for (Int128 y : DOUBLES_128)
                 blackhole.consume(x.divide(y));
     }
 
-    @Benchmark public void BigInteger_divide_64(Blackhole blackhole) {
+    @Benchmark
+    public void divide_64_BigInteger(Blackhole blackhole) {
         for (BigInteger x : BIGS_128)
             for (BigInteger y : BIGS_64)
                 blackhole.consume(x.divide(y));
     }
 
-    @Benchmark public void BigInteger_divide_128(Blackhole blackhole) {
+    @Benchmark
+    public void divide_128_BigInteger(Blackhole blackhole) {
         for (BigInteger x : BIGS_128)
             for (BigInteger y : BIGS_128)
                 blackhole.consume(x.divide(y));
+    }
+
+    @Benchmark
+    public void remainder_64_Int128(Blackhole blackhole) {
+        for (Int128 x : DOUBLES_128)
+            for (Int128 y : DOUBLES_64)
+                blackhole.consume(x.remainder(y));
+    }
+
+    @Benchmark
+    public void remainder_128_Int128(Blackhole blackhole) {
+        for (Int128 x : DOUBLES_128)
+            for (Int128 y : DOUBLES_128)
+                blackhole.consume(x.remainder(y));
+    }
+
+    @Benchmark
+    public void remainder_64_BigInteger(Blackhole blackhole) {
+        for (BigInteger x : BIGS_128)
+            for (BigInteger y : BIGS_64)
+                blackhole.consume(x.remainder(y));
+    }
+
+    @Benchmark
+    public void remainder_128_BigInteger(Blackhole blackhole) {
+        for (BigInteger x : BIGS_128)
+            for (BigInteger y : BIGS_128)
+                blackhole.consume(x.remainder(y));
     }
 
     public static void main(String[] args) throws RunnerException {

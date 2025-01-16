@@ -4,6 +4,7 @@ import io.spbx.util.base.annotate.CheckReturnValue;
 import io.spbx.util.base.annotate.Pure;
 import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.func.CharPredicate;
+import io.spbx.util.func.IntPredicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,6 +103,10 @@ public class BasicStrings {
         return stripLeft(stripRight(str, predicate), predicate);
     }
 
+    public static boolean matchChars(@NotNull CharSequence str, @NotNull IntPredicate predicate) {
+        return str.chars().allMatch(predicate);
+    }
+
     /* Null or empty */
 
     public static @NotNull String nonNull(@Nullable String str) {
@@ -130,6 +135,14 @@ public class BasicStrings {
 
     public static boolean isNotEmpty(@Nullable CharSequence str) {
         return !isEmpty(str);
+    }
+
+    public static @NotNull String emptyIfNull(@Nullable String str) {
+        return str == null ? "" : str;
+    }
+
+    public static <S extends CharSequence> @Nullable S nullIfEmpty(@Nullable S str) {
+        return isEmpty(str) ? null : str;
     }
 
     public static @NotNull String firstNotEmpty(@Nullable String first, @Nullable String second) {

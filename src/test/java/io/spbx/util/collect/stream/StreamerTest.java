@@ -50,6 +50,11 @@ public class StreamerTest {
         assertStream(Streamer.of(iterableOf())).isEmpty();
         assertStream(Streamer.of(iterableOf(1))).containsExactlyInOrder(1);
         assertStream(Streamer.of(iterableOf(NULL, NULL))).containsExactlyInOrder(NULL, NULL);
+
+        assertStream(Streamer.of(NULL_ITERATOR)).isEmpty();
+        assertStream(Streamer.of(iteratorOf())).isEmpty();
+        assertStream(Streamer.of(iteratorOf(1))).containsExactlyInOrder(1);
+        assertStream(Streamer.of(iteratorOf(NULL, NULL))).containsExactlyInOrder(NULL, NULL);
     }
 
     @Test

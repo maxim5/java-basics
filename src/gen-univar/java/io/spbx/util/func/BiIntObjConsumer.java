@@ -12,7 +12,7 @@ import java.util.function.BiConsumer;
  * @see BiIntConsumer
  */
 @FunctionalInterface
-@Generated(value = "Bi$Type$ObjConsumer.java", date = "2024-12-02T15:53:08.783586900Z")
+@Generated(value = "Bi$Type$ObjConsumer.java", date = "2025-01-14T10:07:33.500127300Z")
 public interface BiIntObjConsumer<T> extends BiConsumer<Integer, T> {
     /**
      * Performs this operation on the arguments.

@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +43,8 @@ public class TestingBasics {
     public static final List<Integer> NULL_LIST = null;
     public static final Set<Integer> NULL_SET = null;
     public static final Iterable<Integer> NULL_ITERABLE = null;
+    public static final Iterator<Integer> NULL_ITERATOR = null;
+    public static final Spliterator<Integer> NULL_SPLITERATOR = null;
     public static final Collection<Integer> NULL_COLLECTION = null;
     public static final Map<Integer, Integer> NULL_MAP = null;
     public static final Stream<Integer> NULL_STREAM = null;
@@ -63,6 +66,10 @@ public class TestingBasics {
 
     public static @SafeVarargs <T> @NotNull TreeSet<T> sortedSetOf(@NotNull T @NotNull... items) {
         return new TreeSet<>(listOf(items));
+    }
+
+    public static @SafeVarargs <T> @NotNull Collection<T> collectionOf(@Nullable T @NotNull... items) {
+        return new LinkedList<>(listOf(items));
     }
 
     public static @SafeVarargs <T> @NotNull Iterable<T> iterableOf(@Nullable T @NotNull... items) {

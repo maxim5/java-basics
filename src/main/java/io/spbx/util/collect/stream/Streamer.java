@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -28,6 +29,14 @@ public final class Streamer<E> extends AbstractStreamer<E, Streamer<E>> implemen
 
     /* `Streamer` static factory methods */
 
+    public static <E> @NotNull Streamer<E> of() {
+        return of(BasicStreams.empty());
+    }
+
+    public static <E> @NotNull Streamer<E> of(@Nullable E item) {
+        return of(BasicStreams.single(item));
+    }
+
     public static <E> @NotNull Streamer<E> of(@Nullable Stream<E> stream) {
         return new Streamer<>(BasicStreams.emptyIfNull(stream));
     }
@@ -36,12 +45,8 @@ public final class Streamer<E> extends AbstractStreamer<E, Streamer<E>> implemen
         return of(BasicStreams.streamOf(items));
     }
 
-    public static <E> @NotNull Streamer<E> of() {
-        return of(BasicStreams.empty());
-    }
-
-    public static <E> @NotNull Streamer<E> of(@Nullable E item) {
-        return of(BasicStreams.single(item));
+    public static <E> @NotNull Streamer<E> of(@Nullable Iterator<@Nullable E> items) {
+        return of(BasicStreams.streamOf(items));
     }
 
     public static @SafeVarargs <E> @NotNull Streamer<E> of(@Nullable E @Nullable... items) {

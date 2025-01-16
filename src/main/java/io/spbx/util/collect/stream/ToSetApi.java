@@ -1,6 +1,7 @@
 package io.spbx.util.collect.stream;
 
 import com.google.common.collect.ImmutableSet;
+import io.spbx.util.collect.set.ImmutableLinkedHashSet;
 import io.spbx.util.collect.stream.ToApiCommon.AcceptsNulls;
 import io.spbx.util.collect.stream.ToApiCommon.DoesNotAcceptNulls;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,11 @@ public interface ToSetApi<E> extends ToStreamApi<E> {
     @DoesNotAcceptNulls
     default @NotNull TreeSet<E> toTreeSet() {
         return with(toStream(), assertNonNull("toTreeSet()")).collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    @AcceptsNulls
+    default @NotNull ImmutableLinkedHashSet<E> toBasicsImmutableLinkedHashSet() {
+        return toStream().collect(ImmutableLinkedHashSet.toImmutableLinkedHashSet());
     }
 
     @DoesNotAcceptNulls

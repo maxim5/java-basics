@@ -11,10 +11,11 @@ import java.util.function.BiFunction;
  * @see java.util.function.BiFunction
  */
 @FunctionalInterface
-@Generated(value = "Bi$Left$$Right$To$Left$Function.java", date = "2024-11-26T15:08:01.477872300Z")
+@Generated(value = "Bi$Left$$Right$To$Left$Function.java", date = "2025-01-14T10:38:22.045301100Z")
 public interface BiDoubleIntToDoubleFunction extends
         BiFunction<Double, Integer, Double>,
-        BiToDoubleFunction<Double, Integer> {
+        BiToDoubleFunction<Double, Integer>,
+        BiDoubleIntFunction<Double> {
     /**
      * Applies this function to the given argument.
      */
@@ -22,11 +23,16 @@ public interface BiDoubleIntToDoubleFunction extends
 
     @Override
     default double applyToDouble(Double left, Integer right) {
-        return applyToDouble(left, right);
+        return applyToDouble((double) left, (int) right);
     }
 
     @Override
     default Double apply(Double left, Integer right) {
+        return applyToDouble((double) left, (int) right);
+    }
+
+    @Override
+    default Double apply(double left, int right) {
         return applyToDouble(left, right);
     }
 }

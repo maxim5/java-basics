@@ -21,7 +21,7 @@ import java.util.stream.LongStream;
  * @see Optional
  */
 @Immutable
-@Generated(value = "Optional$Type$.java", date = "2024-12-02T15:53:08.708570Z")
+@Generated(value = "Optional$Type$.java", date = "2025-01-14T10:07:33.436113500Z")
 public final class OptionalLong {
     private static final OptionalLong EMPTY = new OptionalLong(LongOps.ZERO);
 

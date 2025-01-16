@@ -17,7 +17,7 @@ import javax.annotation.processing.Generated;
  * @see java.util.function.IntSupplier
  */
 @FunctionalInterface
-@Generated(value = "Throw$Type$Supplier.java", date = "2024-12-02T15:53:08.813593500Z")
+@Generated(value = "Throw$Type$Supplier.java", date = "2025-01-14T10:07:33.529133100Z")
 public interface ThrowIntSupplier<E extends Throwable> {
     /**
      * Gets a result, potentially throwing an exception.

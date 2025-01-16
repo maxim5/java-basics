@@ -15,7 +15,7 @@ import java.util.function.ToIntFunction;
  * @see ScopeFunctions
  */
 @Stateless
-@Generated(value = "$Type$ScopeFunctions.java", date = "2024-12-02T15:53:08.761582400Z")
+@Generated(value = "$Type$ScopeFunctions.java", date = "2025-01-14T10:07:33.482123700Z")
 public class IntScopeFunctions {
     /**
      * Pipes the input {@code instance} argument through and calls the specified {@link IntConsumer} {@code action}.
@@ -87,5 +87,17 @@ public class IntScopeFunctions {
             return action.applyAsInt(instance);
         }
         return 0;
+    }
+
+    /**
+     * Pipes the input {@code instance} argument through and calls the specified {@link IntPredicate} {@code predicate}.
+     * <p>
+     * Convenient for one-liners:
+     * {@snippet lang = "java":
+     *     return test(count(), val -> 0 < val && val < 2);
+     * }
+     */
+    public static boolean test(int instance, @NotNull IntPredicate predicate) {
+        return predicate.test(instance);
     }
 }

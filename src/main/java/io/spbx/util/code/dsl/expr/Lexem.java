@@ -1,6 +1,7 @@
 package io.spbx.util.code.dsl.expr;
 
 import io.spbx.util.base.str.CharArray;
+import io.spbx.util.base.str.Regex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +29,7 @@ public record Lexem(@NotNull CharArray value) {
     }
 
     boolean isIdentifier() {
-        return IDENTIFIER_PATTERN.matcher(value).matches();
+        return Regex.on(value).matches(IDENTIFIER_PATTERN);
     }
 
     public @NotNull Identifier toIdentifier(@NotNull SyntaxOptions options) {
@@ -36,7 +37,7 @@ public record Lexem(@NotNull CharArray value) {
     }
 
     boolean isNumeric() {
-        return NUMERIC_PATTERN.matcher(value).matches();
+        return Regex.on(value).matches(NUMERIC_PATTERN);
     }
 
     public @NotNull Numeric toNumeric(@NotNull SyntaxOptions options) {

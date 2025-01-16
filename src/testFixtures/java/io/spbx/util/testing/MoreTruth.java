@@ -15,18 +15,25 @@ import io.spbx.util.base.annotate.CanIgnoreReturnValue;
 import io.spbx.util.base.annotate.CheckReturnValue;
 import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.base.error.Unchecked;
+import io.spbx.util.collect.iter.BasicIterables;
 import io.spbx.util.collect.stream.Streamer;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.RegEx;
 import java.lang.reflect.Constructor;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static io.spbx.util.base.lang.EasyCast.castAny;
 import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Stateless
 public class MoreTruth {
@@ -48,6 +55,24 @@ public class MoreTruth {
     public static <T> @NotNull IterableSubject assertThat(@Nullable Iterator<T> iterator) {
         Iterable<T> iterable = iterator == null ? null : () -> iterator;
         return Truth.assertThat(iterable);
+    }
+
+    @CheckReturnValue
+    public static <T> @NotNull MoreListSubject<T> assertThat(@Nullable List<T> list) {
+        return Truth.assertAbout(metadata -> new CustomSubjectBuilder(metadata) {
+            public @NotNull MoreListSubject<T> that() {
+                return new MoreListSubject<>(metadata, list);
+            }
+        }).that();
+    }
+
+    @CheckReturnValue
+    public static <T> @NotNull MoreSetSubject<T> assertThat(@Nullable Set<T> set) {
+        return Truth.assertAbout(metadata -> new CustomSubjectBuilder(metadata) {
+            public @NotNull MoreSetSubject<T> that() {
+                return new MoreSetSubject<>(metadata, set);
+            }
+        }).that();
     }
 
     @CheckReturnValue
@@ -147,6 +172,67 @@ public class MoreTruth {
         }
     }
 
+    public static class MoreListSubject<E> extends IterableSubject {
+        private final FailureMetadata metadata;
+        private final List<E> list;
+
+        protected MoreListSubject(@Nullable FailureMetadata metadata, @Nullable List<E> list) {
+            super(metadata, list);
+            this.metadata = metadata;
+            this.list = list;
+        }
+
+        public @NotNull MoreListSubject<E> isImmutable() {
+            Truth.assertThat(list).isNotNull();
+            Truth.assertThat(BasicIterables.isImmutable(list)).isTrue();
+            if (!list.isEmpty()) {
+                E item = list.getFirst();
+                assertThrows(Exception.class, () -> list.add(item));
+                assertThrows(Exception.class, () -> list.addFirst(item));
+                assertThrows(Exception.class, () -> list.addLast(item));
+                assertThrows(Exception.class, () -> list.addAll(Collections.singleton(item)));
+                assertThrows(Exception.class, () -> list.addAll(0, Collections.singleton(item)));
+                assertThrows(Exception.class, () -> list.remove(item));
+                assertThrows(Exception.class, () -> list.removeFirst());
+                assertThrows(Exception.class, () -> list.removeLast());
+                assertThrows(Exception.class, () -> list.removeAll(Collections.singleton(item)));
+                assertThrows(Exception.class, () -> list.replaceAll(e -> item));
+                assertThrows(Exception.class, () -> list.set(0, item));
+                assertThrows(Exception.class, () -> list.clear());
+                assertThrows(Exception.class, () -> list.iterator().remove());
+                assertThrows(Exception.class, () -> list.listIterator().remove());
+            }
+            return this;
+        }
+    }
+
+    public static class MoreSetSubject<E> extends IterableSubject {
+        private final FailureMetadata metadata;
+        private final Set<E> set;
+
+        protected MoreSetSubject(@Nullable FailureMetadata metadata, @Nullable Set<E> set) {
+            super(metadata, set);
+            this.metadata = metadata;
+            this.set = set;
+        }
+
+        public @NotNull MoreSetSubject<E> isImmutable() {
+            Truth.assertThat(set).isNotNull();
+            Truth.assertThat(BasicIterables.isImmutable(set)).isTrue();
+            if (!set.isEmpty()) {
+                E item = set.iterator().next();
+                assertThrows(Exception.class, () -> set.add(item));
+                assertThrows(Exception.class, () -> set.addAll(Collections.singleton(item)));
+                assertThrows(Exception.class, () -> set.remove(item));
+                assertThrows(Exception.class, () -> set.removeIf(e -> true));
+                assertThrows(Exception.class, () -> set.removeAll(Collections.singleton(item)));
+                assertThrows(Exception.class, () -> set.clear());
+                assertThrows(Exception.class, () -> set.iterator().remove());
+            }
+            return this;
+        }
+    }
+
     public static class MoreMapSubject<K, V> extends MapSubject {
         private final FailureMetadata metadata;
         private final Map<K, V> map;
@@ -179,7 +265,7 @@ public class MoreTruth {
         }
 
         @CanIgnoreReturnValue
-        public @NotNull MoreThrowableSubject hasMessageMatching(@Nullable String regex) {
+        public @NotNull MoreThrowableSubject hasMessageMatching(@Nullable @RegEx @Language("RegExp") String regex) {
             hasMessageThat().matches(regex);
             return this;
         }

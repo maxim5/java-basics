@@ -7,7 +7,7 @@ import java.util.function.Function;
  * Represents a function that produces a primitive {@code long}-valued result.
  */
 @FunctionalInterface
-@Generated(value = "To$Type$Function.java", date = "2024-12-02T15:53:08.825596700Z")
+@Generated(value = "To$Type$Function.java", date = "2025-01-14T10:07:33.539136500Z")
 public interface ToLongFunction<T> extends Function<T, Long> {
     /**
      * Applies this function to the given argument.

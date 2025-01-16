@@ -1,8 +1,10 @@
 package io.spbx.util.base.str;
 
-import io.spbx.util.base.annotate.NegativeIndexingSupported;
+import io.spbx.util.base.annotate.AllowPythonIndexing;
+import io.spbx.util.base.annotate.PyIndex;
 import io.spbx.util.base.error.RangeCheck;
 import io.spbx.util.base.error.RangeCheck.LowLevel;
+import io.spbx.util.base.ops.ByteOps;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
@@ -11,9 +13,9 @@ import java.util.Arrays;
 import static io.spbx.util.base.error.RangeCheck.BEFORE_TRANSLATION;
 import static io.spbx.util.base.error.RangeCheck.CLOSE_END_RANGE;
 
-@NegativeIndexingSupported
+@AllowPythonIndexing
 public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharSequence {
-    public static final AsciiByteArray EMPTY = AsciiByteArray.wrap(new byte[0]);
+    public static final AsciiByteArray EMPTY = AsciiByteArray.wrap(ByteOps.EMPTY_ARRAY);
 
     protected AsciiByteArray(byte @NotNull[] bytes, int start, int end) {
         super(bytes, start, end);
@@ -25,8 +27,8 @@ public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharS
         return new AsciiByteArray(bytes, 0, bytes.length);
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull AsciiByteArray wrap(byte @NotNull[] bytes, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull AsciiByteArray wrap(byte @NotNull[] bytes, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(bytes.length, wrap(bytes)).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return new AsciiByteArray(bytes,
                                   LowLevel.translateIndex(start, bytes.length),
@@ -37,8 +39,8 @@ public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharS
         return AsciiByteArray.wrap(Arrays.copyOf(bytes, bytes.length));
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull AsciiByteArray copyOf(byte @NotNull[] bytes, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull AsciiByteArray copyOf(byte @NotNull[] bytes, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(bytes.length, wrap(bytes)).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return AsciiByteArray.wrap(
             Arrays.copyOfRange(bytes,
@@ -59,16 +61,16 @@ public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharS
         return AsciiByteArray.wrap(array.bytes, array.start, array.end);
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull AsciiByteArray of(@NotNull String s, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull AsciiByteArray of(@NotNull String s, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(s.length(), s).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return AsciiByteArray.wrap(s.getBytes(StandardCharsets.US_ASCII),
                                    LowLevel.translateIndex(start, s.length()),
                                    LowLevel.translateIndex(end, s.length()));
     }
 
-    @NegativeIndexingSupported
-    public static @NotNull AsciiByteArray of(@NotNull CharSequence s, int start, int end) {
+    @AllowPythonIndexing
+    public static @NotNull AsciiByteArray of(@NotNull CharSequence s, @PyIndex int start, @PyIndex int end) {
         assert RangeCheck.with(s.length(), s).rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return AsciiByteArray.of(s.toString(),
                                  LowLevel.translateIndex(start, s.length()),
@@ -86,32 +88,32 @@ public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharS
     /* Chars access */
 
     @Override
-    @NegativeIndexingSupported
-    public char charAt(int index) {
+    @AllowPythonIndexing
+    public char charAt(@PyIndex int index) {
         return (char) byteAt(index);
     }
 
     /* Substring */
 
-    @NegativeIndexingSupported
-    public @NotNull AsciiByteArray substringFrom(int start) {
+    @AllowPythonIndexing
+    public @NotNull AsciiByteArray substringFrom(@PyIndex int start) {
         return substring(start, length());
     }
 
-    @NegativeIndexingSupported
-    public @NotNull AsciiByteArray substringUntil(int end) {
+    @AllowPythonIndexing
+    public @NotNull AsciiByteArray substringUntil(@PyIndex int end) {
         return substring(0, end);
     }
 
-    @NegativeIndexingSupported
-    public @NotNull AsciiByteArray substring(int start, int end) {
+    @AllowPythonIndexing
+    public @NotNull AsciiByteArray substring(@PyIndex int start, @PyIndex int end) {
         assert rangeCheck(start, end, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         return AsciiByteArray.wrap(bytes, translateIndex(start) + this.start, this.start + translateIndex(end));
     }
 
     @Override
-    @NegativeIndexingSupported
-    public @NotNull CharSequence subSequence(int start, int end) {
+    @AllowPythonIndexing
+    public @NotNull CharSequence subSequence(@PyIndex int start, @PyIndex int end) {
         return substring(start, end);
     }
 
@@ -168,7 +170,8 @@ public class AsciiByteArray extends BaseByteBuf<AsciiByteArray> implements CharS
         return this;
     }
 
-    @Override protected @NotNull AsciiByteArray _wrap(byte @NotNull[] bytes, int start, int end) {
+    @AllowPythonIndexing
+    @Override protected @NotNull AsciiByteArray _wrap(byte @NotNull[] bytes, @PyIndex int start, @PyIndex int end) {
         return AsciiByteArray.wrap(bytes, start, end);
     }
 }

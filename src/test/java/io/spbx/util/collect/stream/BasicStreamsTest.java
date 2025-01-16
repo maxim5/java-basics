@@ -27,11 +27,13 @@ public class BasicStreamsTest {
 
     @Test
     public void streamOf_arrays_or_iterables() {
+        assertThat(BasicStreams.streamOf(NULL_ARRAY)).isEmpty();
         assertThat(BasicStreams.streamOf(arrayOf())).isEmpty();
         assertThat(BasicStreams.streamOf(arrayOf(1))).containsExactly(1);
         assertThat(BasicStreams.streamOf(1, 2)).containsExactly(1, 2);
         assertThat(BasicStreams.streamOf(NULL, NULL)).containsExactly(null, null);
 
+        assertThat(BasicStreams.streamOf(NULL_ITERABLE)).isEmpty();
         assertThat(BasicStreams.streamOf(iterableOf())).isEmpty();
         assertThat(BasicStreams.streamOf(iterableOf(1))).containsExactly(1);
         assertThat(BasicStreams.streamOf(iterableOf(1, 2))).containsExactly(1, 2);
@@ -69,11 +71,13 @@ public class BasicStreamsTest {
 
     @Test
     public void streamOf_iterators() {
+        assertThat(BasicStreams.streamOf(NULL_ITERATOR)).isEmpty();
         assertThat(BasicStreams.streamOf(iteratorOf())).isEmpty();
         assertThat(BasicStreams.streamOf(iteratorOf(1))).containsExactly(1);
         assertThat(BasicStreams.streamOf(iteratorOf(1, 2))).containsExactly(1, 2);
         assertThat(BasicStreams.streamOf(iteratorOf(NULL, NULL))).containsExactly(null, null);
 
+        assertThat(BasicStreams.streamOf(NULL_SPLITERATOR)).isEmpty();
         assertThat(BasicStreams.streamOf(spliteratorOf())).isEmpty();
         assertThat(BasicStreams.streamOf(spliteratorOf(1))).containsExactly(1);
         assertThat(BasicStreams.streamOf(spliteratorOf(1, 2))).containsExactly(1, 2);

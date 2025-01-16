@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ import static io.spbx.util.func.ScopeFunctions.also;
 @Pure
 @CheckReturnValue
 public class BasicMaps {
-    /* Standard `Map` factory methods */
+    /* Mutable `Map` */
 
     public static <K, V> @NotNull HashMap<K, V> newMutableMap() {
         return new HashMap<>();
@@ -34,10 +35,6 @@ public class BasicMaps {
 
     public static <K, V> @NotNull HashMap<K, V> newMutableMap(int size) {
         return new HashMap<>(size);
-    }
-
-    public static <K, V> @NotNull HashMap<K, V> newMutableMap(@Nullable Map<K, V> map) {
-        return map != null ? new HashMap<>(map) : newMutableMap();
     }
 
     public static <K, V> @NotNull HashMap<K, V> mutableMapOf(@Nullable K key, @Nullable V val) {
@@ -62,16 +59,18 @@ public class BasicMaps {
         return also(newMutableMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
     }
 
+    public static <K, V> @NotNull HashMap<K, V> mutableMapOf(@Nullable Map<K, V> map) {
+        return map != null ? new HashMap<>(map) : newMutableMap();
+    }
+
+    /* Mutable ordered `Map` */
+
     public static <K, V> @NotNull LinkedHashMap<K, V> newOrderedMap() {
         return new LinkedHashMap<>();
     }
 
     public static <K, V> @NotNull LinkedHashMap<K, V> newOrderedMap(int size) {
         return new LinkedHashMap<>(size);
-    }
-
-    public static <K, V> @NotNull LinkedHashMap<K, V> newOrderedMap(@Nullable Map<K, V> map) {
-        return map != null ? new LinkedHashMap<>(map) : newOrderedMap();
     }
 
     public static <K, V> @NotNull LinkedHashMap<K, V> orderedMapOf(@Nullable K key, @Nullable V val) {
@@ -96,16 +95,18 @@ public class BasicMaps {
         return also(newOrderedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
     }
 
+    public static <K, V> @NotNull LinkedHashMap<K, V> orderedMapOf(@Nullable Map<K, V> map) {
+        return map != null ? new LinkedHashMap<>(map) : newOrderedMap();
+    }
+
+    /* Mutable concurrent `Map` */
+
     public static <K, V> @NotNull ConcurrentHashMap<K, V> newConcurrentMap() {
         return new ConcurrentHashMap<>();
     }
 
     public static <K, V> @NotNull ConcurrentHashMap<K, V> newConcurrentMap(int size) {
         return new ConcurrentHashMap<>(size);
-    }
-
-    public static <K, V> @NotNull ConcurrentHashMap<K, V> newConcurrentMap(@Nullable Map<K, V> map) {
-        return map != null ? new ConcurrentHashMap<>(map) : newConcurrentMap();
     }
 
     public static <K, V> @NotNull ConcurrentHashMap<K, V> concurrentMapOf(@NotNull K key, @NotNull V val) {
@@ -130,12 +131,18 @@ public class BasicMaps {
         return also(newConcurrentMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
     }
 
+    public static <K, V> @NotNull ConcurrentHashMap<K, V> concurrentMapOf(@Nullable Map<K, V> map) {
+        return map != null ? new ConcurrentHashMap<>(map) : newConcurrentMap();
+    }
+
+    /* Mutable sorted `Map` */
+
     public static <K extends Comparable<K>, V> @NotNull TreeMap<K, V> newSortedMap() {
         return new TreeMap<>();
     }
 
-    public static <K extends Comparable<K>, V> @NotNull TreeMap<K, V> newSortedMap(@Nullable Map<K, V> map) {
-        return map != null ? new TreeMap<>(map) : newSortedMap();
+    public static <K, V> @NotNull TreeMap<K, V> newSortedMap(@NotNull Comparator<? super K> comparator) {
+        return new TreeMap<>(comparator);
     }
 
     public static <K extends Comparable<K>, V> @NotNull TreeMap<K, V> sortedMapOf(@NotNull K key, @NotNull V val) {
@@ -158,6 +165,10 @@ public class BasicMaps {
                                                                                   @NotNull K key3, @NotNull V val3,
                                                                                   @NotNull K key4, @NotNull V val4) {
         return also(newSortedMap(), map -> putAll(map, key1, val1, key2, val2, key3, val3, key4, val4));
+    }
+
+    public static <K extends Comparable<K>, V> @NotNull TreeMap<K, V> sortedMapOf(@Nullable Map<K, V> map) {
+        return map != null ? new TreeMap<>(map) : newSortedMap();
     }
 
     /* Conversions to `Map` */

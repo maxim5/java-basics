@@ -219,19 +219,19 @@ public class ListBuilderTest {
             boolean hasNulls = streamOf(expected).anyMatch(Objects::isNull);
 
             if (hasNulls) {
-                assertThrows(AssertionError.class, builder::toList);
                 assertThrows(AssertionError.class, builder::toGuavaImmutableList);
             } else {
-                assertThat(builder.toList()).containsExactlyElementsIn(expected).inOrder();
                 assertThat(builder.toGuavaImmutableList()).containsExactlyElementsIn(expected).inOrder();
             }
 
+            assertThat(builder.toList()).containsExactlyElementsIn(expected).inOrder();
             assertThat(builder.toList(() -> new LinkedList<>())).containsExactlyElementsIn(expected).inOrder();
             assertThat(builder.toArrayList()).containsExactlyElementsIn(expected).inOrder();
             assertThat(builder.toBasicsMutableArray()).containsExactlyElementsIn(expected).inOrder();
             assertThat(builder.toBasicsImmutableArray()).containsExactlyElementsIn(expected).inOrder();
             assertThat(builder.toBasicsImmutableArrayList()).containsExactlyElementsIn(expected).inOrder();
             assertThat(builder.toBasicsTuple()).containsExactlyElementsIn(expected).inOrder();
+            assertThat(builder.toDistinctList()).containsExactlyElementsIn(setOf(expected)).inOrder();
             assertThat(builder.toNativeArray()).asList().containsExactlyElementsIn(expected).inOrder();
             assertThat(builder.toNativeArray(len -> castAny(new Object[len]))).asList().containsExactlyElementsIn(expected).inOrder();
         }

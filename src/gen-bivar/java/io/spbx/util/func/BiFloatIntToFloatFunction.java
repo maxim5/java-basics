@@ -11,10 +11,11 @@ import java.util.function.BiFunction;
  * @see java.util.function.BiFunction
  */
 @FunctionalInterface
-@Generated(value = "Bi$Left$$Right$To$Left$Function.java", date = "2024-11-26T15:08:01.477872300Z")
+@Generated(value = "Bi$Left$$Right$To$Left$Function.java", date = "2025-01-14T10:38:22.045301100Z")
 public interface BiFloatIntToFloatFunction extends
         BiFunction<Float, Integer, Float>,
-        BiToFloatFunction<Float, Integer> {
+        BiToFloatFunction<Float, Integer>,
+        BiFloatIntFunction<Float> {
     /**
      * Applies this function to the given argument.
      */
@@ -22,11 +23,16 @@ public interface BiFloatIntToFloatFunction extends
 
     @Override
     default float applyToFloat(Float left, Integer right) {
-        return applyToFloat(left, right);
+        return applyToFloat((float) left, (int) right);
     }
 
     @Override
     default Float apply(Float left, Integer right) {
+        return applyToFloat((float) left, (int) right);
+    }
+
+    @Override
+    default Float apply(float left, int right) {
         return applyToFloat(left, right);
     }
 }

@@ -2,6 +2,7 @@ package io.spbx.util.collect.list;
 
 import com.google.common.collect.Lists;
 import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.testing.MoreTruth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
@@ -15,38 +16,44 @@ import static io.spbx.util.testing.TestingBasics.*;
 
 @Tag("fast")
 public class ImmutableArrayListTest {
+    private static final Integer NULL = null;
+
     @Test
     public void arrayList_of_simple_not_null_items() {
         assertArrayList(ImmutableArrayList.of()).isEmpty();
         assertArrayList(ImmutableArrayList.of(1)).containsExactly(1);
         assertArrayList(ImmutableArrayList.of(1, 2)).containsExactly(1, 2);
         assertArrayList(ImmutableArrayList.of(1, 2, 3)).containsExactly(1, 2, 3);
+        assertArrayList(ImmutableArrayList.of(1, 2, 3, 4, 5, 6)).containsExactly(1, 2, 3, 4, 5, 6);
     }
 
     @Test
     public void arrayList_of_simple_null_items() {
-        assertArrayList(ImmutableArrayList.of(null)).containsExactly((Object) null);
-        assertArrayList(ImmutableArrayList.of(1, null)).containsExactly(1, null);
-        assertArrayList(ImmutableArrayList.of(null, null)).containsExactly(null, null);
+        assertArrayList(ImmutableArrayList.of(NULL)).containsExactly(NULL);
+        assertArrayList(ImmutableArrayList.of(1, NULL)).containsExactly(1, NULL);
+        assertArrayList(ImmutableArrayList.of(NULL, NULL)).containsExactly(NULL, NULL);
+        assertArrayList(ImmutableArrayList.of(1, 2, NULL)).containsExactly(1, 2, NULL);
+        assertArrayList(ImmutableArrayList.of(1, 2, 3, NULL)).containsExactly(1, 2, 3, NULL);
     }
 
     @Test
     public void copyOf_simple() {
-        assertArrayList(ImmutableArrayList.copyOf(1, 2, 3, 4)).containsExactly(1, 2, 3, 4);
+        assertArrayList(ImmutableArrayList.copyOf(arrayOf(1, 2, 3, 4))).containsExactly(1, 2, 3, 4);
         assertArrayList(ImmutableArrayList.copyOf(listOf(1, 2, 3, 4))).containsExactly(1, 2, 3, 4);
         assertArrayList(ImmutableArrayList.copyOf(iterableOf(1, 2, 3, 4))).containsExactly(1, 2, 3, 4);
+        assertArrayList(ImmutableArrayList.copyOf(iteratorOf(1, 2, 3, 4))).containsExactly(1, 2, 3, 4);
     }
 
     @Test
     public void subList_simple() {
-        assertArrayList(ImmutableArrayList.copyOf(1, 2, 3).subList(0, 0)).isEmpty();
-        assertArrayList(ImmutableArrayList.copyOf(1, 2, 3).subList(0, 1)).containsExactly(1);
-        assertArrayList(ImmutableArrayList.copyOf(1, 2, 3).subList(1, 1)).isEmpty();
-        assertArrayList(ImmutableArrayList.copyOf(1, 2, 3).subList(1, 2)).containsExactly(2);
-        assertArrayList(ImmutableArrayList.copyOf(1, 2, 3).subList(0, 2)).containsExactly(1, 2);
-        assertArrayList(ImmutableArrayList.copyOf(1, 2, 3).subList(2, 3)).containsExactly(3);
-        assertArrayList(ImmutableArrayList.copyOf(1, 2, 3).subList(3, 3)).isEmpty();
-        assertArrayList(ImmutableArrayList.copyOf(1, 2, 3).subList(0, 3)).containsExactly(1, 2, 3);
+        assertArrayList(ImmutableArrayList.of(1, 2, 3).subList(0, 0)).isEmpty();
+        assertArrayList(ImmutableArrayList.of(1, 2, 3).subList(0, 1)).containsExactly(1);
+        assertArrayList(ImmutableArrayList.of(1, 2, 3).subList(1, 1)).isEmpty();
+        assertArrayList(ImmutableArrayList.of(1, 2, 3).subList(1, 2)).containsExactly(2);
+        assertArrayList(ImmutableArrayList.of(1, 2, 3).subList(0, 2)).containsExactly(1, 2);
+        assertArrayList(ImmutableArrayList.of(1, 2, 3).subList(2, 3)).containsExactly(3);
+        assertArrayList(ImmutableArrayList.of(1, 2, 3).subList(3, 3)).isEmpty();
+        assertArrayList(ImmutableArrayList.of(1, 2, 3).subList(0, 3)).containsExactly(1, 2, 3);
     }
 
     @Test
@@ -59,10 +66,10 @@ public class ImmutableArrayListTest {
 
     @Test
     public void toImmutableArrayList_nulls() {
-        assertThat(streamOf((Object) null).collect(toImmutableArrayList())).isEqualTo(ImmutableArrayList.of(null));
-        assertThat(streamOf(1, null).collect(toImmutableArrayList())).isEqualTo(ImmutableArrayList.of(1, null));
-        assertThat(streamOf(null, null).collect(toImmutableArrayList())).isEqualTo(ImmutableArrayList.of(null, null));
-        assertThat(streamOf(null, 1, null).collect(toImmutableArrayList())).isEqualTo(ImmutableArrayList.of(null, 1, null));
+        assertThat(streamOf(NULL).collect(toImmutableArrayList())).isEqualTo(ImmutableArrayList.of(NULL));
+        assertThat(streamOf(1, NULL).collect(toImmutableArrayList())).isEqualTo(ImmutableArrayList.of(1, NULL));
+        assertThat(streamOf(NULL, NULL).collect(toImmutableArrayList())).isEqualTo(ImmutableArrayList.of(NULL, NULL));
+        assertThat(streamOf(NULL, 1, NULL).collect(toImmutableArrayList())).isEqualTo(ImmutableArrayList.of(NULL, 1, NULL));
     }
 
     @CheckReturnValue
@@ -76,6 +83,8 @@ public class ImmutableArrayListTest {
         }
 
         public final @SafeVarargs void containsExactly(@Nullable T @NotNull... expected) {
+            MoreTruth.assertThat(list).isImmutable();
+
             assertThat(list).hasSize(expected.length);
             assertThat(list).containsExactlyElementsIn(expected).inOrder();
             assertThat(Lists.newArrayList(list.iterator())).containsExactlyElementsIn(expected).inOrder();

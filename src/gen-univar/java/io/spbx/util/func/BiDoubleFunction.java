@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
  * and produces an {@link Object} result.
  */
 @FunctionalInterface
-@Generated(value = "Bi$Type$Function.java", date = "2024-12-02T15:53:08.779584900Z")
+@Generated(value = "Bi$Type$Function.java", date = "2025-01-14T10:07:33.497126600Z")
 public interface BiDoubleFunction<R> extends
         BiFunction<Double, Double, R>,
         BiDoubleObjFunction<Double, R> {

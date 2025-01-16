@@ -16,7 +16,7 @@ import java.util.Iterator;
  * @link <a href='https://github.com/carrotsearch/hppc'>Hppc GitHub</a>
  */
 @NotThreadSafe
-@Generated(value = "Stable$Type$ObjHashMap.java", date = "2024-12-02T15:53:08.725573800Z")
+@Generated(value = "Stable$Type$ObjHashMap.java", date = "2025-01-14T10:07:33.450115600Z")
 public class StableIntObjHashMap<VType> extends IntObjectHashMap<VType> implements IntSize {
     public StableIntObjHashMap() {
         super();

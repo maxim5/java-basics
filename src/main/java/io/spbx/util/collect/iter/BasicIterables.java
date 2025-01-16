@@ -1,51 +1,153 @@
 package io.spbx.util.collect.iter;
 
 import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableSortedSet;
 import io.spbx.util.base.annotate.CheckReturnValue;
+import io.spbx.util.base.annotate.InPlace;
 import io.spbx.util.base.annotate.Pure;
 import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.base.error.Unchecked;
 import io.spbx.util.collect.array.ImmutableArray;
 import io.spbx.util.collect.list.ImmutableArrayList;
+import io.spbx.util.collect.set.ImmutableLinkedHashSet;
 import io.spbx.util.collect.stream.BasicStreams;
 import io.spbx.util.collect.stream.Streamer;
+import org.checkerframework.dataflow.qual.Impure;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.Spliterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static io.spbx.util.collect.stream.BasicStreams.streamOf;
+import static io.spbx.util.func.ScopeFunctions.also;
 
 @Stateless
 @Pure
 @CheckReturnValue
 public class BasicIterables {
-    /* Standard `List` factory */
+    /* Immutable `List` */
+
+    public static <E> @NotNull List<E> listOf() {
+        return List.of();
+    }
+
+    public static <E> @NotNull List<E> listOf(@Nullable E item) {
+        return Collections.singletonList(item);
+    }
+
+    public static <E> @NotNull List<E> listOf(@Nullable E item1, @Nullable E item2) {
+        return ImmutableArrayList.of(item1, item2);
+    }
+
+    public static @SafeVarargs <E> @NotNull List<E> listOf(@Nullable E @Nullable... items) {
+        return items == null ? List.of() : ImmutableArray.copyOf(items);
+    }
+
+    public static <E> @NotNull List<E> listOf(@Nullable Iterable<E> items) {
+        return items == null ? List.of() : ImmutableArrayList.copyOf(items);
+    }
+
+    /* Mutable `List` */
 
     public static <E> @NotNull ArrayList<E> newMutableList() {
         return new ArrayList<>();
     }
 
-    public static <E> @NotNull ArrayList<E> newMutableList(int size) {
-        return new ArrayList<>(size);
+    public static <E> @NotNull ArrayList<E> newMutableList(int capacity) {
+        return new ArrayList<>(capacity);
     }
 
-    public static <E> @NotNull ArrayList<E> newMutableList(@Nullable Iterable<E> items) {
+    public static <E> @NotNull ArrayList<E> mutableListOf(@Nullable E item) {
+        return also(newMutableList(4), list -> list.add(item));
+    }
+
+    public static @SafeVarargs <E> @NotNull ArrayList<E> mutableListOf(@Nullable E @Nullable... items) {
+        return items == null ? newMutableList() : new ArrayList<>(Arrays.asList(items));
+    }
+
+    public static <E> @NotNull ArrayList<E> mutableListOf(@Nullable Iterable<E> items) {
         return items == null
             ? newMutableList()
-            : items instanceof Collection<E> c ? new ArrayList<>(c)
+            : items instanceof Collection<E> collection
+            ? new ArrayList<>(collection)
             : Streamer.of(items).toArrayList();
+    }
+
+    /* Immutable `Set` */
+
+    public static <E> @NotNull Set<E> setOf() {
+        return Set.of();
+    }
+
+    public static <E> @NotNull Set<E> setOf(@Nullable E item) {
+        return Collections.singleton(item);
+    }
+
+    public static <E> @NotNull Set<E> setOf(@Nullable E @NotNull[] items) {
+        return ImmutableLinkedHashSet.copyOf(items);
+    }
+
+    public static <E> @NotNull Set<E> setOf(@Nullable Iterable<E> items) {
+        return items == null ? Set.of() : ImmutableLinkedHashSet.copyOf(items);
+    }
+
+    /* Immutable `SortedSet` */
+
+    public static <E extends Comparable<? super E>> @NotNull SortedSet<E> sortedSetOf() {
+        return ImmutableSortedSet.of();
+    }
+
+    public static <E extends Comparable<? super E>> @NotNull SortedSet<E> sortedSetOf(@NotNull E item) {
+        return ImmutableSortedSet.of(item);
+    }
+
+    public static <E extends Comparable<? super E>> @NotNull SortedSet<E> sortedSetOf(@NotNull E @Nullable[] items) {
+        return items == null ? ImmutableSortedSet.of() : ImmutableSortedSet.copyOf(items);
+    }
+
+    public static <E extends Comparable<? super E>> @NotNull SortedSet<E> sortedSetOf(@Nullable Iterable<E> items) {
+        return items == null ? ImmutableSortedSet.of() : ImmutableSortedSet.copyOf(items);
+    }
+
+    /* Mutable `Set` */
+
+    public static <E> @NotNull LinkedHashSet<E> newMutableSet() {
+        return new LinkedHashSet<>();
+    }
+
+    public static <E> @NotNull LinkedHashSet<E> newMutableSet(int capacity) {
+        return new LinkedHashSet<>(capacity);
+    }
+
+    public static <E> @NotNull LinkedHashSet<E> mutableSetOf(@Nullable E item) {
+        return also(newMutableSet(), set -> set.add(item));
+    }
+
+    public static @SafeVarargs <E> @NotNull LinkedHashSet<E> mutableSetOf(@Nullable E @Nullable... items) {
+        return items == null ? newMutableSet() : new LinkedHashSet<>(Arrays.asList(items));
+    }
+
+    public static <E> @NotNull LinkedHashSet<E> mutableSetOf(@Nullable Iterable<E> items) {
+        return items == null
+            ? newMutableSet()
+            : items instanceof Collection<E> collection
+            ? new LinkedHashSet<>(collection)
+            : Streamer.of(items).toLinkedHashSet();
     }
 
     /* Conversions to standard collections */
@@ -67,21 +169,15 @@ public class BasicIterables {
     }
 
     public static <E> @NotNull Set<E> asSet(@NotNull Iterable<E> items) {
-        return items instanceof Set<E> set
-            ? set
-            : Streamer.of(items).toSet();
+        return items instanceof Set<E> set ? set : Streamer.of(items).toSet();
     }
 
     public static <E> @NotNull HashSet<E> asHashSet(@NotNull Iterable<E> items) {
-        return items instanceof HashSet<E> set
-            ? set
-            : Streamer.of(items).toHashSet();
+        return items instanceof HashSet<E> set ? set : Streamer.of(items).toHashSet();
     }
 
     public static <E> @NotNull LinkedHashSet<E> asLinkedHashSet(@NotNull Iterable<E> items) {
-        return items instanceof LinkedHashSet<E> set
-            ? set
-            : Streamer.of(items).toLinkedHashSet();
+        return items instanceof LinkedHashSet<E> set ? set : Streamer.of(items).toLinkedHashSet();
     }
 
     public static <E> @NotNull Collection<E> asCollection(@NotNull Iterable<E> items) {
@@ -130,7 +226,9 @@ public class BasicIterables {
     }
 
     public static boolean isBasicsImmutable(@NotNull Collection<?> collection) {
-        return collection instanceof ImmutableArray<?> || collection instanceof ImmutableArrayList<?>;
+        return collection instanceof ImmutableArray<?> ||
+               collection instanceof ImmutableArrayList<?> ||
+               collection instanceof ImmutableLinkedHashSet<?>;
     }
 
     public static boolean isJavaUtilUnmodifiableOrImmutable(@NotNull Collection<?> collection) {
@@ -228,9 +326,48 @@ public class BasicIterables {
         return isEmpty(items) ? null : items;
     }
 
+    /* `List` access */
+
+    public static <E> @Nullable E getFirst(@Nullable Iterable<E> items, @Nullable E def) {
+        Iterator<E> iterator;
+        return items == null ? def :
+            items instanceof List<E> list ?
+                list.isEmpty() ? def : list.getFirst() :
+            (iterator = items.iterator()).hasNext() ?
+                iterator.next() : def;
+    }
+
+    public static <E> @Nullable E getFirst(@Nullable Iterator<E> iterator, @Nullable E def) {
+        return iterator != null && iterator.hasNext() ? iterator.next() : def;
+    }
+
+    public static <E> @Nullable E getFirstOrNull(@Nullable Iterable<E> items) {
+        return getFirst(items, null);
+    }
+
     /* Manipulations */
 
-    public static <E, C extends Collection<E>> @NotNull C replaceContent(@NotNull C mutable, @NotNull Collection<E> contents) {
+    public static <U, V> @NotNull Iterator<V> map(@NotNull Iterator<U> iterator, @NotNull Function<U, V> func) {
+        return new Iterator<>() {
+            @Override public boolean hasNext() {
+                return iterator.hasNext();
+            }
+            @Override public V next() {
+                return func.apply(iterator.next());
+            }
+            @Override public void remove() {
+                iterator.remove();
+            }
+        };
+    }
+
+    public static <U, V> @NotNull Iterable<V> map(@NotNull Iterable<U> iterable, @NotNull Function<U, V> func) {
+        return () -> map(iterable.iterator(), func);
+    }
+
+    @Impure
+    public static <E, C extends Collection<E>> @NotNull C replaceContent(@InPlace @NotNull C mutable,
+                                                                         @NotNull Collection<E> contents) {
         mutable.clear();
         mutable.addAll(contents);
         return mutable;
@@ -238,7 +375,8 @@ public class BasicIterables {
 
     /* Distinct and duplicates */
 
-    public static <E, C extends Collection<E>> @NotNull C distinctInPlace(@NotNull C mutable) {
+    @Impure
+    public static <E, C extends Collection<E>> @NotNull C distinctInPlace(@InPlace @NotNull C mutable) {
         LinkedHashSet<E> distinct = new LinkedHashSet<>(mutable);
         if (distinct.size() < mutable.size()) {
             replaceContent(mutable, distinct);

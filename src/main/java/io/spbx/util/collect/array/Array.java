@@ -18,11 +18,11 @@ public final class Array<E> extends BaseArray<E> {
         super(arr);
     }
 
-    public static @SafeVarargs <E> @NotNull Array<E> of(@Nullable E @NotNull ... items) {
+    public static @SafeVarargs <E> @NotNull Array<E> of(@Nullable E @NotNull... items) {
         return new Array<>(items);
     }
 
-    public static @SafeVarargs <E> @NotNull Array<E> copyOf(@Nullable E @NotNull ... items) {
+    public static @SafeVarargs <E> @NotNull Array<E> copyOf(@Nullable E @NotNull... items) {
         return new Array<>(Arrays.copyOf(items, items.length));
     }
 

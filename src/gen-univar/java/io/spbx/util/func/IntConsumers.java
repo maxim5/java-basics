@@ -17,7 +17,7 @@ import java.util.function.ToIntFunction;
  * @see Consumers
  */
 @Stateless
-@Generated(value = "$Type$Consumers.java", date = "2024-12-02T15:53:08.740577500Z")
+@Generated(value = "$Type$Consumers.java", date = "2025-01-14T10:07:33.463119500Z")
 public class IntConsumers {
     /**
      * Returns a {@link IntConsumer} which calls both {@code first} and {@code second} in sequence.

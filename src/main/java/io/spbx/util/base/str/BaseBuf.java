@@ -1,23 +1,24 @@
 package io.spbx.util.base.str;
 
+import io.spbx.util.base.annotate.PyIndex;
 import io.spbx.util.base.error.RangeCheck;
 import io.spbx.util.base.lang.IntLength;
 
 /**
  * A base class for all array buffers.
  */
-public abstract class BaseBuf implements IntLength {
+abstract class BaseBuf implements IntLength {
     /* Negative index translation and Range check */
 
-    protected int translateIndex(int i) {
+    protected int translateIndex(@PyIndex int i) {
         return RangeCheck.translateIndex(this, i);
     }
 
-    protected boolean rangeCheck(int i, int flags) {
+    protected boolean rangeCheck(@PyIndex int i, int flags) {
         return RangeCheck.rangeCheck(this, i, flags);
     }
 
-    protected boolean rangeCheck(int i, int j, int flags) {
+    protected boolean rangeCheck(@PyIndex int i, @PyIndex int j, int flags) {
         return RangeCheck.rangeCheck(this, i, j, flags);
     }
 

@@ -11,7 +11,9 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
- * An immutable version of a {@link BaseArray}. Provides {@link ImmutableArray.Builder} for incremental construction.
+ * An immutable version of a {@link BaseArray}, i.e.
+ * immutable public version of a class backing {@link Arrays#asList(Object[])}.
+ * Provides {@link ImmutableArray.Builder} for incremental construction.
  *
  * @see BaseArray
  */
@@ -21,7 +23,7 @@ public final class ImmutableArray<E> extends BaseArray<E> {
         super(arr);
     }
 
-    public static @SafeVarargs <E> @NotNull ImmutableArray<E> copyOf(@Nullable E @NotNull ... items) {
+    public static @SafeVarargs <E> @NotNull ImmutableArray<E> copyOf(@Nullable E @NotNull... items) {
         return new ImmutableArray<>(Arrays.copyOf(items, items.length));
     }
 
@@ -51,6 +53,16 @@ public final class ImmutableArray<E> extends BaseArray<E> {
 
     @Override
     public E remove(int index) {
+        throw new UnsupportedOperationException("Array is immutable");
+    }
+
+    @Override
+    public E removeFirst() {
+        throw new UnsupportedOperationException("Array is immutable");
+    }
+
+    @Override
+    public E removeLast() {
         throw new UnsupportedOperationException("Array is immutable");
     }
 

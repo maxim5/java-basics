@@ -24,9 +24,9 @@ import java.util.stream.Stream;
  * A simple immutable pair of two {@code int} values.
  */
 @Immutable
-@Generated(value = "$Type$ObjPair.java", date = "2024-12-02T15:53:08.697567500Z")
+@Generated(value = "$Type$ObjPair.java", date = "2025-01-14T10:07:33.424109300Z")
 public record IntObjPair<T>(int first, T second) implements Map.Entry<Integer, T>, Serializable {
-    public static <T> @NotNull IntObjPair of(int first, @Nullable T second) {
+    public static <T> @NotNull IntObjPair<T> of(int first, @Nullable T second) {
         return new IntObjPair(first, second);
     }
 

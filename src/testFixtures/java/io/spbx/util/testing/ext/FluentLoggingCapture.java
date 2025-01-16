@@ -10,6 +10,7 @@ import io.spbx.util.reflect.BasicMembers.Fields;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.Mockito;
 
+import javax.annotation.RegEx;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +96,7 @@ public class FluentLoggingCapture implements BeforeEachCallback, AfterEachCallba
         return logRecords().stream().filter(data -> formatMessage(data).contains(substr)).toList();
     }
 
-    public @NotNull List<LogData> logRecordsMatching(@NotNull String regex) {
+    public @NotNull List<LogData> logRecordsMatching(@NotNull @RegEx @Language("RegExp") String regex) {
         Pattern pattern = Pattern.compile(regex);
         return logRecords().stream().filter(data -> pattern.matcher(formatMessage(data)).find()).toList();
     }

@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static io.spbx.util.testing.AssertStreamer.assertStream;
 import static io.spbx.util.testing.TestingBasics.pairOf;

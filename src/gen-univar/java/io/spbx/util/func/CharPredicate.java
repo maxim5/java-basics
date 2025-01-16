@@ -8,7 +8,7 @@ import java.util.function.Predicate;
  * A simple predicate for the primitive {@code char} values.
  */
 @FunctionalInterface
-@Generated(value = "$Type$Predicate.java", date = "2024-12-02T15:53:08.750579500Z")
+@Generated(value = "$Type$Predicate.java", date = "2025-01-14T10:07:33.473121600Z")
 public interface CharPredicate extends
         Predicate<Character>,
         Function<Character, Boolean> {

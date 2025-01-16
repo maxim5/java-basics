@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
  * @see LongFunction
  */
 @FunctionalInterface
-@Generated(value = "Bi$Type$ObjFunction.java", date = "2024-12-02T15:53:08.787588300Z")
+@Generated(value = "Bi$Type$ObjFunction.java", date = "2025-01-14T10:07:33.504128700Z")
 public interface BiLongObjFunction<T, R> extends BiFunction<Long, T, R> {
     /**
      * Applies this function to the given arguments.

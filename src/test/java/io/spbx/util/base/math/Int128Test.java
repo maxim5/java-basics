@@ -9,6 +9,7 @@ import io.spbx.util.testing.TestingBasics;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -169,10 +170,22 @@ public class Int128Test {
         assertThat(Int128.fromBits(Long.MIN_VALUE, 0)).isEqualTo(Int128.from(INT128_MIN));
     }
 
+    @Test
+    public void construction_from_unsigned_long_trivial() {
+        assertThat(Int128.from(UnsignedLong.ZERO)).isEqualTo(Int128.ZERO);
+        assertThat(Int128.from(UnsignedLong.ONE)).isEqualTo(Int128.ONE);
+        assertThat(Int128.from(UnsignedLong.fromLongBits(1L << 63))).isEqualTo(Int128.from($2_63));
+
+        assertThat(Int128.from(UnsignedLong.MAX_VALUE)).isEqualTo(Int128.from(UINT64_MAX));
+        assertThat(Int128.from(UnsignedLong.fromLongBits(-2))).isEqualTo(Int128.from(UINT64_MAX).subtract(Int128.ONE));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {
         "0", "1", "2147483647", "2147483648", "9223372036854775807", "9223372036854775808",
         "-1", "-2147483647", "-2147483648", "-9223372036854775807", "-9223372036854775808",
+        "99999999999999999", "999999999999999999", "9999999999999999999",
+        "-99999999999999999", "-999999999999999999", "-9999999999999999999",
     })
     public void construction_from_string_simple(String num) {
         assertConstruction(num);
@@ -315,9 +328,10 @@ public class Int128Test {
         SUBTRACT_LONG.assertMatchAll(BIG_INTEGERS, EDGE_CASE_LONGS);
     }
 
-    /** {@link Int128#is64Bit()} **/
+    /** {@link Int128#is64Bit()}, {@link Int128#is64BitUnsigned()} **/
 
     private static final UnOpTester<Boolean, Boolean> IS_64_BIT = test(Int128::is64Bit, RANGE_INT64::contains);
+    private static final UnOpTester<Boolean, Boolean> IS_64_BIT_UNSIGNED = test(Int128::is64BitUnsigned, RANGE_UINT64::contains);
     private static final List<Int128> FIT_INTO_LONG =
         listOf(Int128.ZERO, Int128.ONE, Int128.from(Long.MAX_VALUE), Int128.from(Long.MIN_VALUE));
     private static final List<Int128> NOT_FIT_INTO_LONG = listOf(
@@ -339,8 +353,26 @@ public class Int128Test {
     }
 
     @Test
+    public void is64BitUnsigned_simple() {
+        assertThat(Int128.ZERO.is64BitUnsigned()).isTrue();
+        assertThat(Int128.ONE.is64BitUnsigned()).isTrue();
+        assertThat(Int128.from(Long.MAX_VALUE).is64BitUnsigned()).isTrue();
+        assertThat(Int128.from(Long.MIN_VALUE).is64BitUnsigned()).isFalse();
+
+        assertThat(Int128.MAX_VALUE.is64BitUnsigned()).isFalse();
+        assertThat(Int128.MIN_VALUE.is64BitUnsigned()).isFalse();
+        assertThat(Int128.from("9223372036854775808").is64BitUnsigned()).isTrue();
+        assertThat(Int128.from("-9223372036854775809").is64BitUnsigned()).isFalse();
+    }
+
+    @Test
     public void is64Bit_ultimate() {
         IS_64_BIT.assertMatchAll(BIG_INTEGERS);
+    }
+
+    @Test
+    public void is64BitUnsigned_ultimate() {
+        IS_64_BIT_UNSIGNED.assertMatchAll(BIG_INTEGERS);
     }
 
     /** {@link Int128#multiply(Int128)} **/
@@ -387,17 +419,15 @@ public class Int128Test {
         MULTIPLY_LONG.assertMatchAll(BIG_INTEGERS, EDGE_CASE_LONGS);
     }
 
-    /** {@link Int128#divide(Int128)} **/
+    /** {@link Int128#divide(Int128)}, {@link Int128#divide(long)} **/
 
     private static final BiOpTester<Int128, BigInteger> DIVIDE = test(
-        (a, b) -> {
-            if (b.equals(Int128.ZERO)) {
-                assertThrows(AssertionError.class, () -> a.divide(b));
-                return null;
-            }
-            return a.divide(b);
-        },
+        (a, b) -> b.isZero() ? willThrow(() -> a.divide(b)) : a.divide(b),
         (a, b) -> b.equals($0) ? null : a.divide(b)
+    );
+    private static final LongOpTester<Int128, BigInteger> DIVIDE_LONG = testLong(
+        (a, l) -> l == 0 ? willThrow(() -> a.divide(l)) : a.divide(l),
+        (a, l) -> l == 0 ? null : a.divide($(l))
     );
 
     private static final BigInteger $2_20 = $pow2(20);              // (1 << 20)
@@ -406,6 +436,7 @@ public class Int128Test {
     private static final BigInteger $2_61 = $pow2(61);              // (1 << 61)
     private static final BigInteger $2_62 = $pow2(62);              // (1 << 62)
     private static final BigInteger $2_65 = $pow2(65);              // (1 << 65)
+    private static final BigInteger $2_126 = $pow2(126);            // (1 << 126)
 
     private static final List<BigInteger> SIMPLE_POSITIVE_INTEGERS = listOf(
         $0, $1, $2, $10, $(20), $(100_000), $(100_000_000),
@@ -414,6 +445,24 @@ public class Int128Test {
     );
     private static final List<BigInteger> SIMPLE_NEGATIVE_INTEGERS =
         SIMPLE_POSITIVE_INTEGERS.stream().map(BigInteger::negate).toList();
+
+    @Test
+    public void divide_trivial() {
+        DIVIDE.assertMatch($2_64, $2_64);
+        DIVIDE.assertMatch($2_65, $2_64);
+        DIVIDE.assertMatch($2_65, $2_65);
+        DIVIDE.assertMatch($2_65, $2_65.subtract($1));
+
+        DIVIDE.assertMatch($2_126, $2_64);
+        DIVIDE.assertMatch($2_126, $2_64.subtract($1));
+        DIVIDE.assertMatch($2_126, $2_65);
+        DIVIDE.assertMatch($2_126, $2_65.subtract($1));
+
+        DIVIDE.assertMatch($("42133646023572558111"), $("16507721535087845730"));
+        DIVIDE.assertMatch($("4342362639829079566657"), $("51932486189888438497"));
+        DIVIDE.assertMatch($("37857809859903597488921"), $("985238115584182412665"));
+        DIVIDE.assertMatch($("36571839423113907750982785311236"), $("31680056495764282357948599"));
+    }
 
     @Test
     public void divide_simple_positive_only() {
@@ -434,6 +483,95 @@ public class Int128Test {
     @Test
     public void divide_ultimate() {
         DIVIDE.assertMatchAll(BIG_INTEGERS);
+    }
+
+    @Test
+    public void divide_long_trivial() {
+        // (hi, lo) / num:  hi is close to num
+        DIVIDE_LONG.assertMatch(Int128.fromBits(1, 63), 3L);
+        DIVIDE_LONG.assertMatch(Int128.fromBits(2, 63), 3L);
+        DIVIDE_LONG.assertMatch(Int128.fromBits(3, 63), 3L);
+        DIVIDE_LONG.assertMatch(Int128.fromBits(128, 63), 127L);
+        DIVIDE_LONG.assertMatch(Int128.fromBits(127, 63), 127L);
+        DIVIDE_LONG.assertMatch(Int128.fromBits(126, 63), 127L);
+
+        // (hi, lo) / num:  hi is large signed
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE, 3L);
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE, 11L);
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE, 12L);
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE, 127L);
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE.subtract(1), 127L);
+
+        // (hi, lo) / num:  hi and num are large signed
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE, Long.MAX_VALUE);
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE, Long.MAX_VALUE - 1);
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE, Long.MAX_VALUE - 2);
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE.subtract(1), Long.MAX_VALUE - 1);
+        DIVIDE_LONG.assertMatch(Int128.MAX_VALUE.subtract(1), Long.MAX_VALUE);
+
+        // (hi, lo) / num:  hi is large unsigned (negative signed)
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(1), 127L);
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(2), 127L);
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(1), -1L);
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(2), -1L);
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(1), -2L);
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(2), -2L);
+
+        // (hi, lo) / num:  hi and num are large unsigned (negative signed)
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(1), Long.MIN_VALUE);
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(1), Long.MIN_VALUE + 1);
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(2), Long.MIN_VALUE);
+        DIVIDE_LONG.assertMatch(Int128.MIN_VALUE.add(2), Long.MIN_VALUE + 1);
+
+        // Various
+        DIVIDE_LONG.assertMatch(Long.MAX_VALUE, 1000L);
+        DIVIDE_LONG.assertMatch(118209477210L, 1985L);
+        DIVIDE_LONG.assertMatch($("42133646023572558111"), 17L);
+        DIVIDE_LONG.assertMatch($("4342362639829079566657"), 401824800369421L);
+        DIVIDE_LONG.assertMatch($("37857809859903597488921"), 600832153508784573L);
+        DIVIDE_LONG.assertMatch($("36571839423113907750982785311236"), 5333509404996611L);
+    }
+
+    @Test
+    public void divide_long_ultimate() {
+        DIVIDE_LONG.assertMatchAll(BIG_INTEGERS, EDGE_CASE_LONGS);
+    }
+
+    /** {@link Int128#remainder(Int128)}, {@link Int128#remainder(long)} **/
+
+    private static final BiOpTester<Int128, BigInteger> REMAINDER = test(
+        (a, b) -> b.isZero() ? willThrow(() -> a.remainder(b)) : a.remainder(b),
+        (a, b) -> b.equals($0) ? null : a.remainder(b)
+    );
+    private static final LongOpTester<Int128, BigInteger> REMAINDER_LONG = testLong(
+        (a, l) -> l == 0 ? willThrow(() -> a.remainder(l)) : a.remainder(l),
+        (a, l) -> l == 0 ? null : a.remainder($(l))
+    );
+
+    @Test
+    public void remainder_simple_positive_only() {
+        REMAINDER.assertMatchAll(SIMPLE_POSITIVE_INTEGERS);
+    }
+
+    @Test
+    public void remainder_simple_negative_only() {
+        REMAINDER.assertMatchAll(SIMPLE_NEGATIVE_INTEGERS);
+    }
+
+    @Test
+    public void remainder_simple_positive_and_negative() {
+        List<BigInteger> list = concatToList(SIMPLE_POSITIVE_INTEGERS, SIMPLE_NEGATIVE_INTEGERS);
+        REMAINDER.assertMatchAll(list);
+    }
+
+    @Test
+    public void remainder_ultimate() {
+        REMAINDER.assertMatchAll(BIG_INTEGERS);
+    }
+
+    @Test
+    public void remainder_long_ultimate() {
+        REMAINDER_LONG.assertMatchAll(BIG_INTEGERS, EDGE_CASE_LONGS);
     }
 
     /** {@link Int128#negate()}, {@link Int128#and}, {@link Int128#andNot}, {@link Int128#or}, {@link Int128#xor} **/
@@ -837,7 +975,7 @@ public class Int128Test {
         }
 
         private @NotNull Int128Subject roundtripUnsignedLong() {
-            if (actual.is64Bit()) {
+            if (actual.is64BitUnsigned()) {
                 UnsignedLong unsignedLong = actual.toUnsignedLong();
                 Int128 copy = Int128.from(unsignedLong);
                 return isEqualTo(copy);
@@ -1102,6 +1240,10 @@ public class Int128Test {
             return castAny(this);
         }
 
+        protected @NotNull T withA(long value) {
+            return withA($(value));
+        }
+
         protected <X, Y> void castAndAssertEquality(X c, Y $c) {
             Object actual = c instanceof Int128 int128 ? int128.toBigInteger() : c;
             Object expected = $c instanceof BigInteger bigInteger && fitIn128 ? RANGE_INT128.fitIn(bigInteger) : $c;
@@ -1151,7 +1293,7 @@ public class Int128Test {
             this.$op = $op;
         }
 
-        public void assertMatchAll(@NotNull List<BigInteger> list) {
+        public void assertMatchAll(@NotNull Iterable<BigInteger> list) {
             for (BigInteger left : list) {
                 withA(left);
                 for (BigInteger right : list) {
@@ -1169,6 +1311,10 @@ public class Int128Test {
             withA(left).withB(right).assertMatch();
         }
 
+        public void assertMatch(long left, long right) {
+            withA(left).withB(right).assertMatch();
+        }
+
         private @NotNull BiOpTester<X, Y> withB(@NotNull BigInteger bigInteger) {
             b = Int128.from(bigInteger);
             $b = bigInteger;
@@ -1179,6 +1325,10 @@ public class Int128Test {
             b = int128;
             $b = int128.toBigInteger();
             return this;
+        }
+
+        private @NotNull BiOpTester<X, Y> withB(long value) {
+            return withB($(value));
         }
 
         private void assertMatch() {
@@ -1198,13 +1348,25 @@ public class Int128Test {
             this.$op = $op;
         }
 
-        public void assertMatchAll(@NotNull List<BigInteger> list, @NotNull List<N> nums) {
+        public void assertMatchAll(@NotNull Iterable<BigInteger> list, @NotNull Iterable<N> nums) {
             for (BigInteger a : list) {
                 withA(a);
                 for (N num : nums) {
                     assertMatch(num);
                 }
             }
+        }
+
+        public void assertMatch(@NotNull long left, @NotNull N right) {
+            withA(left).assertMatch(right);
+        }
+
+        public void assertMatch(@NotNull BigInteger left, @NotNull N right) {
+            withA(left).assertMatch(right);
+        }
+
+        public void assertMatch(@NotNull Int128 left, @NotNull N right) {
+            withA(left).assertMatch(right);
         }
 
         private void assertMatch(@NotNull N num) {
@@ -1231,5 +1393,10 @@ public class Int128Test {
         @Override public @NotNull LongOpTester<X, Y> noFitIn128() {
             return castAny(super.noFitIn128());
         }
+    }
+
+    private static <T> T willThrow(@NotNull Executable executable) {
+        assertThrows(AssertionError.class, executable);
+        return null;
     }
 }

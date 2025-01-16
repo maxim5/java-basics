@@ -12,18 +12,18 @@ import java.util.function.BiPredicate;
  * @see BiIntPredicate
  */
 @FunctionalInterface
-@Generated(value = "Bi$Type$ObjPredicate.java", date = "2024-12-02T15:53:08.791588800Z")
+@Generated(value = "Bi$Type$ObjPredicate.java", date = "2025-01-14T10:07:33.507129300Z")
 public interface BiIntObjPredicate<T> extends
         BiPredicate<Integer, T>,
         BiIntObjFunction<T, Boolean> {
     /**
-     * Evaluates this predicate on the {@code int} arguments.
+     * Evaluates this predicate on the {@code int} and {@code T} arguments.
      */
     boolean test(int left, T right);
 
     @Override
     default boolean test(Integer left, T right) {
-        return test(left, right);
+        return test((int) left, right);
     }
 
     @Override

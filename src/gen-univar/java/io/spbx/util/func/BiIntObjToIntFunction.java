@@ -16,8 +16,10 @@ import javax.annotation.processing.Generated;
  * @see BiToIntFunction
  */
 @FunctionalInterface
-@Generated(value = "Bi$Type$ObjTo$Type$Function.java", date = "2024-12-02T15:53:08.796590100Z")
-public interface BiIntObjToIntFunction<T> extends BiIntObjFunction<T, Integer>, BiToIntFunction<Integer, T> {
+@Generated(value = "Bi$Type$ObjTo$Type$Function.java", date = "2025-01-14T10:07:33.511130300Z")
+public interface BiIntObjToIntFunction<T> extends
+        BiIntObjFunction<T, Integer>,
+        BiToIntFunction<Integer, T> {
     /**
      * Applies this function to the given arguments.
      *

@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
  * an {@code short}-valued result.
  */
 @FunctionalInterface
-@Generated(value = "$Type$UnaryOperator.java", date = "2024-12-02T15:53:08.770583300Z")
+@Generated(value = "$Type$UnaryOperator.java", date = "2025-01-14T10:07:33.489123800Z")
 public interface ShortUnaryOperator extends
         UnaryOperator<Short>, ShortFunction<Short>, ToShortFunction<Short> {
     /**

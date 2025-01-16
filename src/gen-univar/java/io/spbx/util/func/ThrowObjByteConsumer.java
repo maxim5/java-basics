@@ -4,10 +4,10 @@ import javax.annotation.processing.Generated;
 
 /**
  * Represents an operation that accepts two input arguments one of which is an {@code byte}
- * and returns no result potentially throws a {@link Throwable}.
+ * and returns no result, potentially throwing a {@link Throwable}.
  * <p>
- * The {@code ThrowBiConsumer} interface is similar to
- * {@link java.util.function.BiConsumer}, except that a {@code ThrowBiConsumer}
+ * The {@code ThrowObjByteConsumer} interface is similar to
+ * {@link java.util.function.BiConsumer}, except that a {@code ThrowObjByteConsumer}
  * can throw any kind of exception, including checked exceptions.
  *
  * @param <U> the type of one of the inputs to the function
@@ -16,7 +16,7 @@ import javax.annotation.processing.Generated;
  * @see java.util.function.BiConsumer
  */
 @FunctionalInterface
-@Generated(value = "ThrowObj$Type$Consumer.java", date = "2024-12-02T15:53:08.817594600Z")
+@Generated(value = "ThrowObj$Type$Consumer.java", date = "2025-01-14T10:07:33.533133800Z")
 public interface ThrowObjByteConsumer<U, E extends Throwable> {
     /**
      * Performs this operation on the given arguments.

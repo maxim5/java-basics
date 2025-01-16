@@ -1,6 +1,7 @@
 package io.spbx.util.base.str;
 
-import io.spbx.util.base.annotate.NegativeIndexingSupported;
+import io.spbx.util.base.annotate.AllowPythonIndexing;
+import io.spbx.util.base.annotate.PyIndex;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.processing.Generated;
@@ -23,8 +24,8 @@ import static io.spbx.util.base.error.RangeCheck.BEFORE_TRANSLATION;
  * {@link BaseByteBuf} supports python-style negative indexing, e.g. {@code buf.at(-2)} is equivalent to
  * {@code buf.at(buf.length()-2)}.
  */
-@NegativeIndexingSupported
-@Generated(value = "Base$Type$Buf.java", date = "2024-12-02T15:53:08.693565600Z")
+@AllowPythonIndexing
+@Generated(value = "Base$Type$Buf.java", date = "2025-01-14T10:07:33.422108600Z")
 public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf implements Comparable<B>, Serializable {
     protected final byte[] bytes;
     protected /* final */ int start;
@@ -54,24 +55,26 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return end - start;
     }
 
-    public boolean isEmpty() {
+    @Override
+    public final boolean isEmpty() {
         return start == end;
     }
 
-    public boolean isNotEmpty() {
+    @Override
+    public final boolean isNotEmpty() {
         return start < end;
     }
 
     /* Bytes access */
 
-    @NegativeIndexingSupported
-    public byte byteAt(int index) {
+    @AllowPythonIndexing
+    public byte byteAt(@PyIndex int index) {
         assert rangeCheck(index, BEFORE_TRANSLATION | OPEN_END_RANGE);
         return bytes[start + translateIndex(index)];
     }
 
-    @NegativeIndexingSupported
-    public int at(int index) {
+    @AllowPythonIndexing
+    public int at(@PyIndex int index) {
         index = translateIndex(index);
         return index >= 0 && index < length() ? bytes[start + index] : -1;
     }
@@ -172,13 +175,13 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return this.indexOf(check, 0, -1);
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(@NotNull IntPredicate check, int from) {
+    @AllowPythonIndexing
+    public int indexOf(@NotNull IntPredicate check, @PyIndex int from) {
         return this.indexOf(check, from, -1);
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(@NotNull IntPredicate check, int from, int def) {
+    @AllowPythonIndexing
+    public int indexOf(@NotNull IntPredicate check, @PyIndex int from, int def) {
         assert rangeCheck(from, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         assert outOfRangeCheck(def);
         for (int i = start + translateIndex(from); i < end; ++i) {
@@ -195,13 +198,13 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return this.indexOf(val, 0, -1);
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(byte val, int from) {
+    @AllowPythonIndexing
+    public int indexOf(byte val, @PyIndex int from) {
         return this.indexOf(val, from, -1);
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(byte val, int from, int def) {
+    @AllowPythonIndexing
+    public int indexOf(byte val, @PyIndex int from, int def) {
         return this.indexOf(cur -> cur == val, from, def);
     }
 
@@ -211,13 +214,13 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return this.indexOf(array, 0, -1);
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(@NotNull B array, int from) {
+    @AllowPythonIndexing
+    public int indexOf(@NotNull B array, @PyIndex int from) {
         return this.indexOf(array, from, -1);
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(@NotNull B array, int from, int def) {
+    @AllowPythonIndexing
+    public int indexOf(@NotNull B array, @PyIndex int from, int def) {
         assert rangeCheck(from, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         assert outOfRangeCheck(def);
         int length = array.length();
@@ -238,13 +241,13 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return this.indexOf(array, 0, -1);
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(byte[] array, int from) {
+    @AllowPythonIndexing
+    public int indexOf(byte[] array, @PyIndex int from) {
         return this.indexOf(array, from, -1);
     }
 
-    @NegativeIndexingSupported
-    public int indexOf(byte[] array, int from, int def) {
+    @AllowPythonIndexing
+    public int indexOf(byte[] array, @PyIndex int from, int def) {
         return this.indexOf(_wrap(array, 0, array.length), from, def);
     }
 
@@ -254,13 +257,13 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return this.lastIndexOf(check, length() - 1, -1);
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(@NotNull IntPredicate check, int from) {
+    @AllowPythonIndexing
+    public int lastIndexOf(@NotNull IntPredicate check, @PyIndex int from) {
         return this.lastIndexOf(check, from, -1);
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(@NotNull IntPredicate check, int from, int def) {
+    @AllowPythonIndexing
+    public int lastIndexOf(@NotNull IntPredicate check, @PyIndex int from, int def) {
         assert rangeCheck(from, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         assert outOfRangeCheck(def);
         for (int i = Math.min(start + translateIndex(from), end - 1); i >= start; --i) {
@@ -277,13 +280,13 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return this.lastIndexOf(val, length() - 1, -1);
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(byte val, int from) {
+    @AllowPythonIndexing
+    public int lastIndexOf(byte val, @PyIndex int from) {
         return this.lastIndexOf(val, from, -1);
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(byte val, int from, int def) {
+    @AllowPythonIndexing
+    public int lastIndexOf(byte val, @PyIndex int from, int def) {
         return this.lastIndexOf(cur -> cur == val, from, def);
     }
 
@@ -293,13 +296,13 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return this.lastIndexOf(array, length() - array.length(), -1);
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(@NotNull B array, int from) {
+    @AllowPythonIndexing
+    public int lastIndexOf(@NotNull B array, @PyIndex int from) {
         return this.lastIndexOf(array, from, -1);
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(@NotNull B array, int from, int def) {
+    @AllowPythonIndexing
+    public int lastIndexOf(@NotNull B array, @PyIndex int from, int def) {
         assert rangeCheck(from, BEFORE_TRANSLATION | CLOSE_END_RANGE);
         assert outOfRangeCheck(def);
         int length = array.length();
@@ -320,13 +323,13 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
         return this.lastIndexOf(array, length() - 1, -1);
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(byte[] array, int from) {
+    @AllowPythonIndexing
+    public int lastIndexOf(byte[] array, @PyIndex int from) {
         return this.lastIndexOf(array, from, -1);
     }
 
-    @NegativeIndexingSupported
-    public int lastIndexOf(byte[] array, int from, int def) {
+    @AllowPythonIndexing
+    public int lastIndexOf(byte[] array, @PyIndex int from, int def) {
         return this.lastIndexOf(_wrap(array, 0, array.length), from, def);
     }
 
@@ -623,5 +626,6 @@ public abstract class BaseByteBuf<B extends BaseByteBuf> extends BaseBuf impleme
 
     protected abstract @NotNull B _this();
 
-    protected abstract @NotNull B _wrap(byte @NotNull[] bytes, int start, int end);
+    @AllowPythonIndexing
+    protected abstract @NotNull B _wrap(byte @NotNull[] bytes, @PyIndex int start, @PyIndex int end);
 }

@@ -18,7 +18,7 @@ import java.util.function.ToIntFunction;
  * @see Predicates
  */
 @Stateless
-@Generated(value = "$Type$Predicates.java", date = "2024-12-02T15:53:08.755579700Z")
+@Generated(value = "$Type$Predicates.java", date = "2025-01-14T10:07:33.478123300Z")
 public class IntPredicates {
     /**
      * A constant predicate which always returns {@code true} regardless of the input.

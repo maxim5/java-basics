@@ -15,6 +15,18 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 public class Mocking {
+    /* System Properties */
+
+    public static void withSystemProperty(@NotNull String key, @NotNull String value, @NotNull Runnable runnable) {
+        String original = System.getProperty(key);
+        try {
+            System.setProperty(key, value);
+            runnable.run();
+        } finally {
+            System.setProperty(key, original);
+        }
+    }
+
     /* Instant */
 
     public static void withInstantNowFixed(@NotNull Instant instant, @NotNull Runnable runnable) {
