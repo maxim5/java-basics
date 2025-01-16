@@ -27,9 +27,9 @@ public interface ToListApi<E> extends ToStreamApi<E> {
         return toStream().collect(Collectors.toCollection(supplier));
     }
 
-    @DoesNotAcceptNulls
+    @AcceptsNulls
     default @NotNull List<E> toList() {
-        return with(toStream(), assertNonNull("toList()")).toList();
+        return toStream().toList();
     }
 
     @AcceptsNulls
@@ -75,6 +75,11 @@ public interface ToListApi<E> extends ToStreamApi<E> {
     @AcceptsNulls
     default @NotNull Tuple toBasicsTuple() {
         return Tuple.of(toNativeArray());
+    }
+
+    @AcceptsNulls
+    default @NotNull List<E> toDistinctList() {
+        return toStream().distinct().toList();
     }
 
     /* Static factory methods */

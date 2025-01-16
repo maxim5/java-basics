@@ -6,11 +6,91 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.function.LongPredicate;
+
 import static com.google.common.truth.Truth.assertThat;
+import static io.spbx.util.func.ScopeFunctions.also;
 import static io.spbx.util.testing.AssertReverse.assertRoundtrip;
+import static io.spbx.util.testing.TestingPrimitives.ints;
+import static io.spbx.util.testing.TestingPrimitives.longs;
 
 @Tag("fast")
 public class LongOpsTest {
+    /** {@link LongOps#map} **/
+
+    @Test
+    public void map_binary_simple() {
+        assertThat(LongOps.map(longs(), (a, i) -> a * i)).asList().isEmpty();
+        assertThat(LongOps.map(longs(1), (a, i) -> a * i)).asList().containsExactly(0L);
+        assertThat(LongOps.map(longs(1, 2, 3), (a, i) -> a * i)).asList().containsExactly(0L, 2L, 6L);
+    }
+
+    /** {@link LongOps#mapInPlace} **/
+
+    @Test
+    public void mapInPlace_binary_simple() {
+        assertThat(LongOps.mapInPlace(longs(), (a, i) -> a * i)).asList().isEmpty();
+        assertThat(LongOps.mapInPlace(longs(1), (a, i) -> a * i)).asList().containsExactly(0L);
+        assertThat(LongOps.mapInPlace(longs(1, 2, 3), (a, i) -> a * i)).asList().containsExactly(0L, 2L, 6L);
+    }
+
+    /** {@link LongOps#filter} **/
+
+    @Test
+    public void filter_binary_simple() {
+        assertThat(LongOps.filter(longs(), (a, i) -> a > i)).asList().isEmpty();
+        assertThat(LongOps.filter(longs(0), (a, i) -> a > i)).asList().isEmpty();
+        assertThat(LongOps.filter(longs(1), (a, i) -> a > i)).asList().containsExactly(1L);
+        assertThat(LongOps.filter(longs(1, 1), (a, i) -> a > i)).asList().containsExactly(1L);
+        assertThat(LongOps.filter(longs(1, 2), (a, i) -> a > i)).asList().containsExactly(1L, 2L);
+    }
+
+    /** {@link LongOps#filterInPlace} **/
+    
+    @Test
+    public void filterInPlace_binary_simple() {
+        also(longs(), array -> {
+            int n = LongOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(0);
+            assertThat(LongOps.realloc(array, n)).asList().isEmpty();
+        });
+        also(longs(0), array -> {
+            int n = LongOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(0);
+            assertThat(LongOps.realloc(array, n)).asList().isEmpty();
+        });
+        also(longs(0, 1), array -> {
+            int n = LongOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(0);
+            assertThat(LongOps.realloc(array, n)).asList().isEmpty();
+        });
+        also(longs(2), array -> {
+            int n = LongOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(1);
+            assertThat(LongOps.realloc(array, n)).asList().containsExactly(2L);
+        });
+        also(longs(0, 2), array -> {
+            int n = LongOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(1);
+            assertThat(LongOps.realloc(array, n)).asList().containsExactly(2L);
+        });
+        also(longs(1, 0, 3, 2), array -> {
+            int n = LongOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(2);
+            assertThat(LongOps.realloc(array, n)).asList().containsExactly(1L, 3L);
+        });
+        also(longs(0, 1, 3, 4, 1, 6), array -> {
+            int n = LongOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(3);
+            assertThat(LongOps.realloc(array, n)).asList().containsExactly(3L, 4L, 6L);
+        });
+        also(longs(1, 2, 0, 4, 0, 6, 0, 0), array -> {
+            int n = LongOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(4);
+            assertThat(LongOps.realloc(array, n)).asList().containsExactly(1L, 2L, 4L, 6L);
+        });
+    }
+    
     /** {@link LongOps#toBigEndianBytes} {@link LongOps#valueOfBigEndianBytes} **/
 
     private static final long[] EDGE_CASE_LONGS = {

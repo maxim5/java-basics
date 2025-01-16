@@ -12,18 +12,18 @@ import java.util.function.BiPredicate;
  * @see BiDoublePredicate
  */
 @FunctionalInterface
-@Generated(value = "Bi$Type$ObjPredicate.java", date = "2024-12-02T15:53:08.791588800Z")
+@Generated(value = "Bi$Type$ObjPredicate.java", date = "2025-01-14T10:07:33.507129300Z")
 public interface BiDoubleObjPredicate<T> extends
         BiPredicate<Double, T>,
         BiDoubleObjFunction<T, Boolean> {
     /**
-     * Evaluates this predicate on the {@code double} arguments.
+     * Evaluates this predicate on the {@code double} and {@code T} arguments.
      */
     boolean test(double left, T right);
 
     @Override
     default boolean test(Double left, T right) {
-        return test(left, right);
+        return test((double) left, right);
     }
 
     @Override

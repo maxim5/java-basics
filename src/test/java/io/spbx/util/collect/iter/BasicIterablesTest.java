@@ -3,6 +3,11 @@ package io.spbx.util.collect.iter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.spbx.util.base.lang.Maybe;
+import io.spbx.util.collect.array.Array;
+import io.spbx.util.collect.array.ImmutableArray;
+import io.spbx.util.collect.list.ImmutableArrayList;
+import io.spbx.util.collect.set.ImmutableLinkedHashSet;
+import io.spbx.util.testing.MoreTruth;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -33,11 +38,117 @@ import static io.spbx.util.testing.TestingBasics.*;
 public class BasicIterablesTest {
     private static final Integer NULL = null;
 
+    /** {@link BasicIterables#listOf}  **/
+
+    @Test
+    public void listOf_simple() {
+        MoreTruth.assertThat(BasicIterables.listOf()).isImmutable().isEmpty();
+        MoreTruth.assertThat(BasicIterables.listOf(1)).isImmutable().containsExactly(1).inOrder();
+        MoreTruth.assertThat(BasicIterables.listOf(1, 2)).isImmutable().containsExactly(1, 2).inOrder();
+        MoreTruth.assertThat(BasicIterables.listOf(1, 2, 3)).isImmutable().containsExactly(1, 2, 3).inOrder();
+        MoreTruth.assertThat(BasicIterables.listOf(NULL)).isImmutable().containsExactly(NULL).inOrder();
+
+        MoreTruth.assertThat(BasicIterables.listOf(NULL_ARRAY)).isImmutable().isEmpty();
+        MoreTruth.assertThat(BasicIterables.listOf(NULL_LIST)).isImmutable().isEmpty();
+        MoreTruth.assertThat(BasicIterables.listOf(NULL_SET)).isImmutable().isEmpty();
+        MoreTruth.assertThat(BasicIterables.listOf(NULL_COLLECTION)).isImmutable().isEmpty();
+        MoreTruth.assertThat(BasicIterables.listOf(NULL_ITERABLE)).isImmutable().isEmpty();
+
+        MoreTruth.assertThat(BasicIterables.listOf(arrayOf(1, NULL))).isImmutable().containsExactly(1, NULL).inOrder();
+        MoreTruth.assertThat(BasicIterables.listOf(listOf(1, NULL))).isImmutable().containsExactly(1, NULL).inOrder();
+        MoreTruth.assertThat(BasicIterables.listOf(setOf(1, NULL))).isImmutable().containsExactly(1, NULL).inOrder();
+        MoreTruth.assertThat(BasicIterables.listOf(collectionOf(1, NULL))).isImmutable().containsExactly(1, NULL).inOrder();
+        MoreTruth.assertThat(BasicIterables.listOf(iterableOf(1, NULL))).isImmutable().containsExactly(1, NULL).inOrder();
+    }
+
+    /** {@link BasicIterables#newMutableList}, {@link BasicIterables#mutableListOf}  **/
+
+    @Test
+    public void newMutableList_simple() {
+        assertThat(BasicIterables.newMutableList()).isEmpty();
+        assertThat(BasicIterables.newMutableList(4)).isEmpty();
+    }
+
+    @Test
+    public void mutableListOf_simple() {
+        assertThat(BasicIterables.mutableListOf()).isEmpty();
+        assertThat(BasicIterables.mutableListOf(1)).containsExactly(1);
+        assertThat(BasicIterables.mutableListOf(NULL)).containsExactly(NULL);
+        assertThat(BasicIterables.mutableListOf(1, 2, NULL)).containsExactly(1, 2, NULL);
+
+        assertThat(BasicIterables.mutableListOf(NULL_ARRAY)).isEmpty();
+        assertThat(BasicIterables.mutableListOf(NULL_LIST)).isEmpty();
+        assertThat(BasicIterables.mutableListOf(NULL_SET)).isEmpty();
+        assertThat(BasicIterables.mutableListOf(NULL_COLLECTION)).isEmpty();
+        assertThat(BasicIterables.mutableListOf(NULL_ITERABLE)).isEmpty();
+
+        assertThat(BasicIterables.mutableListOf(arrayOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+        assertThat(BasicIterables.mutableListOf(listOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+        assertThat(BasicIterables.mutableListOf(setOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+        assertThat(BasicIterables.mutableListOf(collectionOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+        assertThat(BasicIterables.mutableListOf(iterableOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+    }
+
+    /** {@link BasicIterables#setOf}  **/
+
+    @Test
+    public void setOf_simple() {
+        MoreTruth.assertThat(BasicIterables.setOf()).isImmutable().isEmpty();
+        MoreTruth.assertThat(BasicIterables.setOf(1)).isImmutable().containsExactly(1).inOrder();
+        MoreTruth.assertThat(BasicIterables.setOf(NULL)).isImmutable().containsExactly(NULL).inOrder();
+        MoreTruth.assertThat(BasicIterables.setOf(arrayOf(1, NULL))).containsExactly(1, NULL).inOrder();
+        MoreTruth.assertThat(BasicIterables.setOf(listOf(1, NULL))).containsExactly(1, NULL).inOrder();
+        MoreTruth.assertThat(BasicIterables.setOf(setOf(1, NULL))).containsExactly(1, NULL).inOrder();
+        MoreTruth.assertThat(BasicIterables.setOf(collectionOf(1, NULL))).containsExactly(1, NULL).inOrder();
+        MoreTruth.assertThat(BasicIterables.setOf(iterableOf(1, NULL))).containsExactly(1, NULL).inOrder();
+    }
+
+    /** {@link BasicIterables#sortedSetOf}  **/
+
+    @Test
+    public void sortedSetOf_simple() {
+        assertThat(BasicIterables.sortedSetOf()).isEmpty();
+        assertThat(BasicIterables.sortedSetOf(1)).containsExactly(1).inOrder();
+        assertThat(BasicIterables.sortedSetOf(arrayOf(2, 1, 0))).containsExactly(0, 1, 2).inOrder();
+        assertThat(BasicIterables.sortedSetOf(listOf(2, 1, 0))).containsExactly(0, 1, 2).inOrder();
+        assertThat(BasicIterables.sortedSetOf(setOf(2, 1, 0))).containsExactly(0, 1, 2).inOrder();
+        assertThat(BasicIterables.sortedSetOf(collectionOf(2, 1, 0))).containsExactly(0, 1, 2).inOrder();
+        assertThat(BasicIterables.sortedSetOf(iterableOf(2, 1, 0))).containsExactly(0, 1, 2).inOrder();
+    }
+
+    /** {@link BasicIterables#newMutableSet}, BasicIterables#mutableSetOf} **/
+
+    @Test
+    public void newMutableSet_simple() {
+        assertThat(BasicIterables.newMutableSet()).isEmpty();
+        assertThat(BasicIterables.newMutableSet(4)).isEmpty();
+    }
+
+    @Test
+    public void mutableSetOf_simple() {
+        assertThat(BasicIterables.mutableSetOf()).isEmpty();
+        assertThat(BasicIterables.mutableSetOf(1)).containsExactly(1);
+        assertThat(BasicIterables.mutableSetOf(NULL)).containsExactly(NULL);
+        assertThat(BasicIterables.mutableSetOf(1, 2, NULL)).containsExactly(1, 2, NULL);
+
+        assertThat(BasicIterables.mutableSetOf(NULL_ARRAY)).isEmpty();
+        assertThat(BasicIterables.mutableSetOf(NULL_LIST)).isEmpty();
+        assertThat(BasicIterables.mutableSetOf(NULL_SET)).isEmpty();
+        assertThat(BasicIterables.mutableSetOf(NULL_COLLECTION)).isEmpty();
+        assertThat(BasicIterables.mutableSetOf(NULL_ITERABLE)).isEmpty();
+
+        assertThat(BasicIterables.mutableSetOf(arrayOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+        assertThat(BasicIterables.mutableSetOf(listOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+        assertThat(BasicIterables.mutableSetOf(setOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+        assertThat(BasicIterables.mutableSetOf(collectionOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+        assertThat(BasicIterables.mutableSetOf(iterableOf(1, 2, NULL))).containsExactly(1, 2, NULL);
+    }
+
     /** {@link BasicIterables#asList(Iterable)} **/
 
     @Test
     public void asList_list_same_instance() {
-        also(listOf(1, 2), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
+        also(listOf(1, 2, NULL), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
         also(List.of(1, 2), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
         also(new ArrayList<>(), items -> assertThat(BasicIterables.asList(items)).isSameInstanceAs(items));
     }
@@ -57,6 +168,7 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.asList(iterableOf())).isEmpty();
         assertThat(BasicIterables.asList(iterableOf("foo"))).containsExactly("foo").inOrder();
         assertThat(BasicIterables.asList(iterableOf("foo", "bar"))).containsExactly("foo", "bar").inOrder();
+        assertThat(BasicIterables.asList(iterableOf(NULL))).containsExactly(NULL).inOrder();
     }
 
     /** {@link BasicIterables#asArrayList(Iterable)} **/
@@ -366,11 +478,32 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.nullIfEmpty(ArrayIterable.of(1))).containsExactly(1);
     }
 
+    /** {@link BasicIterables#getFirst} **/
+
+    @Test
+    public void getFirst_simple() {
+        assertThat(BasicIterables.getFirst(listOf(), -1)).isEqualTo(-1);
+        assertThat(BasicIterables.getFirst(listOf(1), -1)).isEqualTo(1);
+        assertThat(BasicIterables.getFirst(listOf(1, 2, 3), -1)).isEqualTo(1);
+
+        assertThat(BasicIterables.getFirst(setOf(), -1)).isEqualTo(-1);
+        assertThat(BasicIterables.getFirst(setOf(1), -1)).isEqualTo(1);
+        assertThat(BasicIterables.getFirst(setOf(1, 2, 3), -1)).isEqualTo(1);
+
+        assertThat(BasicIterables.getFirst(iterableOf(), -1)).isEqualTo(-1);
+        assertThat(BasicIterables.getFirst(iterableOf(1), -1)).isEqualTo(1);
+        assertThat(BasicIterables.getFirst(iterableOf(1, 2, 3), -1)).isEqualTo(1);
+
+        assertThat(BasicIterables.getFirst(iteratorOf(), -1)).isEqualTo(-1);
+        assertThat(BasicIterables.getFirst(iteratorOf(1), -1)).isEqualTo(1);
+        assertThat(BasicIterables.getFirst(iteratorOf(1, 2, 3), -1)).isEqualTo(1);
+    }
+
     /** {@link BasicIterables#replaceContent(Collection, Collection)} **/
 
     @Test
     public void replaceContent_list_simple() {
-        ArrayList<Integer> list = BasicIterables.newMutableList(listOf(1, 2, 3));
+        ArrayList<Integer> list = BasicIterables.mutableListOf(1, 2, 3);
         assertThat(BasicIterables.replaceContent(list, listOf(3, 2, 1, 0))).isSameInstanceAs(list);
         assertThat(list).containsExactly(3, 2, 1, 0).inOrder();
     }
@@ -386,14 +519,14 @@ public class BasicIterablesTest {
 
     @Test
     public void distinctInPlace_unchanged() {
-        ArrayList<Integer> list = BasicIterables.newMutableList(listOf(1, 2, 3));
+        ArrayList<Integer> list = BasicIterables.mutableListOf(1, 2, 3);
         assertThat(BasicIterables.distinctInPlace(list)).isSameInstanceAs(list);
         assertThat(list).containsExactly(1, 2, 3).inOrder();
     }
 
     @Test
     public void distinctInPlace_replaced() {
-        ArrayList<Integer> list = BasicIterables.newMutableList(listOf(1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 2));
+        ArrayList<Integer> list = BasicIterables.mutableListOf(1, 1, 1, 2, 1, 1, 2, 2, 2, 1, 2);
         assertThat(BasicIterables.distinctInPlace(list)).isSameInstanceAs(list);
         assertThat(list).containsExactly(1, 2).inOrder();
     }
@@ -590,5 +723,13 @@ public class BasicIterablesTest {
         assertThat(BasicIterables.isImmutable(Collections.unmodifiableSequencedCollection(listOf(1)))).isTrue();
         assertThat(BasicIterables.isImmutable(Collections.unmodifiableSequencedSet(new LinkedHashSet<>()))).isTrue();
         assertThat(BasicIterables.isImmutable(Collections.unmodifiableSortedSet(new TreeSet<>()))).isTrue();
+    }
+
+    @Test
+    public void isImmutable_basics_collections() {
+        assertThat(BasicIterables.isImmutable(Array.of(1, 2, 3))).isFalse();
+        assertThat(BasicIterables.isImmutable(ImmutableArray.copyOf(1, 2, 3))).isTrue();
+        assertThat(BasicIterables.isImmutable(ImmutableArrayList.of(1, 2, 3))).isTrue();
+        assertThat(BasicIterables.isImmutable(ImmutableLinkedHashSet.of(1, 2, 3))).isTrue();
     }
 }

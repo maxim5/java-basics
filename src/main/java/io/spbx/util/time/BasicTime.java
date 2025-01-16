@@ -5,6 +5,7 @@ import io.spbx.util.base.annotate.CheckReturnValue;
 import io.spbx.util.base.annotate.Pure;
 import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.base.str.BasicParsing;
+import io.spbx.util.base.str.Regex;
 import io.spbx.util.collect.map.MapBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +14,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Stateless
@@ -32,13 +32,11 @@ public class BasicTime {
         .toGuavaImmutableMap();
 
     public static @Nullable Duration parseHumanDuration(@NotNull String str) {
-        Matcher matcher = INT_DURATION_PATTERN.matcher(str);
-        if (matcher.matches()) {
+        return Regex.on(str).matchOrNull(INT_DURATION_PATTERN, matcher -> {
             Long amount = BasicParsing.parseLongOrNull(matcher.group(1));
             ChronoUnit unit = CHRONO_UNITS.get(matcher.group(2).toLowerCase());
             return amount == null || unit == null ? null : Duration.of(amount, unit);
-        }
-        return null;
+        });
     }
 
     private static final Pattern HUMAN_LOCAL_DATE_PATTERN = Pattern.compile("([0-9]+)[/-]([0-9]+)[/-]([0-9]+)");
@@ -56,8 +54,7 @@ public class BasicTime {
     }
 
     public static @Nullable LocalDate parseHumanLocalDate(@NotNull String str, @NotNull AmbiguousChoice choice) {
-        Matcher matcher = HUMAN_LOCAL_DATE_PATTERN.matcher(str);
-        if (matcher.matches()) {
+        return Regex.on(str).matchOrNull(HUMAN_LOCAL_DATE_PATTERN, matcher -> {
             Integer first = BasicParsing.parseIntegerOrNull(matcher.group(1));
             Integer second = BasicParsing.parseIntegerOrNull(matcher.group(2));
             Integer third = BasicParsing.parseIntegerOrNull(matcher.group(3));
@@ -76,8 +73,19 @@ public class BasicTime {
                 case MONTH_FIRST -> LocalDate.of(year, first, second);
                 case NULL -> null;
             };
-        }
-        return null;
+        });
+    }
+
+    public static @NotNull String toHMS(long amount, @NotNull TimeUnit unit) {
+        return toHMS(unit.toSeconds(amount));
+    }
+
+    public static @NotNull String toHMS(long seconds) {
+        assert seconds >= 0 && seconds < 86400 : "Seconds are out of day bounds: " + seconds;
+        long hrs = TimeUnit.SECONDS.toHours(seconds);
+        long min = TimeUnit.SECONDS.toMinutes(seconds) % 60;
+        long sec = TimeUnit.SECONDS.toSeconds(seconds) % 60;
+        return "%02d:%02d:%02d".formatted(hrs, min, sec);
     }
 
     public static long toUnit(@NotNull Duration duration, @NotNull TimeUnit unit) {

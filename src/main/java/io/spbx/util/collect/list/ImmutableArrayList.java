@@ -2,6 +2,7 @@ package io.spbx.util.collect.list;
 
 import io.spbx.util.collect.array.Array;
 import io.spbx.util.collect.array.ImmutableArray;
+import io.spbx.util.collect.container.IntSize;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,11 +13,13 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 
 import static io.spbx.util.base.lang.EasyCast.castAny;
+import static io.spbx.util.collect.stream.BasicStreams.streamOf;
 
 /**
  * An immutable version of an {@code ArrayList}.
@@ -29,24 +32,31 @@ import static io.spbx.util.base.lang.EasyCast.castAny;
  *     under the hood, stores the data in an Object array type ({@code Object[]}),
  *     hence supports holding items of different types.</li>
  * </ul>
+ *
+ * @see ArrayList
+ * @see ImmutableArray
+ * @see com.google.common.collect.ImmutableList
  */
+// FIX[minor]: optimize ImmutableArrayList1 (a single entry list)
 @Immutable
-public class ImmutableArrayList<E> extends ArrayList<E> {
+public class ImmutableArrayList<E> extends ArrayList<E> implements IntSize {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final ImmutableArrayList<?> EMPTY = new ImmutableArrayList<>();
-    // FIX[minor]: can also optimize a single entry list
-    private static final ImmutableArrayList<?> SINGLE_NULL = ListBuilder.builder(1).add(null).toBasicsImmutableArrayList();
-
-    private static final Collector<Object, ?, ImmutableArrayList<Object>>
-        TO_IMMUTABLE_ARRAY_LIST = ListBuilder.makeCollector(ListBuilder::toBasicsImmutableArrayList);
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private static final ImmutableArrayList<?> SINGLE_NULL = new ImmutableArrayList<>(1, adder -> adder.accept(null));
 
     private ImmutableArrayList() {
         super(0);
     }
 
+    private ImmutableArrayList(int capacity, @NotNull Consumer<Consumer<E>> callback) {
+        super(capacity);
+        callback.accept(this::addInternal);
+    }
+
     /*package*/ ImmutableArrayList(@NotNull Collection<? extends E> c) {
         super(c.size());
-        super.addAll(c);
+        addAllInternal(c);
     }
 
     public static <E> @NotNull ImmutableArrayList<E> of() {
@@ -54,35 +64,86 @@ public class ImmutableArrayList<E> extends ArrayList<E> {
     }
 
     public static <E> @NotNull ImmutableArrayList<E> of(@Nullable E item) {
-        return item != null ? ListBuilder.<E>builder(1).add(item).toBasicsImmutableArrayList() : castAny(SINGLE_NULL);
+        return item != null ? new ImmutableArrayList<>(1, adder -> adder.accept(item)) : castAny(SINGLE_NULL);
     }
 
     public static <E> @NotNull ImmutableArrayList<E> of(@Nullable E item1, @Nullable E item2) {
-        return ListBuilder.<E>builder(2).add(item1).add(item2).toBasicsImmutableArrayList();
+        return new ImmutableArrayList<>(2, adder -> {
+            adder.accept(item1);
+            adder.accept(item2);
+        });
     }
 
     public static <E> @NotNull ImmutableArrayList<E> of(@Nullable E item1, @Nullable E item2, @Nullable E item3) {
-        return ListBuilder.<E>builder(3).add(item1).add(item2).add(item3).toBasicsImmutableArrayList();
+        return new ImmutableArrayList<>(3, adder -> {
+            adder.accept(item1);
+            adder.accept(item2);
+            adder.accept(item3);
+        });
     }
 
-    public static @SafeVarargs <E> @NotNull ImmutableArrayList<E> copyOf(@Nullable E @NotNull ... items) {
-        // FIX[minor]: avoid extra copying - construct or create from Object[]
-        return new ImmutableArrayList<>(Array.of(items));
+    @SafeVarargs
+    public static <E> @NotNull ImmutableArrayList<E> of(@Nullable E item1, @Nullable E item2, @Nullable E item3,
+                                                        @Nullable E @NotNull... rest) {
+        return new ImmutableArrayList<>(rest.length + 3, adder -> {
+            adder.accept(item1);
+            adder.accept(item2);
+            adder.accept(item3);
+            for (E item : rest) {
+                adder.accept(item);
+            }
+        });
+    }
+
+    public static <E> @NotNull ImmutableArrayList<E> copyOf(@Nullable E @NotNull[] items) {
+        return new ImmutableArrayList<>(items.length, adder -> {
+            for (E item : items) {
+                adder.accept(item);
+            }
+        });
     }
 
     public static <E> @NotNull ImmutableArrayList<E> copyOf(@NotNull Collection<? extends E> items) {
-        return items instanceof ImmutableArrayList<?> arrayList ? castAny(arrayList) : new ImmutableArrayList<>(items);
+        return items instanceof ImmutableArrayList<?> arrayList ?
+            castAny(arrayList) :
+            new ImmutableArrayList<>(items);
     }
 
     public static <E> @NotNull ImmutableArrayList<E> copyOf(@NotNull Iterable<? extends E> items) {
         return items instanceof Collection<?> collection ?
             castAny(copyOf(collection)) :
-            ListBuilder.<E>builder().addAll(items).toBasicsImmutableArrayList();
+            new ImmutableArrayList<>(8, adder -> {
+                for (E item : items) {
+                    adder.accept(item);
+                }
+            });
+    }
+
+    public static <E> @NotNull ImmutableArrayList<E> copyOf(@NotNull Iterator<? extends E> items) {
+        return streamOf(items).collect(toImmutableArrayList());
     }
 
     public static <E> @NotNull Collector<E, ?, ImmutableArrayList<E>> toImmutableArrayList() {
-        return castAny(TO_IMMUTABLE_ARRAY_LIST);
+        return castAny(COLLECTOR);
     }
+
+    private static final Collector<Object, ?, ImmutableArrayList<Object>> COLLECTOR = Collector.of(
+        ImmutableArrayList::new,
+        ImmutableArrayList::addInternal,
+        ImmutableArrayList::addAllInternal,
+        list -> list
+    );
+
+    private void addInternal(E e) {
+        super.add(e);
+    }
+
+    private @NotNull ImmutableArrayList<E> addAllInternal(@NotNull Collection<? extends E> c) {
+        super.addAll(c);
+        return this;
+    }
+
+    // FIX[minor]: override spliterator() to make it IMMUTABLE
 
     @Override
     public @NotNull Iterator<E> iterator() {
@@ -143,12 +204,27 @@ public class ImmutableArrayList<E> extends ArrayList<E> {
     }
 
     @Override
+    public E removeFirst() {
+        throw new UnsupportedOperationException("ArrayList is immutable");
+    }
+
+    @Override
+    public E removeLast() {
+        throw new UnsupportedOperationException("ArrayList is immutable");
+    }
+
+    @Override
     public void clear() {
         throw new UnsupportedOperationException("ArrayList is immutable");
     }
 
     @Override
     public void trimToSize() {
+        throw new UnsupportedOperationException("ArrayList is immutable");
+    }
+
+    @Override
+    public void ensureCapacity(int minCapacity) {
         throw new UnsupportedOperationException("ArrayList is immutable");
     }
 

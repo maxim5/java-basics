@@ -53,18 +53,18 @@ public class BasicStreams {
     }
 
     public static <T> @NotNull Stream<T> streamOf(@Nullable Iterable<@Nullable T> iterable) {
-        return iterable == null ? Stream.empty() :
+        return iterable == null ? empty() :
             iterable instanceof Collection<T> collection
                 ? collection.stream()
                 : StreamSupport.stream(iterable.spliterator(), false);
     }
 
-    public static <T> @NotNull Stream<T> streamOf(@NotNull Iterator<@Nullable T> iterator) {
-        return streamOf(Spliterators.spliteratorUnknownSize(iterator, 0));
+    public static <T> @NotNull Stream<T> streamOf(@Nullable Iterator<@Nullable T> iterator) {
+        return iterator == null ? empty() : streamOf(Spliterators.spliteratorUnknownSize(iterator, 0));
     }
 
-    public static <T> @NotNull Stream<T> streamOf(@NotNull Spliterator<@Nullable T> spliterator) {
-        return StreamSupport.stream(spliterator, false);
+    public static <T> @NotNull Stream<T> streamOf(@Nullable Spliterator<@Nullable T> spliterator) {
+        return spliterator == null ? empty() : StreamSupport.stream(spliterator, false);
     }
 
     public static <T> @NotNull Stream<T> repeat(@Nullable T item, int times) {

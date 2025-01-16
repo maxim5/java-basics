@@ -1,5 +1,7 @@
 package io.spbx.util.base.error;
 
+import io.spbx.util.base.annotate.AllowPythonIndexing;
+import io.spbx.util.base.annotate.PyIndex;
 import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.base.lang.IntLength;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +13,8 @@ import static io.spbx.util.base.error.BasicExceptions.newInternalError;
 /**
  * Negative index translation and Range check.
  *
- * @see io.spbx.util.base.annotate.NegativeIndexingSupported
+ * @see AllowPythonIndexing
+ * @see PyIndex
  */
 @Stateless
 public class RangeCheck {
@@ -19,15 +22,15 @@ public class RangeCheck {
     public static final int CLOSE_END_RANGE    = 0x00000001;
     public static final int BEFORE_TRANSLATION = 0x00000002;
 
-    public static int translateIndex(@NotNull IntLength val, int i) {
+    public static int translateIndex(@NotNull IntLength val, @PyIndex int i) {
         return LowLevel.translateIndex(i, val.length());
     }
 
-    public static boolean rangeCheck(@NotNull IntLength val, int i, int flags) {
+    public static boolean rangeCheck(@NotNull IntLength val, @PyIndex int i, int flags) {
         return LowLevel.rangeCheck(i, val.length(), val, flags);
     }
 
-    public static boolean rangeCheck(@NotNull IntLength val, int i, int j, int flags) {
+    public static boolean rangeCheck(@NotNull IntLength val, @PyIndex int i, @PyIndex int j, int flags) {
         return LowLevel.rangeCheck(i, j, val.length(), val, flags);
     }
 
@@ -52,15 +55,15 @@ public class RangeCheck {
 
     @Stateless
     public interface Checker extends IntLength {
-        default int translateIndex(int i) {
+        default int translateIndex(@PyIndex int i) {
             return RangeCheck.translateIndex(this, i);
         }
 
-        default boolean rangeCheck(int i, int flags) {
+        default boolean rangeCheck(@PyIndex int i, int flags) {
             return RangeCheck.rangeCheck(this, i, flags);
         }
 
-        default boolean rangeCheck(int i, int j, int flags) {
+        default boolean rangeCheck(@PyIndex int i, @PyIndex int j, int flags) {
             return RangeCheck.rangeCheck(this, i, j, flags);
         }
 
@@ -73,11 +76,11 @@ public class RangeCheck {
 
     @Stateless
     public static class LowLevel {
-        public static int translateIndex(int i, int len) {
+        public static int translateIndex(@PyIndex int i, int len) {
             return i >= 0 ? i : i + len;
         }
 
-        public static boolean rangeCheck(int i, int len, Object val, int flags) {
+        public static boolean rangeCheck(@PyIndex int i, int len, Object val, int flags) {
             switch (flags) {
                 case BEFORE_TRANSLATION | OPEN_END_RANGE -> {
                     assert i >= -len && i <  len : "Index %d out of bounds [%d, %d): `%s`".formatted(i, -len, len, val);
@@ -96,7 +99,7 @@ public class RangeCheck {
             return true;
         }
 
-        public static boolean rangeCheck(int i, int j, int len, Object val, int flags) {
+        public static boolean rangeCheck(@PyIndex int i, @PyIndex int j, int len, Object val, int flags) {
             switch (flags) {
                 case BEFORE_TRANSLATION | OPEN_END_RANGE -> {
                     assert i >= -len && i <  len : "Start index %d out of bounds [%d, %d): `%s`".formatted(i, -len, len, val);

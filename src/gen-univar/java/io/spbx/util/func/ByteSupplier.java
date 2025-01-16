@@ -7,7 +7,7 @@ import java.util.function.Supplier;
  * Represents a supplier of {@code byte}-valued results.
  */
 @FunctionalInterface
-@Generated(value = "$Type$Supplier.java", date = "2024-12-02T15:53:08.764582400Z")
+@Generated(value = "$Type$Supplier.java", date = "2025-01-14T10:07:33.484124100Z")
 public interface ByteSupplier extends
     Supplier<Byte> {
     /**

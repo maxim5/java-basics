@@ -16,7 +16,7 @@ import java.util.function.ToLongFunction;
  * @see Functions
  */
 @Stateless
-@Generated(value = "$Type$Functions.java", date = "2024-12-02T15:53:08.747579Z")
+@Generated(value = "$Type$Functions.java", date = "2025-01-14T10:07:33.468120600Z")
 public class LongFunctions {
     /**
      * Returns a constant {@link LongFunction}: evaluates to the same result {@code value} regardless of the input.

@@ -9,7 +9,7 @@ import java.util.function.BinaryOperator;
  * {@link BinaryOperator} for {@code char}.
  */
 @FunctionalInterface
-@Generated(value = "$Type$BinaryOperator.java", date = "2024-12-02T15:53:08.729573900Z")
+@Generated(value = "$Type$BinaryOperator.java", date = "2025-01-14T10:07:33.453117Z")
 public interface CharBinaryOperator extends
         BinaryOperator<Character>,
         BiCharObjFunction<Character, Character> {

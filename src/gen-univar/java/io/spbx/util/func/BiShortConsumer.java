@@ -12,8 +12,10 @@ import java.util.function.BiConsumer;
  * @see BiShortObjConsumer
  */
 @FunctionalInterface
-@Generated(value = "Bi$Type$Consumer.java", date = "2024-12-02T15:53:08.775585Z")
-public interface BiShortConsumer extends BiConsumer<Short, Short>, BiShortObjConsumer<Short> {
+@Generated(value = "Bi$Type$Consumer.java", date = "2025-01-14T10:07:33.493125400Z")
+public interface BiShortConsumer extends
+        BiConsumer<Short, Short>,
+        BiShortObjConsumer<Short> {
     /**
      * Performs this operation on the {@code short} arguments.
      */

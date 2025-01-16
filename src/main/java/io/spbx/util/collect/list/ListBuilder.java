@@ -143,7 +143,6 @@ public class ListBuilder<T> implements ToListApi<T> {
         return list.stream();
     }
 
-    // Needs override, otherwise there is an infinite recursion, because `ImmutableArrayList` collector uses `ListBuilder`.
     @Override
     public @NotNull ImmutableArrayList<T> toBasicsImmutableArrayList() {
         return new ImmutableArrayList<>(list);

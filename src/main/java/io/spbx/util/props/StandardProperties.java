@@ -2,11 +2,11 @@ package io.spbx.util.props;
 
 import io.spbx.util.base.lang.DataSize;
 import io.spbx.util.base.math.Int128;
-import io.spbx.util.base.security.Secret;
 import io.spbx.util.base.str.BasicJoin;
 import io.spbx.util.base.tuple.Pair;
 import io.spbx.util.func.Reversibles;
 import io.spbx.util.io.BasicNet;
+import io.spbx.util.security.Secret;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -9,7 +9,7 @@ import java.util.function.BinaryOperator;
  * {@link BinaryOperator} for {@code double}.
  */
 @FunctionalInterface
-@Generated(value = "$Type$BinaryOperator.java", date = "2024-12-02T15:53:08.729573900Z")
+@Generated(value = "$Type$BinaryOperator.java", date = "2025-01-14T10:07:33.453117Z")
 public interface DoubleBinaryOperator extends
         java.util.function.DoubleBinaryOperator,
         BinaryOperator<Double>,

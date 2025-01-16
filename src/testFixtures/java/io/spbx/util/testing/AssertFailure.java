@@ -7,6 +7,9 @@ import io.spbx.util.testing.MoreTruth.MoreThrowableSubject;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.function.Executable;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Stateless
@@ -41,6 +44,14 @@ public class AssertFailure {
 
         public @NotNull MoreThrowableSubject throwsNumberFormatException() {
             return throwsType(NumberFormatException.class);
+        }
+
+        public @NotNull MoreThrowableSubject throwsIOException() {
+            return throwsType(IOException.class);
+        }
+
+        public @NotNull MoreThrowableSubject throwsUncheckedIOException() {
+            return throwsType(UncheckedIOException.class);
         }
     }
 }

@@ -1,6 +1,7 @@
 package io.spbx.util.collect.stream;
 
 import com.google.common.collect.ImmutableSet;
+import io.spbx.util.collect.set.ImmutableLinkedHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Tag;
@@ -26,6 +27,7 @@ public class ToSetApiTest {
         assertThat(ToSetApi.of(items).toHashSet()).isEqualToExactly(new HashSet<>(items));
         assertThat(ToSetApi.of(items).toLinkedHashSet()).isEqualToExactly(new LinkedHashSet<>(items));
         assertThat(ToSetApi.of(items).toSet(CopyOnWriteArraySet::new)).isEqualToExactly(new CopyOnWriteArraySet<>(items));
+        assertThat(ToSetApi.of(items).toBasicsImmutableLinkedHashSet()).isEqualToExactly(ImmutableLinkedHashSet.copyOf(items));
 
         if (!inputSetCase.hasNulls()) {
             assertThat(ToSetApi.of(items).toTreeSet()).isEqualToExactly(new TreeSet<>(items));

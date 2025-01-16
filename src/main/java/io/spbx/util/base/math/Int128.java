@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Longs;
 import com.google.common.primitives.UnsignedLong;
-import io.spbx.util.base.annotate.Beta;
+import io.spbx.util.base.str.Formats;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -25,7 +25,6 @@ import static io.spbx.util.base.error.BasicExceptions.*;
  * @link <a href="https://en.wikipedia.org/wiki/Two%27s_complement">Two's complement</a>
  */
 @Immutable
-@Beta // FIX[perf]: optimize conversions avoiding extra array/BigInteger alloc (arithmetic, toString)
 public final class Int128 extends Number implements Comparable<Int128> {
     /**
      * The number of bytes required to represent the value.
@@ -83,11 +82,14 @@ public final class Int128 extends Number implements Comparable<Int128> {
     }
 
     public static @NotNull Int128 from(@NotNull UnsignedLong value) {
-        return from(value.longValue());
+        return fromBits(0, value.longValue());
     }
 
     public static @NotNull Int128 from(@NotNull CharSequence value) {
-        return from(new BigInteger(value.toString()));
+        if (value.length() < 19) {
+            return from(Long.parseLong(value, 0, value.length(), 10));
+        }
+        return from(new BigInteger(value.toString(), 10));
     }
 
     public static @NotNull Int128 fromHex(@NotNull String value) {
@@ -154,7 +156,7 @@ public final class Int128 extends Number implements Comparable<Int128> {
     }
 
     public @NotNull UnsignedLong toUnsignedLong() {
-        assert is64Bit() : "The value does not fit into `UnsignedLong`";
+        assert is64BitUnsigned() : "The value does not fit into `UnsignedLong`";
         return UnsignedLong.fromLongBits(low);
     }
 
@@ -254,6 +256,10 @@ public final class Int128 extends Number implements Comparable<Int128> {
 
     public boolean is64Bit() {
         return (high == 0 && low >= 0) || (high == -1 && low < 0);
+    }
+
+    public boolean is64BitUnsigned() {
+        return high == 0;
     }
 
     public long longValueExact() {
@@ -367,8 +373,12 @@ public final class Int128 extends Number implements Comparable<Int128> {
         if (hi == 0) {
             return Int128.from(Long.divideUnsigned(lo, num));
         }
+        if (hi < num) {
+            long quot = MathOps.udivide128By64(hi, lo, num);    // Quot fits in u64-bit: can use optimized division
+            return Int128.fromBits(0, quot);
+        }
 
-        int n = Long.numberOfLeadingZeros(num) - Long.numberOfLeadingZeros(hi) + 64;
+        int n = Long.numberOfLeadingZeros(num) - Long.numberOfLeadingZeros(hi) + 64;    // ~Number of bits in the result
         while (n >= 0) {
             Int128 div = Int128.ONE.shiftLeft(n);
             Int128 multiply = Int128.fromBits(0, num).shiftLeft(n);
@@ -403,6 +413,26 @@ public final class Int128 extends Number implements Comparable<Int128> {
         }
 
         throw newInternalError("Failed to divide %s / %s", fromBits(hi1, lo1), fromBits(hi2, lo2));
+    }
+
+    public @NotNull Int128 remainder(@NotNull Int128 that) {
+        Int128 quot = this.divide(that);
+        Int128 mult = that.multiply(quot);
+        return this.subtract(mult);
+    }
+
+    public @NotNull Int128 remainder(long that) {
+        Int128 quot = this.divide(that);
+        Int128 mult = quot.multiply(that);
+        return this.subtract(mult);
+    }
+
+    public @NotNull Int128 sqr() {
+        return multiply(high, low, high, low);
+    }
+
+    public double sqrt() {
+        return Math.sqrt(doubleValue());
     }
 
     /* Logical ops */
@@ -617,12 +647,6 @@ public final class Int128 extends Number implements Comparable<Int128> {
     }
 
     private static @NotNull String makeGroups(@NotNull String str, int groupSize) {
-        int length = str.length();
-        StringBuilder builder = new StringBuilder(2 * length);
-        for (int i = 0; i < length; i += groupSize) {
-            builder.append(str, i, i + groupSize).append('_');
-        }
-        builder.setLength(builder.length() - 1);
-        return builder.toString();
+        return Formats.groupFromLeft(str, groupSize, '_');
     }
 }

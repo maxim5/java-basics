@@ -5,6 +5,7 @@ import io.spbx.util.base.error.BasicExceptions.IllegalArgumentExceptions;
 import io.spbx.util.base.error.BasicExceptions.IllegalStateExceptions;
 import io.spbx.util.base.math.Int128;
 import io.spbx.util.base.str.BasicParsing;
+import io.spbx.util.base.str.Regex;
 import io.spbx.util.base.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -162,23 +162,19 @@ public final class DataSize implements Comparable<DataSize> {
     private static final Pattern FLOAT_SIZE = Pattern.compile("\\s*([+-]?[0-9.]+(e[+-]?[0-9]+)?)\\s*([a-zA-Z]*)\\s*");
 
     private static @Nullable DataSize parseInt(@NotNull CharSequence str, @NotNull Unit defaultUnit) {
-        Matcher matcher = INT_SIZE.matcher(str);
-        if (matcher.matches()) {
+        return Regex.on(str).matchOrNull(INT_SIZE, matcher -> {
             long amount = parseLongSafe(matcher.group(1), Long.MIN_VALUE);
             Unit unit = findUnit(matcher.group(2), defaultUnit);
             return amount == Long.MIN_VALUE ? null : DataSize.of(amount, unit);
-        }
-        return null;
+        });
     }
 
     private static @Nullable DataSize parseFloat(@NotNull CharSequence str, @NotNull Unit defaultUnit) {
-        Matcher matcher = FLOAT_SIZE.matcher(str);
-        if (matcher.matches()) {
+        return Regex.on(str).matchOrNull(FLOAT_SIZE, matcher -> {
             double amount = BasicParsing.parseDoubleSafe(matcher.group(1), Double.NEGATIVE_INFINITY);
             Unit unit = findUnit(matcher.group(3), defaultUnit);
             return amount == Double.NEGATIVE_INFINITY ? null : ofDoubleAmount(amount, unit);
-        }
-        return null;
+        });
     }
 
     private static @NotNull DataSize ofDoubleAmount(double amount, @NotNull Unit unit) {

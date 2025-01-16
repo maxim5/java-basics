@@ -1,6 +1,6 @@
 package io.spbx.util.props;
 
-import io.spbx.util.base.security.Secret;
+import io.spbx.util.security.Secret;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

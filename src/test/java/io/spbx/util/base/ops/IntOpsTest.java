@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spbx.util.func.ScopeFunctions.also;
 import static io.spbx.util.testing.AssertReverse.assertRoundtrip;
 import static io.spbx.util.testing.TestingPrimitives.ints;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -97,6 +98,132 @@ public class IntOpsTest {
         assertThat(IntOps.map(ints(), (a, i) -> a * i)).asList().isEmpty();
         assertThat(IntOps.map(ints(1), (a, i) -> a * i)).asList().containsExactly(0);
         assertThat(IntOps.map(ints(1, 2, 3), (a, i) -> a * i)).asList().containsExactly(0, 2, 6);
+    }
+
+    /** {@link IntOps#mapInPlace} **/
+
+    @Test
+    public void mapInPlace_unary_simple() {
+        assertThat(IntOps.mapInPlace(ints(), a -> a + 1)).asList().isEmpty();
+        assertThat(IntOps.mapInPlace(ints(1), a -> a + 1)).asList().containsExactly(2);
+        assertThat(IntOps.mapInPlace(ints(1, 2), a -> a + 1)).asList().containsExactly(2, 3);
+    }
+
+    @Test
+    public void mapInPlace_binary_simple() {
+        assertThat(IntOps.mapInPlace(ints(), (a, i) -> a * i)).asList().isEmpty();
+        assertThat(IntOps.mapInPlace(ints(1), (a, i) -> a * i)).asList().containsExactly(0);
+        assertThat(IntOps.mapInPlace(ints(1, 2, 3), (a, i) -> a * i)).asList().containsExactly(0, 2, 6);
+    }
+
+    /** {@link IntOps#filter} **/
+
+    @Test
+    public void filter_unary_simple() {
+        assertThat(IntOps.filter(ints(), a -> a > 1)).asList().isEmpty();
+        assertThat(IntOps.filter(ints(1), a -> a > 1)).asList().isEmpty();
+        assertThat(IntOps.filter(ints(2), a -> a > 1)).asList().containsExactly(2);
+        assertThat(IntOps.filter(ints(1, 2), a -> a > 1)).asList().containsExactly(2);
+        assertThat(IntOps.filter(ints(3, 1, 2), a -> a > 1)).asList().containsExactly(3, 2);
+    }
+
+    @Test
+    public void filter_binary_simple() {
+        assertThat(IntOps.filter(ints(), (a, i) -> a > i)).asList().isEmpty();
+        assertThat(IntOps.filter(ints(0), (a, i) -> a > i)).asList().isEmpty();
+        assertThat(IntOps.filter(ints(1), (a, i) -> a > i)).asList().containsExactly(1);
+        assertThat(IntOps.filter(ints(1, 1), (a, i) -> a > i)).asList().containsExactly(1);
+        assertThat(IntOps.filter(ints(1, 2), (a, i) -> a > i)).asList().containsExactly(1, 2);
+    }
+
+    /** {@link IntOps#filterInPlace} **/
+
+    @Test
+    public void filterInPlace_unary_simple() {
+        also(ints(), array -> {
+            int n = IntOps.filterInPlace(array, a -> a > 1);
+            assertThat(n).isEqualTo(0);
+            assertThat(IntOps.realloc(array, n)).asList().isEmpty();
+        });
+        also(ints(1), array -> {
+            int n = IntOps.filterInPlace(array, a -> a > 1);
+            assertThat(n).isEqualTo(0);
+            assertThat(IntOps.realloc(array, n)).asList().isEmpty();
+        });
+        also(ints(0, 1), array -> {
+            int n = IntOps.filterInPlace(array, a -> a > 1);
+            assertThat(n).isEqualTo(0);
+            assertThat(IntOps.realloc(array, n)).asList().isEmpty();
+        });
+        also(ints(2), array -> {
+            int n = IntOps.filterInPlace(array, a -> a > 1);
+            assertThat(n).isEqualTo(1);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(2);
+        });
+        also(ints(1, 2), array -> {
+            int n = IntOps.filterInPlace(array, a -> a > 1);
+            assertThat(n).isEqualTo(1);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(2);
+        });
+        also(ints(0, 1, 2, 3), array -> {
+            int n = IntOps.filterInPlace(array, a -> a > 1);
+            assertThat(n).isEqualTo(2);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(2, 3);
+        });
+        also(ints(0, 1, 2, 3, 1, 2), array -> {
+            int n = IntOps.filterInPlace(array, a -> a > 1);
+            assertThat(n).isEqualTo(3);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(2, 3, 2);
+        });
+        also(ints(3, 2, 1, 0, 1, 2, 1, 3, 2), array -> {
+            int n = IntOps.filterInPlace(array, a -> a > 1);
+            assertThat(n).isEqualTo(5);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(3, 2, 2, 3, 2);
+        });
+    }
+
+    @Test
+    public void filterInPlace_binary_simple() {
+        also(ints(), array -> {
+            int n = IntOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(0);
+            assertThat(IntOps.realloc(array, n)).asList().isEmpty();
+        });
+        also(ints(0), array -> {
+            int n = IntOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(0);
+            assertThat(IntOps.realloc(array, n)).asList().isEmpty();
+        });
+        also(ints(0, 1), array -> {
+            int n = IntOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(0);
+            assertThat(IntOps.realloc(array, n)).asList().isEmpty();
+        });
+        also(ints(2), array -> {
+            int n = IntOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(1);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(2);
+        });
+        also(ints(0, 2), array -> {
+            int n = IntOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(1);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(2);
+        });
+        also(ints(1, 0, 3, 2), array -> {
+            int n = IntOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(2);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(1, 3);
+        });
+        also(ints(0, 1, 3, 4, 1, 6), array -> {
+            int n = IntOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(3);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(3, 4, 6);
+        });
+        also(ints(1, 2, 0, 4, 0, 6, 0, 0), array -> {
+            int n = IntOps.filterInPlace(array, (a, i) -> a > i);
+            assertThat(n).isEqualTo(4);
+            assertThat(IntOps.realloc(array, n)).asList().containsExactly(1, 2, 4, 6);
+        });
     }
 
     /** {@link IntOps#indexOf} **/
@@ -351,6 +478,20 @@ public class IntOpsTest {
         assertThat(IntOps.slice(ints(1, 2, 3), 3)).asList().isEmpty();
     }
 
+    /** {@link IntOps#realloc(int[], int)} **/
+
+    @Test
+    public void realloc_simple() {
+        assertThat(IntOps.realloc(ints(), 0)).asList().isEmpty();
+        assertThat(IntOps.realloc(ints(), 1)).asList().containsExactly(0);
+
+        assertThat(IntOps.realloc(ints(1, 2, 3), 1)).asList().containsExactly(1);
+        assertThat(IntOps.realloc(ints(1, 2, 3), 2)).asList().containsExactly(1, 2);
+        assertThat(IntOps.realloc(ints(1, 2, 3), 3)).asList().containsExactly(1, 2, 3);
+        assertThat(IntOps.realloc(ints(1, 2, 3), 4)).asList().containsExactly(1, 2, 3, 0);
+        assertThat(IntOps.realloc(ints(1, 2, 3), 5)).asList().containsExactly(1, 2, 3, 0, 0);
+    }
+
     /** {@link IntOps#ensureCapacity(int[], int)} **/
 
     @Test
@@ -364,7 +505,6 @@ public class IntOpsTest {
         assertThat(IntOps.ensureCapacity(ints(1, 2, 3), 4)).asList().containsExactly(1, 2, 3, 0);
         assertThat(IntOps.ensureCapacity(ints(1, 2, 3), 5)).asList().containsExactly(1, 2, 3, 0, 0);
     }
-
 
     /** {@link IntOps#toBigEndianBytes} {@link IntOps#fromBigEndianBytes} {@link IntOps#valueOfBigEndianBytes} **/
 

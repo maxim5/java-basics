@@ -16,7 +16,7 @@ import javax.annotation.processing.Generated;
  * @param <E> the type of Throwable thrown
  */
 @FunctionalInterface
-@Generated(value = "ThrowTo$Type$BiFunction.java", date = "2024-12-02T15:53:08.821595400Z")
+@Generated(value = "ThrowTo$Type$BiFunction.java", date = "2025-01-14T10:07:33.536135300Z")
 public interface ThrowToByteBiFunction<T, U, E extends Throwable> {
     /**
      * Applies this function to the given arguments.

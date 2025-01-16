@@ -12,8 +12,10 @@ import java.util.function.BiConsumer;
  * @see BiDoubleObjConsumer
  */
 @FunctionalInterface
-@Generated(value = "Bi$Type$Consumer.java", date = "2024-12-02T15:53:08.775585Z")
-public interface BiDoubleConsumer extends BiConsumer<Double, Double>, BiDoubleObjConsumer<Double> {
+@Generated(value = "Bi$Type$Consumer.java", date = "2025-01-14T10:07:33.493125400Z")
+public interface BiDoubleConsumer extends
+        BiConsumer<Double, Double>,
+        BiDoubleObjConsumer<Double> {
     /**
      * Performs this operation on the {@code double} arguments.
      */

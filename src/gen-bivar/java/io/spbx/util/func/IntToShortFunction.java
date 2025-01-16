@@ -8,7 +8,7 @@ import java.util.function.Function;
  * and produces an {@code short} result.
  */
 @FunctionalInterface
-@Generated(value = "$Left$To$Right$Function.java", date = "2024-11-26T15:08:01.460868500Z")
+@Generated(value = "$Left$To$Right$Function.java", date = "2025-01-14T10:38:22.012293500Z")
 public interface IntToShortFunction extends
         Function<Integer, Short>,
         IntFunction<Short>,

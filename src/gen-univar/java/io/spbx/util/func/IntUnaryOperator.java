@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
  * an {@code int}-valued result.
  */
 @FunctionalInterface
-@Generated(value = "$Type$UnaryOperator.java", date = "2024-12-02T15:53:08.770583300Z")
+@Generated(value = "$Type$UnaryOperator.java", date = "2025-01-14T10:07:33.489123800Z")
 public interface IntUnaryOperator extends
         java.util.function.IntUnaryOperator,
         UnaryOperator<Integer>, IntFunction<Integer>, ToIntFunction<Integer> {

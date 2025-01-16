@@ -16,7 +16,7 @@ import java.util.Iterator;
  * @link <a href='https://github.com/carrotsearch/hppc'>Hppc GitHub</a>
  */
 @NotThreadSafe
-@Generated(value = "Stable$Type$$Type$HashMap.java", date = "2024-12-02T15:53:08.721572300Z")
+@Generated(value = "Stable$Type$$Type$HashMap.java", date = "2025-01-14T10:07:33.448115300Z")
 public class StableLongLongHashMap extends LongLongHashMap implements IntSize {
     public StableLongLongHashMap() {
         super();

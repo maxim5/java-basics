@@ -9,7 +9,7 @@ import java.util.function.BinaryOperator;
  * {@link BinaryOperator} for {@code long}.
  */
 @FunctionalInterface
-@Generated(value = "$Type$BinaryOperator.java", date = "2024-12-02T15:53:08.729573900Z")
+@Generated(value = "$Type$BinaryOperator.java", date = "2025-01-14T10:07:33.453117Z")
 public interface LongBinaryOperator extends
         java.util.function.LongBinaryOperator,
         BinaryOperator<Long>,

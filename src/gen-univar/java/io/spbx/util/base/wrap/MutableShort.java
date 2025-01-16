@@ -10,7 +10,7 @@ import javax.annotation.processing.Generated;
  * A simple mutable wrapper around {@code short}.
  */
 @NotThreadSafe
-@Generated(value = "Mutable$Type$.java", date = "2024-12-02T15:53:08.702567700Z")
+@Generated(value = "Mutable$Type$.java", date = "2025-01-14T10:07:33.432111200Z")
 public class MutableShort {
     public short value = 0;
 

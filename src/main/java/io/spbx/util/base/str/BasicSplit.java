@@ -2,9 +2,11 @@ package io.spbx.util.base.str;
 
 import io.spbx.util.collect.stream.BasicStreams;
 import io.spbx.util.collect.stream.ToListApi;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.RegEx;
 import javax.annotation.concurrent.Immutable;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -72,7 +74,7 @@ public class BasicSplit {
         return ToListApi.of(stream);
     }
 
-    public @NotNull ToListApi<String> onRegex(@NotNull String regex) {
+    public @NotNull ToListApi<String> onRegex(@NotNull @RegEx @Language("RegExp") String regex) {
         Pattern pattern = Pattern.compile(regex);
         Stream<String> stream = splitToStream(pattern, s -> false);
         return ToListApi.of(stream);

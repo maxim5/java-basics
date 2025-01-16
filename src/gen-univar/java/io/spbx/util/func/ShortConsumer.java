@@ -9,7 +9,7 @@ import java.util.function.Consumer;
  * to operate via side-effects.
  */
 @FunctionalInterface
-@Generated(value = "$Type$Consumer.java", date = "2024-12-02T15:53:08.734576900Z")
+@Generated(value = "$Type$Consumer.java", date = "2025-01-14T10:07:33.458118300Z")
 public interface ShortConsumer extends
     Consumer<Short> {
     /**

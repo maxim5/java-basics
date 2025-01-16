@@ -96,6 +96,20 @@ public class BasicTimeTest {
     }
 
     @Test
+    public void toHMS_simple() {
+        assertThat(BasicTime.toHMS(0)).isEqualTo("00:00:00");
+        assertThat(BasicTime.toHMS(1)).isEqualTo("00:00:01");
+        assertThat(BasicTime.toHMS(23)).isEqualTo("00:00:23");
+        assertThat(BasicTime.toHMS(59)).isEqualTo("00:00:59");
+        assertThat(BasicTime.toHMS(60)).isEqualTo("00:01:00");
+        assertThat(BasicTime.toHMS(90)).isEqualTo("00:01:30");
+        assertThat(BasicTime.toHMS(3599)).isEqualTo("00:59:59");
+        assertThat(BasicTime.toHMS(3600)).isEqualTo("01:00:00");
+        assertThat(BasicTime.toHMS(7200)).isEqualTo("02:00:00");
+        assertThat(BasicTime.toHMS(86399)).isEqualTo("23:59:59");
+    }
+
+    @Test
     public void toUnit_duration_to_time_unit() {
         assertThat(BasicTime.toUnit(Duration.ofHours(1), TimeUnit.DAYS)).isEqualTo(0);
         assertThat(BasicTime.toUnit(Duration.ofHours(1), TimeUnit.HOURS)).isEqualTo(1);

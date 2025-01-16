@@ -1,5 +1,6 @@
 package io.spbx.util.base.str;
 
+import io.spbx.util.func.IntMatcher;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -174,6 +175,21 @@ public class BasicStringsTest {
         assertThat(BasicStrings.strip("_123", Character::isDigit)).isEqualTo("_");
         assertThat(BasicStrings.strip("123_123", Character::isDigit)).isEqualTo("_");
         assertThat(BasicStrings.strip("123_0_123", Character::isDigit)).isEqualTo("_0_");
+    }
+
+    @Test
+    public void matchChars_simple() {
+        assertThat(BasicStrings.matchChars("", IntMatcher.ASCII_LOWERCASE)).isTrue();
+
+        assertThat(BasicStrings.matchChars("foo", IntMatcher.ASCII_LOWERCASE)).isTrue();
+        assertThat(BasicStrings.matchChars("foo", IntMatcher.ASCII_LETTERS)).isTrue();
+        assertThat(BasicStrings.matchChars("foo", IntMatcher.ASCII_UPPERCASE)).isFalse();
+        assertThat(BasicStrings.matchChars("foo+", IntMatcher.ASCII_LOWERCASE)).isFalse();
+        assertThat(BasicStrings.matchChars("foo+", IntMatcher.ASCII_LETTERS)).isFalse();
+        assertThat(BasicStrings.matchChars("foo+", IntMatcher.ASCII_UPPERCASE)).isFalse();
+
+        assertThat(BasicStrings.matchChars("01234", IntMatcher.DIGITS)).isTrue();
+        assertThat(BasicStrings.matchChars("01234+", IntMatcher.DIGITS)).isFalse();
     }
 
     @Test

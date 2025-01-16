@@ -116,4 +116,23 @@ public class IntScopeFunctionsTest {
         assertThat(IntScopeFunctions.map("foo", value -> mockFunction.apply(value))).isEqualTo(3);
         assertThat(mockFunction.argsCalled()).containsExactly("foo");
     }
+
+    /** {@link IntScopeFunctions#test(int, IntPredicate)} **/
+
+    @Test
+    public void test_int_reference() {
+        Applying<Integer, Boolean> mockFunction = MockFunction.applying(x -> x > 0);
+        boolean result = IntScopeFunctions.test(123, mockFunction::apply);
+        assertThat(result).isTrue();
+        assertThat(mockFunction.argsCalled()).containsExactly(123);
+    }
+
+    @Test
+    @SuppressWarnings({ "Convert2MethodRef" })
+    public void test_int_lambda() {
+        Applying<Integer, Boolean> mockFunction = MockFunction.applying(x -> x > 0);
+        boolean result = IntScopeFunctions.test(123, value -> mockFunction.apply(value));
+        assertThat(result).isTrue();
+        assertThat(mockFunction.argsCalled()).containsExactly(123);
+    }
 }

@@ -12,7 +12,7 @@ import java.util.function.BiPredicate;
  * @see BiLongObjPredicate
  */
 @FunctionalInterface
-@Generated(value = "Bi$Type$Predicate.java", date = "2024-12-02T15:53:08.800591400Z")
+@Generated(value = "Bi$Type$Predicate.java", date = "2025-01-14T10:07:33.514130900Z")
 public interface BiLongPredicate extends
         BiPredicate<Long, Long>,
         BiLongObjPredicate<Long>,

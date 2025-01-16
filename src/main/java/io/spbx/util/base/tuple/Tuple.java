@@ -1,6 +1,7 @@
 package io.spbx.util.base.tuple;
 
-import io.spbx.util.base.annotate.NegativeIndexingSupported;
+import io.spbx.util.base.annotate.AllowPythonIndexing;
+import io.spbx.util.base.annotate.PyIndex;
 import io.spbx.util.base.error.BasicExceptions.IllegalStateExceptions;
 import io.spbx.util.base.error.RangeCheck;
 import io.spbx.util.base.lang.IntLength;
@@ -67,14 +68,14 @@ public final class Tuple implements IntLength, Iterable<Object>, Serializable {
         return castAny(values[values.length - 1]);
     }
 
-    @NegativeIndexingSupported
-    public <T> T at(int i) {
+    @AllowPythonIndexing
+    public <T> T at(@PyIndex int i) {
         assert rangeCheck(i);
         return castAny(values[translateIndex(i)]);
     }
 
-    @NegativeIndexingSupported
-    public @NotNull Tuple slice(int i, int j) {
+    @AllowPythonIndexing
+    public @NotNull Tuple slice(@PyIndex int i, @PyIndex int j) {
         Object[] slice = toArray(i, j);
         return Tuple.of(slice);
     }
@@ -113,23 +114,23 @@ public final class Tuple implements IntLength, Iterable<Object>, Serializable {
         return stream().mapToInt(val -> val == null ? 0 : 1).sum();
     }
 
-    @NegativeIndexingSupported
-    public @NotNull Tuple withNth(int i, @Nullable Object value) {
+    @AllowPythonIndexing
+    public @NotNull Tuple withNth(@PyIndex int i, @Nullable Object value) {
         assert rangeCheck(i);
         Object[] copy = toArray();
         copy[translateIndex(i)] = value;
         return Tuple.of(copy);
     }
 
-    @NegativeIndexingSupported
-    public <T, R> @NotNull Tuple mapNth(int i, @NotNull Function<T, R> convert) {
+    @AllowPythonIndexing
+    public <T, R> @NotNull Tuple mapNth(@PyIndex int i, @NotNull Function<T, R> convert) {
         assert rangeCheck(i);
         i = translateIndex(i);
         return withNth(i, convert.apply(at(i)));
     }
 
-    @NegativeIndexingSupported
-    public <T> boolean testNth(int i, @NotNull Predicate<T> predicate) {
+    @AllowPythonIndexing
+    public <T> boolean testNth(@PyIndex int i, @NotNull Predicate<T> predicate) {
         assert rangeCheck(i);
         i = translateIndex(i);
         return predicate.test(at(i));
@@ -152,8 +153,8 @@ public final class Tuple implements IntLength, Iterable<Object>, Serializable {
         return Arrays.copyOf(values, values.length);
     }
 
-    @NegativeIndexingSupported
-    public Object @NotNull[] toArray(int i, int j) {
+    @AllowPythonIndexing
+    public Object @NotNull[] toArray(@PyIndex int i, @PyIndex int j) {
         assert rangeCheck(i, j);
         return Arrays.copyOfRange(values, translateIndex(i), translateIndex(j));
     }
@@ -226,15 +227,15 @@ public final class Tuple implements IntLength, Iterable<Object>, Serializable {
 
     /* Negative index translation and Range check */
 
-    private int translateIndex(int i) {
+    private int translateIndex(@PyIndex int i) {
         return RangeCheck.translateIndex(this, i);
     }
 
-    private boolean rangeCheck(int i) {
+    private boolean rangeCheck(@PyIndex int i) {
         return RangeCheck.rangeCheck(this, i, RangeCheck.BEFORE_TRANSLATION | RangeCheck.OPEN_END_RANGE);
     }
 
-    private boolean rangeCheck(int i, int j) {
+    private boolean rangeCheck(@PyIndex int i, @PyIndex int j) {
         return RangeCheck.rangeCheck(this, i, j, RangeCheck.BEFORE_TRANSLATION | RangeCheck.OPEN_END_RANGE);
     }
 }

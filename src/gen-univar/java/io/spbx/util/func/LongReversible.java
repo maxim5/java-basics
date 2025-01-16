@@ -10,7 +10,7 @@ import javax.annotation.processing.Generated;
  * @param <T> the type to convert
  * @see Reversible
  */
-@Generated(value = "$Type$Reversible.java", date = "2024-12-02T15:53:08.758581200Z")
+@Generated(value = "$Type$Reversible.java", date = "2025-01-14T10:07:33.480123100Z")
 public interface LongReversible<T> extends Reversible<T, Long> {
     /**
      * A non-null version of the converter from {@code T} to {@code long}.

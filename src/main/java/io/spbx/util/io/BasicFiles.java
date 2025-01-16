@@ -5,15 +5,19 @@ import io.spbx.util.base.annotate.MustBeClosed;
 import io.spbx.util.base.annotate.Pure;
 import io.spbx.util.base.annotate.Stateless;
 import io.spbx.util.base.lang.DataSize;
-import io.spbx.util.base.security.BasicHash;
+import io.spbx.util.base.ops.ByteOps;
 import io.spbx.util.func.Consumers;
+import io.spbx.util.security.BasicHash;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
@@ -32,6 +36,10 @@ import static io.spbx.util.base.error.Unchecked.Suppliers.runRethrow;
 @Pure
 @CheckReturnValue
 public class BasicFiles {
+    // https://serverfault.com/questions/9546/filename-length-limits-on-linux
+    // https://stackoverflow.com/questions/265769/maximum-filename-length-in-ntfs-windows-xp-and-windows-vista
+    public static final int MAX_FILE_NAME_LENGTH = 255;
+
     /* `String` and `Path` manipulations */
 
     // foo.txt -> txt
@@ -58,6 +66,11 @@ public class BasicFiles {
         return dotIndex == -1 ? filename : filename.substring(0, dotIndex);
     }
 
+    // foo\bar\baz.txt -> foo/bar/baz.txt
+    public static @NotNull String forceUnixSlashes(@NotNull String path) {
+        return path.replace('\\', '/');
+    }
+
     public static @NotNull Path commonPath(@NotNull Path path1, @NotNull Path path2) {
         // https://stackoverflow.com/questions/54595752/find-the-longest-path-common-to-two-paths-in-java
         assert path1.isAbsolute() == path2.isAbsolute() : "Paths have different types: %s and %s".formatted(path1, path2);
@@ -71,8 +84,13 @@ public class BasicFiles {
     /* Read and write files */
 
     @MustBeClosed
-    public static @NotNull InputStream newInputStream(@NotNull Path path) {
-        return runRethrow(() -> Files.newInputStream(path));
+    public static @NotNull InputStream newInputStream(@NotNull Path path, OpenOption... options) {
+        return runRethrow(() -> Files.newInputStream(path, options));
+    }
+
+    @MustBeClosed
+    public static @NotNull OutputStream newOutputStream(@NotNull Path path, OpenOption... options) {
+        return runRethrow(() -> Files.newOutputStream(path, options));
     }
 
     public static byte @NotNull[] readAllBytesOrDie(@NotNull Path path) {
@@ -91,16 +109,32 @@ public class BasicFiles {
         return runRethrow(() -> Files.readAllLines(path));
     }
 
+    public static @NotNull List<String> readAllLinesOrDie(@NotNull Path path, @NotNull Charset charset) {
+        return runRethrow(() -> Files.readAllLines(path, charset));
+    }
+
     public static @Nullable List<String> readAllLinesOrNull(@NotNull Path path) {
         return Files.exists(path) ? BasicFiles.readAllLinesOrDie(path) : null;
+    }
+
+    public static @Nullable List<String> readAllLinesOrNull(@NotNull Path path, @NotNull Charset charset) {
+        return Files.exists(path) ? BasicFiles.readAllLinesOrDie(path, charset) : null;
     }
 
     public static @NotNull String readStringOrDie(@NotNull Path path) {
         return runRethrow(() -> Files.readString(path));
     }
 
+    public static @NotNull String readStringOrDie(@NotNull Path path, @NotNull Charset charset) {
+        return runRethrow(() -> Files.readString(path, charset));
+    }
+
     public static @Nullable String readStringOrNull(@NotNull Path path) {
         return Files.exists(path) ? BasicFiles.readStringOrDie(path) : null;
+    }
+
+    public static @Nullable String readStringOrNull(@NotNull Path path, @NotNull Charset charset) {
+        return Files.exists(path) ? BasicFiles.readStringOrDie(path, charset) : null;
     }
 
     public static void writeAllLines(@NotNull Path path, @NotNull Iterable<String> lines) {
@@ -117,7 +151,7 @@ public class BasicFiles {
      */
     public static byte @NotNull[] digest(@NotNull Path path, @NotNull MessageDigest digest) {
         byte[] bytes = BasicFiles.readAllBytesOrNull(path);
-        return digest.digest(bytes != null ? bytes : new byte[0]);
+        return digest.digest(bytes != null ? bytes : ByteOps.EMPTY_ARRAY);
     }
 
     /**
@@ -147,6 +181,27 @@ public class BasicFiles {
     }
 
     /* File operations */
+
+    public static @NotNull Path createFile(@NotNull Path path) {
+        return runRethrow(() -> Files.createFile(path));
+    }
+
+    public static @NotNull Path createFileIfNotExists(@NotNull Path path) {
+        if (!Files.exists(path)) {
+            return createFile(path);
+        }
+        return path;
+    }
+
+    public static void touch(@NotNull Path path) {
+        runRethrow(() -> {
+            try {
+                Files.createFile(path);
+            } catch (FileAlreadyExistsException e) {
+                Files.setLastModifiedTime(path, FileTime.fromMillis(System.currentTimeMillis()));
+            }
+        });
+    }
 
     public static @NotNull Path createDir(@NotNull Path path) {
         return runRethrow(() -> Files.createDirectory(path));

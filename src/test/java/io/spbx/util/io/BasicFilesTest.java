@@ -42,6 +42,17 @@ public class BasicFilesTest {
     }
 
     @Test
+    public void forceUnixSlashes_simple() {
+        assertThat(BasicFiles.forceUnixSlashes("/")).isEqualTo("/");
+        assertThat(BasicFiles.forceUnixSlashes("\\")).isEqualTo("/");
+        assertThat(BasicFiles.forceUnixSlashes("foo/bar")).isEqualTo("foo/bar");
+        assertThat(BasicFiles.forceUnixSlashes("foo\\bar")).isEqualTo("foo/bar");
+        assertThat(BasicFiles.forceUnixSlashes("/foo/bar")).isEqualTo("/foo/bar");
+        assertThat(BasicFiles.forceUnixSlashes("\\foo\\bar")).isEqualTo("/foo/bar");
+        assertThat(BasicFiles.forceUnixSlashes("\\foo\\bar/baz")).isEqualTo("/foo/bar/baz");
+    }
+
+    @Test
     public void commonPath_absolute() {
         assertThat(BasicFiles.commonPath(toPath("/"), toPath("/a"))).isEqualTo(toPath("/"));
         assertThat(BasicFiles.commonPath(toPath("/a"), toPath("/"))).isEqualTo(toPath("/"));

@@ -17,7 +17,7 @@ import java.util.function.ToLongFunction;
  * @see Consumers
  */
 @Stateless
-@Generated(value = "$Type$Consumers.java", date = "2024-12-02T15:53:08.740577500Z")
+@Generated(value = "$Type$Consumers.java", date = "2025-01-14T10:07:33.463119500Z")
 public class LongConsumers {
     /**
      * Returns a {@link LongConsumer} which calls both {@code first} and {@code second} in sequence.

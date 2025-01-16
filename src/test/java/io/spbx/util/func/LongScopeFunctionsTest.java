@@ -7,6 +7,7 @@ import io.spbx.util.testing.func.MockRunnable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
 import java.util.function.ToLongFunction;
@@ -113,6 +114,25 @@ public class LongScopeFunctionsTest {
         Applying<Long, Integer> mockFunction = MockFunction.applying(Long::bitCount);
         assertThat(LongScopeFunctions.map(NULL, value -> mockFunction.apply(value))).isEqualTo(0);
         assertThat(LongScopeFunctions.map(123L, value -> mockFunction.apply(value))).isEqualTo(6);
+        assertThat(mockFunction.argsCalled()).containsExactly(123L);
+    }
+
+    /** {@link LongScopeFunctions#test(long, LongPredicate)} **/
+
+    @Test
+    public void test_int_reference() {
+        Applying<Long, Boolean> mockFunction = MockFunction.applying(x -> x > 0);
+        boolean result = LongScopeFunctions.test(123L, mockFunction::apply);
+        assertThat(result).isTrue();
+        assertThat(mockFunction.argsCalled()).containsExactly(123L);
+    }
+
+    @Test
+    @SuppressWarnings({ "Convert2MethodRef" })
+    public void test_int_lambda() {
+        Applying<Long, Boolean> mockFunction = MockFunction.applying(x -> x > 0);
+        boolean result = LongScopeFunctions.test(123L, value -> mockFunction.apply(value));
+        assertThat(result).isTrue();
         assertThat(mockFunction.argsCalled()).containsExactly(123L);
     }
 }

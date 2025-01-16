@@ -1,5 +1,6 @@
 package io.spbx.util.code.jvm;
 
+import io.spbx.util.base.str.Regex;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
@@ -18,13 +19,13 @@ public class JavaNumberValidator {
     private static final Pattern UNSIGNED_HEX_LONG_PATTERN = Pattern.compile("0x[0-9a-f][0-9a-f_]+l?", Pattern.CASE_INSENSITIVE);
 
     public static boolean isValidJavaUnsignedIntegerLiteral(@NotNull String num) {
-        return UNSIGNED_DEC_OCT_INTEGER_PATTERN.matcher(num).matches() ||
-               UNSIGNED_HEX_INTEGER_PATTERN.matcher(num).matches();
+        return Regex.on(num).matches(UNSIGNED_DEC_OCT_INTEGER_PATTERN) ||
+               Regex.on(num).matches(UNSIGNED_HEX_INTEGER_PATTERN);
     }
 
     public static boolean isValidJavaUnsignedLongLiteral(@NotNull String num) {
-        return UNSIGNED_DEC_OCT_LONG_PATTERN.matcher(num).matches() ||
-               UNSIGNED_HEX_LONG_PATTERN.matcher(num).matches();
+        return Regex.on(num).matches(UNSIGNED_DEC_OCT_LONG_PATTERN) ||
+               Regex.on(num).matches(UNSIGNED_HEX_LONG_PATTERN);
     }
 
     public static boolean isValidJavaUnsignedIntLiteral(@NotNull String num) {

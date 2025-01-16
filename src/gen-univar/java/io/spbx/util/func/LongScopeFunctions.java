@@ -15,7 +15,7 @@ import java.util.function.ToLongFunction;
  * @see ScopeFunctions
  */
 @Stateless
-@Generated(value = "$Type$ScopeFunctions.java", date = "2024-12-02T15:53:08.761582400Z")
+@Generated(value = "$Type$ScopeFunctions.java", date = "2025-01-14T10:07:33.482123700Z")
 public class LongScopeFunctions {
     /**
      * Pipes the input {@code instance} argument through and calls the specified {@link LongConsumer} {@code action}.
@@ -87,5 +87,17 @@ public class LongScopeFunctions {
             return action.applyAsLong(instance);
         }
         return 0;
+    }
+
+    /**
+     * Pipes the input {@code instance} argument through and calls the specified {@link LongPredicate} {@code predicate}.
+     * <p>
+     * Convenient for one-liners:
+     * {@snippet lang = "java":
+     *     return test(count(), val -> 0 < val && val < 2);
+     * }
+     */
+    public static boolean test(long instance, @NotNull LongPredicate predicate) {
+        return predicate.test(instance);
     }
 }
